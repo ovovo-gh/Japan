@@ -24,5 +24,8 @@ test("server-renders the trip planner shell", async () => {
   assert.match(html, /东京站/);
   assert.match(html, /新增地点/);
   assert.match(html, /地图/);
+  assert.match(html, /住宿节奏/);
+  assert.match(html, /美食清单/);
+  assert.match(html, /已收藏 \/ 打卡/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });

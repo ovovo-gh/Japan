@@ -58,6 +58,40 @@ const PLACES: Place[] = [
     lng: 139.7746,
     note: "街头小吃和折扣店集中；你可优先选烤肉、鸡肉、拉面等熟食。",
     link: "https://www.gotokyo.org/en/spot/24/index.html",
+    price: "¥800–1,800 / 人",
+    meal: "晚餐候选",
+    foodNote: "熟食优先；拉面汤底、酱汁和鱼介成分仍要现场确认。",
+    checked: false,
+  },
+  {
+    id: "asakusa-tempura",
+    title: "浅草熟食：天妇罗 / 鳗鱼",
+    area: "浅草 · 传法院通",
+    category: "food",
+    day: 1,
+    lat: 35.7127,
+    lng: 139.7946,
+    note: "第一顿安排热食，和浅草寺、仲见世一起慢慢逛；不用为了打卡硬吃刺身。",
+    link: "https://www.gotokyo.org/en/see-and-do/drinking-and-dining/tokyo-local-food/index.html",
+    price: "¥1,500–3,500 / 人",
+    meal: "午餐",
+    foodNote: "热食候选；确认酱汁、汤底与鱼类成分。",
+    checked: false,
+  },
+  {
+    id: "asakusa-kissaten",
+    title: "浅草喫茶 / 和甜点",
+    area: "浅草",
+    category: "drink",
+    day: 1,
+    lat: 35.7137,
+    lng: 139.7952,
+    note: "走累时的低强度停靠点：咖啡、茶和和菓子，给第一天留一点余量。",
+    link: "https://www.gotokyo.org/en/destinations/eastern-tokyo/asakusa/",
+    price: "¥800–1,500 / 人",
+    meal: "下午茶",
+    foodNote: "优先看成分标示；不确定时选择包装明确的甜点或饮品。",
+    checked: false,
   },
   {
     id: "tokyo-chiikawa",
@@ -91,6 +125,40 @@ const PLACES: Place[] = [
     lng: 139.7708,
     note: "女朋友可以安排寿司；你提前出示过敏卡并只点确认过的熟食。",
     link: "https://www.tsukiji.or.jp/english/",
+    price: "¥2,000–5,000 / 人",
+    meal: "早餐 / 午餐",
+    foodNote: "女友的生食候选；你改选玉子烧或明确的熟食，并确认交叉污染。",
+    checked: false,
+  },
+  {
+    id: "ginza-dessert",
+    title: "银座喫茶 / 甜点",
+    area: "银座",
+    category: "drink",
+    day: 2,
+    lat: 35.6722,
+    lng: 139.7657,
+    note: "把购物拆成两段，中间坐下来喝茶；比连续逛百货更不累。",
+    link: "https://www.gotokyo.org/en/see-and-do/drinking-and-dining/index.html",
+    price: "¥900–2,000 / 人",
+    meal: "下午茶",
+    foodNote: "咖啡、茶和甜点；过敏原以店内标示为准。",
+    checked: false,
+  },
+  {
+    id: "tokyo-yakitori",
+    title: "东京站熟食晚餐",
+    area: "东京站八重洲",
+    category: "food",
+    day: 2,
+    lat: 35.6806,
+    lng: 139.7671,
+    note: "如果筑地更偏女友的海鲜体验，晚餐就回到鸡肉、烤物或明确标注的熟食。",
+    link: "https://www.gotokyo.org/en/see-and-do/drinking-and-dining/index.html",
+    price: "¥1,500–3,000 / 人",
+    meal: "晚餐候选",
+    foodNote: "点单前确认是否刷鱼介酱汁；熟食也不要默认无鲑鱼成分。",
+    checked: false,
   },
   {
     id: "meiji",
@@ -126,6 +194,48 @@ const PLACES: Place[] = [
     link: "https://www.gotokyo.org/en/spot/1749/index.html",
   },
   {
+    id: "harajuku-crepe",
+    title: "原宿可丽饼 / 甜品",
+    area: "原宿 · 竹下通",
+    category: "food",
+    day: 3,
+    lat: 35.6702,
+    lng: 139.7058,
+    note: "明治神宫后的轻量补给；把它当甜点，不和晚餐排成连续长距离。",
+    link: "https://www.gotokyo.org/en/destinations/western-tokyo/harajuku/index.html",
+    price: "¥700–1,500 / 人",
+    meal: "下午茶",
+    foodNote: "看奶油、酱料和装饰物成分；选择能确认原料的款式。",
+    checked: false,
+  },
+  {
+    id: "shibuya-yakiniku",
+    title: "涩谷熟肉晚餐",
+    area: "涩谷",
+    category: "food",
+    day: 3,
+    lat: 35.6595,
+    lng: 139.7005,
+    note: "夜景前后安排坐下来的晚餐；用熟肉、米饭和蔬菜把这天收住。",
+    link: "https://www.gotokyo.org/en/spot/1749/index.html",
+    price: "¥3,000–6,000 / 人",
+    meal: "晚餐",
+    foodNote: "确认酱汁与共用烤网；女友的海鲜选择不要和你的餐具混用。",
+    checked: false,
+  },
+  {
+    id: "tokyo-base-stay",
+    title: "东京基地：上野 / 浅草酒店",
+    area: "上野 · 浅草之间",
+    category: "stay",
+    day: 1,
+    lat: 35.7114,
+    lng: 139.777,
+    note: "主方案建议 4 晚不换酒店；靠近地铁或 JR 站，拖箱和早班机都更轻松。",
+    link: "https://www.gotokyo.org/en/destinations/eastern-tokyo/asakusa/",
+    price: "¥14,000–28,000 / 晚 / 双人房",
+  },
+  {
     id: "hakone-yumoto",
     title: "箱根汤本",
     area: "箱根",
@@ -135,6 +245,7 @@ const PLACES: Place[] = [
     lng: 139.1069,
     note: "从东京一日往返的换乘节点；可安排日归温泉和温泉街。",
     link: "https://www.japan.travel/en/destinations/kanto/kanagawa/hakone-and-around/",
+    price: "日归；住宿主方案仍住东京",
   },
   {
     id: "hakone-open-air",
@@ -170,6 +281,36 @@ const PLACES: Place[] = [
     link: "https://www.hakonenavi.jp/international/en/",
   },
   {
+    id: "hakone-soba",
+    title: "箱根温泉街荞麦 / 熟食",
+    area: "箱根汤本",
+    category: "food",
+    day: 4,
+    lat: 35.2321,
+    lng: 139.1064,
+    note: "箱根午餐优先选热的荞麦、定食或烤物；不把温泉日变成赶场日。",
+    link: "https://www.japan.travel/en/itineraries/outdoor-art-hot-spring-resorts-and-fuji-views-in-hakone/",
+    price: "¥1,000–2,000 / 人",
+    meal: "午餐",
+    foodNote: "荞麦汤底也要问是否含鱼介；需要时选择成分更清楚的定食。",
+    checked: false,
+  },
+  {
+    id: "hakone-black-egg",
+    title: "大涌谷黑鸡蛋 / 温泉街小食",
+    area: "大涌谷",
+    category: "food",
+    day: 4,
+    lat: 35.2428,
+    lng: 139.0206,
+    note: "和火山景观一起安排的小份体验；遇到风雨时直接删掉，不影响主线。",
+    link: "https://www.hakonenavi.jp/international/en/spot/223",
+    price: "¥500–1,500 / 人",
+    meal: "小食",
+    foodNote: "现场确认配料与售卖方式；不确定的调味品就不尝。",
+    checked: false,
+  },
+  {
     id: "toyosu",
     title: "丰洲市场",
     area: "丰洲",
@@ -179,6 +320,10 @@ const PLACES: Place[] = [
     lng: 139.7878,
     note: "只适合晚班机版本；海鲜选择多，你需要再次确认熟食与交叉污染。",
     link: "https://www.toyosu-market.or.jp/en/",
+    price: "¥2,000–5,000 / 人",
+    meal: "早餐候选",
+    foodNote: "女友可安排海鲜；你只选确认过的熟食，确认营业日和离场交通。",
+    checked: false,
   },
   {
     id: "chiikawa-solamachi",
@@ -192,6 +337,87 @@ const PLACES: Place[] = [
     link: "https://en.www.tokyo-solamachi.jp/shop/1607/",
   },
 ];
+
+type StayPlan = {
+  day: DayId;
+  title: string;
+  area: string;
+  price: string;
+  note: string;
+  placeId: string;
+};
+
+const STAY_PLANS: StayPlan[] = [
+  {
+    day: 1,
+    title: "东京基地：上野 / 浅草酒店",
+    area: "建议住上野御徒町或浅草地铁站步行圈",
+    price: "¥14,000–28,000 / 晚",
+    note: "入住；主方案连续住 4 晚",
+    placeId: "tokyo-base-stay",
+  },
+  {
+    day: 2,
+    title: "东京基地：上野 / 浅草酒店",
+    area: "不换酒店，轻装去东京站与银座",
+    price: "¥14,000–28,000 / 晚",
+    note: "第 2 晚；把行李和预算都留在东京基地",
+    placeId: "tokyo-base-stay",
+  },
+  {
+    day: 3,
+    title: "东京基地：上野 / 浅草酒店",
+    area: "不换酒店，原宿 / 涩谷往返",
+    price: "¥14,000–28,000 / 晚",
+    note: "第 3 晚；晚间回程不用拖箱",
+    placeId: "tokyo-base-stay",
+  },
+  {
+    day: 4,
+    title: "东京基地（箱根日归）",
+    area: "箱根看自然与温泉，晚上回东京",
+    price: "¥14,000–28,000 / 晚",
+    note: "第 4 晚；想住温泉旅馆看右侧升级方案",
+    placeId: "tokyo-base-stay",
+  },
+  {
+    day: 5,
+    title: "东京基地 → 机场",
+    area: "退房后寄存行李，再去丰洲或晴空塔",
+    price: "已含第 4 晚；早班机可另住机场",
+    note: "返程日；根据航班时间删减丰洲路线",
+    placeId: "tokyo-base-stay",
+  },
+];
+
+const STAY_OPTIONS = [
+  {
+    label: "预算优先",
+    title: "上野御徒町商务酒店",
+    price: "¥14,000–22,000 / 晚",
+    total: "4 晚约 ¥56,000–88,000",
+    note: "JR、地铁和机场动线都顺，把预算留给吃和 Chiikawa。",
+    link: "https://www.gotokyo.org/en/destinations/eastern-tokyo/asakusa/",
+  },
+  {
+    label: "平衡推荐",
+    title: "浅草雷门 / 隅田川附近",
+    price: "¥22,000–35,000 / 晚",
+    total: "4 晚约 ¥88,000–140,000",
+    note: "早晚散步氛围最好；周末和临近出发日会明显浮动。",
+    link: "https://www.gotokyo.org/en/destinations/eastern-tokyo/asakusa/",
+  },
+  {
+    label: "温泉升级",
+    title: "箱根温泉旅馆替换 Day 4",
+    price: "¥28,000–50,000 / 晚 / 两人",
+    total: "只替换 1 晚，需处理行李",
+    note: "想把温泉做成主菜再选；主方案仍建议箱根日归，少换一次酒店。",
+    link: "https://www.japan.travel/en/itineraries/outdoor-art-hot-spring-resorts-and-fuji-views-in-hakone/",
+  },
+];
+
+const TRIP_DATA_VERSION = 2;
 
 const CATEGORY_META: Record<PlaceCategory | "all", { label: string; icon: string }> = {
   all: { label: "全部", icon: "⌘" },
@@ -217,6 +443,15 @@ function makeDraft(day: DayId = 1): PlaceDraft {
     note: "",
     link: "",
   };
+}
+
+function makeSnapshot(days: DayPlan[], places: Place[]): TripState {
+  return { version: TRIP_DATA_VERSION, days, places };
+}
+
+function mergeDefaultPlaces(saved: Place[]) {
+  const existingIds = new Set(saved.map((place) => place.id));
+  return [...saved, ...PLACES.filter((place) => !existingIds.has(place.id))];
 }
 
 function encodeShare(payload: TripState) {
@@ -281,7 +516,7 @@ export default function Home() {
     const timer = window.setTimeout(() => {
       if (next) {
         setDays(next.days.length ? next.days : DAYS);
-        setPlaces(next.places);
+        setPlaces(next.version === TRIP_DATA_VERSION ? next.places : mergeDefaultPlaces(next.places));
         if (shared) setToast("已载入分享行程");
       }
       setHydrated(true);
@@ -291,7 +526,7 @@ export default function Home() {
 
   useEffect(() => {
     if (!hydrated) return;
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ days, places }));
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(makeSnapshot(days, places)));
   }, [days, hydrated, places]);
 
   useEffect(() => {
@@ -322,6 +557,23 @@ export default function Home() {
       })),
     [days, visiblePlaces],
   );
+
+  const foodPlaces = useMemo(
+    () =>
+      places
+        .filter((place) => place.category === "food" || place.category === "drink")
+        .filter((place) => selectedDay === "all" || place.day === selectedDay)
+        .sort((a, b) => a.day - b.day),
+    [places, selectedDay],
+  );
+
+  const checkedFoodCount = foodPlaces.filter((place) => place.checked).length;
+
+  const toggleFoodChecked = (id: string) => {
+    setPlaces((current) => current.map((place) => (
+      place.id === id ? { ...place, checked: !place.checked } : place
+    )));
+  };
 
   const openCreate = (day: DayId = selectedDay === "all" ? 1 : (selectedDay as DayId)) => {
     setEditingId(null);
@@ -378,7 +630,7 @@ export default function Home() {
   };
 
   const shareTrip = async () => {
-    const url = `${window.location.origin}${window.location.pathname}#share=${encodeShare({ days, places })}`;
+    const url = `${window.location.origin}${window.location.pathname}#share=${encodeShare(makeSnapshot(days, places))}`;
     window.history.replaceState(null, "", url);
     try {
       await navigator.clipboard.writeText(url);
@@ -389,7 +641,7 @@ export default function Home() {
   };
 
   const exportTrip = () => {
-    const file = new Blob([JSON.stringify({ days, places }, null, 2)], { type: "application/json" });
+    const file = new Blob([JSON.stringify(makeSnapshot(days, places), null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(file);
     const anchor = document.createElement("a");
     anchor.href = url;
@@ -406,7 +658,7 @@ export default function Home() {
       const parsed = JSON.parse(await file.text()) as TripState;
       if (!Array.isArray(parsed.days) || !Array.isArray(parsed.places)) throw new Error("invalid");
       setDays(parsed.days);
-      setPlaces(parsed.places);
+      setPlaces(parsed.version === TRIP_DATA_VERSION ? parsed.places : mergeDefaultPlaces(parsed.places));
       setToast("行程已导入");
     } catch {
       setToast("导入失败，请选择这个网页导出的 JSON 文件");
@@ -427,6 +679,8 @@ export default function Home() {
 
   const selectPlace = (id: string) => {
     setSelectedPlaceId(id);
+    setCategoryFilter("all");
+    setSearch("");
     const place = places.find((item) => item.id === id);
     if (place && selectedDay !== "all" && place.day !== selectedDay) setSelectedDay(place.day);
   };
@@ -521,6 +775,96 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="planner-expansion">
+        <section className="lodging-card">
+          <div className="expansion-heading">
+            <div>
+              <p className="section-label">STAY / 住宿节奏</p>
+              <h2>住哪里，比多换一个景点更重要。</h2>
+            </div>
+            <span className="muted">两人一间 · 价格参考</span>
+          </div>
+          <p className="expansion-intro">主方案是东京一处基地住满 4 晚，箱根做日归。下面每一行都能点回地图；价格是 2026 年 9 月的预算占位，不是实时房价。</p>
+          <div className="lodging-grid">
+            <div className="stay-timeline">
+              {STAY_PLANS.map((plan) => (
+                <button
+                  type="button"
+                  className="stay-row"
+                  key={plan.day}
+                  onClick={() => {
+                    setSelectedDay("all");
+                    setSelectedPlaceId(plan.placeId);
+                    setCategoryFilter("all");
+                    setSearch("");
+                  }}
+                >
+                  <span className="stay-day" style={{ "--stay-color": dayFor(plan.day).color } as CSSProperties}>D{plan.day}</span>
+                  <span className="stay-copy"><strong>{plan.title}</strong><small>{plan.area} · {plan.note}</small></span>
+                  <span className="stay-price">{plan.price}</span>
+                  <span className="stay-arrow" aria-hidden="true">⌖</span>
+                </button>
+              ))}
+            </div>
+            <div className="stay-options">
+              {STAY_OPTIONS.map((option) => (
+                <a className="stay-option" href={option.link} target="_blank" rel="noreferrer" key={option.label}>
+                  <span className="option-kicker">{option.label}</span>
+                  <strong>{option.title}</strong>
+                  <span className="option-price">{option.price}</span>
+                  <span className="option-total">{option.total}</span>
+                  <p>{option.note}</p>
+                  <span className="option-link">看区域资料 ↗</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="food-card">
+          <div className="expansion-heading">
+            <div>
+              <p className="section-label">EAT / 美食清单</p>
+              <h2>先收藏，再决定这一餐吃什么。</h2>
+            </div>
+            <span className="muted">{selectedDay === "all" ? "全程清单" : `Day ${selectedDay} · 当前日`}</span>
+          </div>
+          <p className="expansion-intro">清单里的每一项都和地图相连：点击名称定位，点击圆点打卡。价格按人均粗估，临近出发再看营业日、预约和菜单。</p>
+          <div className="food-layout">
+            <div className="food-list">
+              {foodPlaces.map((place) => (
+                <div className={`food-item ${place.checked ? "is-done" : ""}`} key={place.id}>
+                  <button
+                    type="button"
+                    className="food-check"
+                    aria-label={`${place.checked ? "取消" : "标记"}${place.title}`}
+                    aria-pressed={Boolean(place.checked)}
+                    onClick={() => toggleFoodChecked(place.id)}
+                  >
+                    {place.checked ? "✓" : "○"}
+                  </button>
+                  <button type="button" className="food-copy" onClick={() => selectPlace(place.id)}>
+                    <span className="food-item-head"><strong>{place.title}</strong><em>{place.meal ?? "随时"}</em></span>
+                    <span className="food-location">D{place.day} · {place.area}</span>
+                    <p>{place.foodNote ?? place.note}</p>
+                  </button>
+                  <span className="food-price">{place.price ?? "价格待补"}</span>
+                </div>
+              ))}
+              {!foodPlaces.length && <div className="food-empty">这一天还没有美食清单，切回“全部”查看全程候选。</div>}
+            </div>
+            <aside className="food-side-note">
+              <div className="food-progress"><strong>{checkedFoodCount}<small>/{foodPlaces.length}</small></strong><span>已收藏 / 打卡</span></div>
+              <div className="progress-track"><i style={{ width: `${foodPlaces.length ? (checkedFoodCount / foodPlaces.length) * 100 : 0}%` }} /></div>
+              <p>你们可以先把想吃的勾出来，再用上面的 Day 标签收窄地图和清单，避免每天临时搜索。</p>
+              <div className="food-rule"><b>你</b><span>熟食优先；鱼汤、酱汁、鲑鱼和交叉污染都要问。</span></div>
+              <div className="food-rule"><b>她</b><span>寿司 / 刺身可以单独安排，但不要共用餐具或不明汤底。</span></div>
+              <a className="food-source" href="https://www.tsukiji.or.jp/english/shopping/" target="_blank" rel="noreferrer">筑地官方提示：多数店 9:00–14:00，部分周日 / 周三休息 ↗</a>
+            </aside>
+          </div>
+        </section>
+      </section>
+
       <section className="lower-grid">
         <div className="itinerary-section">
           <div className="section-heading"><div><p className="section-label">DAY BY DAY / 行程卡</p><h2>{selectedDay === "all" ? "五天的节奏" : dayFor(selectedDay).title}</h2></div><span className="muted">{selectedDay === "all" ? "可按天气调换 Day 3 / Day 4" : `${visiblePlaces.length} 个地点`}</span></div>
@@ -534,7 +878,7 @@ export default function Home() {
                     {dayPlaces.length ? dayPlaces.map((place) => (
                       <div className={`place-row ${selectedPlaceId === place.id ? "is-selected" : ""}`} key={place.id} role="button" tabIndex={0} onClick={() => selectPlace(place.id)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); selectPlace(place.id); } }}>
                         <span className="place-dot" style={{ backgroundColor: day.color }} />
-                        <div className="place-main"><div><strong>{place.title}</strong><span className="place-category">{categoryLabel(place.category)} · {place.area}</span></div><p>{place.note}</p></div>
+                        <div className="place-main"><div><strong>{place.title}</strong><span className="place-category">{categoryLabel(place.category)} · {place.area}</span>{place.price && <span className="place-price">{place.price}</span>}</div><p>{place.note}</p></div>
                         <div className="place-actions"><button aria-label={`编辑${place.title}`} onClick={(event) => { event.stopPropagation(); openEdit(place); }}>编辑</button><button aria-label={`删除${place.title}`} onClick={(event) => { event.stopPropagation(); deletePlace(place); }}>删除</button>{place.link && <a href={place.link} target="_blank" rel="noreferrer" onClick={(event) => event.stopPropagation()}>↗</a>}</div>
                       </div>
                     )) : <div className="empty-day">这一天暂时没有符合筛选条件的地点。<button className="text-button" onClick={() => openCreate(day.id)}>现在添加</button></div>}

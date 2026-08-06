@@ -20,9 +20,14 @@ export type Place = {
   lng: number;
   note: string;
   link?: string;
+  price?: string;
+  meal?: string;
+  foodNote?: string;
+  checked?: boolean;
 };
 
 export type TripState = {
+  version?: number;
   days: DayPlan[];
   places: Place[];
 };
