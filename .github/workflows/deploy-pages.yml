@@ -39,6 +39,9 @@ jobs:
           GITHUB_PAGES_ASSET_PREFIX: /Japan
         run: npm run build:github
 
+      - name: Keep Next.js assets on GitHub Pages
+        run: touch dist/client/.nojekyll
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
         with:
