@@ -115,7 +115,7 @@ export default function LeafletMapView({
   }, [days, places, selectedDay, selectedPlaceId, onSelectPlace]);
 
   return (
-    <div className="map-frame" aria-label="东京与箱根旅行地点地图">
+    <div className="map-frame" aria-label="东京、富士山与大阪旅行地点地图">
       <div ref={mapNode} className="leaflet-map" />
       {!mapReady && <div className="map-loading">正在加载地图图层…</div>}
     </div>

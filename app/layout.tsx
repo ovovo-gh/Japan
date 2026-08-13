@@ -8,8 +8,8 @@ const publicBasePath =
     : "";
 
 export const metadata: Metadata = {
-  title: "东京，慢慢走｜两个人的日本旅行地图",
-  description: "东京与箱根 5 日旅行地图、地点管理和每日线路规划。",
+  title: "日本，慢慢走｜东京·富士·大阪 5 日旅行地图",
+  description: "东京、河口湖富士山与大阪 5 日旅行地图，包含小时级行程、住宿预算、美食清单和地点管理。",
   icons: {
     icon: `${publicBasePath}/favicon.svg`,
     shortcut: `${publicBasePath}/favicon.svg`,
