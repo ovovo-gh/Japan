@@ -898,25 +898,52 @@ const HOURLY_PLANS: HourlyPlan[] = [
 
 const RESEARCH_TIPS = [
   {
-    label: "小红书参考 01",
-    title: "富士山要早出发",
-    text: "公开检索到的小红书视频索引提到沿途看富士山、东京站地下街和大阪夜食；我将其中可复用的“早出发 + 河口湖”经验落地为清晨路线，但巴士、票价和备用删减点均以官方资料重新校准。",
-    link: "https://6li6.com/xiaohongshu/view-58768",
-    linkText: "小红书公开索引 / 经验参考 ↗",
+    label: "小红书笔记 01",
+    sourceTitle: "日本8日「东进阪出」超全攻略✨",
+    author: "A锦鲤🍯",
+    noteId: "6a75d1e90000000006005aeb",
+    title: "东进阪出的区域顺序",
+    text: "笔记把东京的浅草、银座、秋叶原，与富士山的忠灵塔、大石公园，再到大阪城、道顿堀和黑门市场串成一条东进阪出路线。",
+    decision: "吸收东京进、大阪出的方向，以及浅草 / 银座 / 秋叶原 / 忠灵塔 / 大石公园 / 道顿堀这些高匹配点；8 天游程里的镰仓、京都、奈良不塞进本次 5 天游程。",
+    usedIn: "D1、D2、D3、D4、D5",
+    link: "https://www.xiaohongshu.com/explore/6a75d1e90000000006005aeb",
+    linkText: "打开原笔记 ↗",
   },
   {
-    label: "路线判断 · 非小红书",
-    title: "5 天不再塞京都和 USJ",
-    text: "东京、富士山、大阪已经是三块区域；这版只保留大阪城与难波夜线，给换城、排队和返程留安全边界。",
-    link: "https://www.gotokyo.org/en/itineraries/",
-    linkText: "官方城市线路校准 ↗",
+    label: "小红书笔记 02",
+    sourceTitle: "日本自由行5天4晚，这样排才不会废腿",
+    author: "saint在日本",
+    noteId: "6a4288a70000000022018209",
+    title: "5 天最重要的是少换乘",
+    text: "笔记正文明确提醒：第一天不要硬塞景点；东京段可以把浅草、上野、银座放在同一大区；第四天东京去大阪，晚上只走心斋桥和道顿堀；返程日不要再硬塞京都奈良。",
+    decision: "直接采用“只换一次酒店”和 D4 东京→大阪的松弛边界；把银座移到 D3、保留 D1 浅草 + 上野，且把 D5 拆成早班机 / 晚班机两版。",
+    usedIn: "D1、D3、D4、D5",
+    link: "https://www.xiaohongshu.com/explore/6a4288a70000000022018209",
+    linkText: "打开原笔记 ↗",
   },
   {
-    label: "官方校准 · 非小红书",
-    title: "天气不好就换顺序",
-    text: "Day 2 富士山完全看能见度；阴雨时把东京站 / 银座提前，富士山改到 Day 3 清晨，或直接当作自然放弃项，不要为一张照片冒险。",
-    link: "https://highway-buses.jp/course/kawaguchiko.php",
-    linkText: "官方河口湖交通与票价 ↗",
+    label: "小红书笔记 03",
+    sourceTitle: "东京Chiikawa地图🗺️全收藏",
+    author: "一只小黄堡",
+    noteId: "6a4f37010000000015027bee",
+    title: "Chiikawa 采购不只看一间店",
+    text: "作者分享了餐厅、面包店、Chiikawa Land，以及银座联名店的步行扫货体验，并提到全程 walk-in；这篇对你们最有价值的是“按区域串店”，不是某件商品一定有货。",
+    decision: "把东京站 ちいかわらんど设为第一优先，再把银座和秋叶原作为同日补充；库存、限购、入场和限定商品不从笔记推断，改看当天官方公告。",
+    usedIn: "D3：东京站 → 银座 → 秋叶原",
+    link: "https://www.xiaohongshu.com/explore/6a4f37010000000015027bee",
+    linkText: "打开原笔记 ↗",
+  },
+  {
+    label: "小红书笔记 04",
+    sourceTitle: "日本东京、大阪、富士山、机位全攻略！！！",
+    author: "猪皮香奈儿",
+    noteId: "6a15309d0000000038020711",
+    title: "富士山拍照点要做减法",
+    text: "笔记整理了富士吉田罗森、街道路口、忠灵塔，以及东京塔、晴空塔和大阪道顿堀等拍摄点，并强调蓝调时刻和天气对成片的影响。",
+    decision: "只保留忠灵塔 + 河口湖湖畔作为主线，便利店和其他街道路口列为顺路备选；不为拍照跨城折返，也不在车道边停留。",
+    usedIn: "D2：忠灵塔、河口湖湖畔、天气备选",
+    link: "https://www.xiaohongshu.com/explore/6a15309d0000000038020711",
+    linkText: "打开原笔记 ↗",
   },
 ];
 
@@ -1424,15 +1451,18 @@ export default function Home() {
       <section className="research-strip">
         <div className="research-heading">
           <p className="section-label">FIELD NOTES / 攻略吸收</p>
-          <h2>网上攻略给灵感，官方信息管执行。</h2>
-          <p>带有“小红书参考”的卡片来自可公开检索到的小红书索引 / 镜像经验；带有“官方校准”的卡片不是小红书内容，用于核对交通、价格和执行边界。</p>
+          <h2>4 篇小红书笔记，逐条拆进路线。</h2>
+          <p>以下卡片来自你已登录的小红书站内搜索和笔记正文。笔记只负责提供路线灵感、体感和打卡经验；交通、票价、开放时间、库存和过敏安全仍以官方信息和现场确认执行。</p>
         </div>
         <div className="research-grid">
           {RESEARCH_TIPS.map((tip) => (
             <article className="research-card" key={tip.title}>
               <span>{tip.label}</span>
               <h3>{tip.title}</h3>
+              <div className="research-source"><strong>{tip.sourceTitle}</strong><small>{tip.author} · 笔记 ID {tip.noteId}</small></div>
               <p>{tip.text}</p>
+              <p className="research-decision"><b>落地：</b>{tip.decision}</p>
+              <p className="research-used"><b>对应：</b>{tip.usedIn}</p>
               <a href={tip.link} target="_blank" rel="noreferrer">{tip.linkText}</a>
             </article>
           ))}
