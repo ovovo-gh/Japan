@@ -898,25 +898,25 @@ const HOURLY_PLANS: HourlyPlan[] = [
 
 const RESEARCH_TIPS = [
   {
-    label: "UGC 高频经验",
+    label: "小红书参考 01",
     title: "富士山要早出发",
-    text: "公开旅行笔记与攻略镜像里反复出现“清晨河口湖 / 忠灵塔 / ほうとう / 湖畔”的顺序；我保留了这个节奏，但把巴士、票价和备用删减点按官方资料重新校准。",
+    text: "公开检索到的小红书视频索引提到沿途看富士山、东京站地下街和大阪夜食；我将其中可复用的“早出发 + 河口湖”经验落地为清晨路线，但巴士、票价和备用删减点均以官方资料重新校准。",
     link: "https://6li6.com/xiaohongshu/view-58768",
-    linkText: "看公开笔记索引 ↗",
+    linkText: "小红书公开索引 / 经验参考 ↗",
   },
   {
-    label: "路线判断",
+    label: "路线判断 · 非小红书",
     title: "5 天不再塞京都和 USJ",
     text: "东京、富士山、大阪已经是三块区域；这版只保留大阪城与难波夜线，给换城、排队和返程留安全边界。",
     link: "https://www.gotokyo.org/en/itineraries/",
-    linkText: "看官方城市线路 ↗",
+    linkText: "官方城市线路校准 ↗",
   },
   {
-    label: "执行校准",
+    label: "官方校准 · 非小红书",
     title: "天气不好就换顺序",
     text: "Day 2 富士山完全看能见度；阴雨时把东京站 / 银座提前，富士山改到 Day 3 清晨，或直接当作自然放弃项，不要为一张照片冒险。",
     link: "https://highway-buses.jp/course/kawaguchiko.php",
-    linkText: "看官方河口湖交通 ↗",
+    linkText: "官方河口湖交通与票价 ↗",
   },
 ];
 
@@ -1425,7 +1425,7 @@ export default function Home() {
         <div className="research-heading">
           <p className="section-label">FIELD NOTES / 攻略吸收</p>
           <h2>网上攻略给灵感，官方信息管执行。</h2>
-          <p>公开平台的笔记会变动、删帖或只显示摘要，所以这里把可复用的经验留下，再用交通、景点和过敏信息做了二次校准。</p>
+          <p>带有“小红书参考”的卡片来自可公开检索到的小红书索引 / 镜像经验；带有“官方校准”的卡片不是小红书内容，用于核对交通、价格和执行边界。</p>
         </div>
         <div className="research-grid">
           {RESEARCH_TIPS.map((tip) => (
