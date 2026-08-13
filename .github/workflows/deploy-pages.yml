@@ -42,7 +42,6 @@ jobs:
       - name: Normalize GitHub Pages asset paths
         run: |
           mkdir -p dist/client/Japan
-          cp -R dist/client/_next dist/client/Japan/_next
           cp dist/client/favicon.svg dist/client/Japan/favicon.svg
           touch dist/client/.nojekyll
 
