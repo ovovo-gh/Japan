@@ -73,7 +73,7 @@ h1 em { color: var(--red); font-style: normal; }
 .toolbar-actions { display: flex; gap: 9px; align-items: center; }
 .search-box { display: flex; align-items: center; gap: 7px; width: 230px; padding: 0 11px; border: 1px solid var(--line); border-radius: 6px; color: var(--ink-soft); }
 .search-box input { width: 100%; height: 37px; border: 0; outline: 0; background: transparent; color: var(--ink); font-size: 12px; }
-.day-tabs { display: grid; grid-template-columns: 1.1fr repeat(5, 1fr); gap: 4px; margin-top: 28px; border-bottom: 1px solid var(--line); }
+.day-tabs { display: grid; grid-template-columns: 1.1fr repeat(8, minmax(0, 1fr)); gap: 4px; margin-top: 28px; border-bottom: 1px solid var(--line); }
 .day-tab { display: flex; align-items: center; gap: 9px; min-width: 0; padding: 13px 11px; border: 0; border-bottom: 3px solid transparent; background: transparent; color: var(--ink-soft); text-align: left; transition: .2s ease; }
 .day-tab:hover, .day-tab.is-active { color: var(--ink); background: rgba(243,207,103,.12); border-bottom-color: var(--day-color, var(--ink)); }
 .day-tab-all.is-active { border-bottom-color: var(--ink); }

@@ -21,7 +21,7 @@ test("server-renders the trip planner shell", async () => {
   const html = await response.text();
   assert.match(html, /日本，/);
   assert.match(html, /慢慢走/);
-  assert.match(html, /两个人的第一次日本旅行/);
+  assert.match(html, /两个人的 8 天 7 晚日本旅行/);
   assert.match(html, /东京站/);
   assert.match(html, /新增地点/);
   assert.match(html, /地图/);
@@ -29,6 +29,6 @@ test("server-renders the trip planner shell", async () => {
   assert.match(html, /美食清单/);
   assert.match(html, /已收藏 \/ 打卡/);
   assert.match(html, /小时级攻略/);
-  assert.match(html, /东京 3 晚 \+ 大阪 1 晚/);
+  assert.match(html, /东京 4 晚 \+ 京都 2 晚 \+ 大阪 1 晚/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });
