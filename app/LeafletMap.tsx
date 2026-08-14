@@ -26,6 +26,7 @@ export default function LeafletMapView({
   const mapNode = useRef<HTMLDivElement | null>(null);
   const map = useRef<LeafletMap | null>(null);
   const routeLayer = useRef<LayerGroup | null>(null);
+  const arrowLayer = useRef<LayerGroup | null>(null);
   const markerLayer = useRef<LayerGroup | null>(null);
   const leaflet = useRef<LeafletApi["default"] | null>(null);
   const [mapReady, setMapReady] = useState(false);
@@ -52,6 +53,7 @@ export default function LeafletMapView({
 
       map.current = nextMap;
       routeLayer.current = L.layerGroup().addTo(nextMap);
+      arrowLayer.current = L.layerGroup().addTo(nextMap);
       markerLayer.current = L.layerGroup().addTo(nextMap);
       setMapReady(true);
       window.setTimeout(() => nextMap.invalidateSize(), 150);
@@ -63,6 +65,7 @@ export default function LeafletMapView({
         map.current.remove();
         map.current = null;
         routeLayer.current = null;
+        arrowLayer.current = null;
         markerLayer.current = null;
         setMapReady(false);
       }
@@ -71,9 +74,10 @@ export default function LeafletMapView({
 
   useEffect(() => {
     const L = leaflet.current;
-    if (!L || !map.current || !routeLayer.current || !markerLayer.current) return;
+    if (!L || !map.current || !routeLayer.current || !arrowLayer.current || !markerLayer.current) return;
 
     routeLayer.current.clearLayers();
+    arrowLayer.current.clearLayers();
     markerLayer.current.clearLayers();
     const visiblePlaces = places.filter((place) =>
       selectedDay === "all" ? true : place.day === selectedDay,
@@ -103,20 +107,14 @@ export default function LeafletMapView({
       entries.forEach(({ place }, index) => routeOrderById.set(place.id, index + 1));
     });
 
-    orderedGroups.forEach(([dayId, entries]) => {
-      const day = days.find((item) => item.id === dayId);
-      const color = day?.color ?? "#4f7185";
-      const coordinates = entries.map(({ place }) => [place.lat, place.lng] as [number, number]);
-      routeCoordinates.push(...coordinates);
+    const drawRouteArrows = () => {
+      if (!map.current || !arrowLayer.current) return;
+      arrowLayer.current.clearLayers();
 
-      if (coordinates.length > 1) {
-        L.polyline(coordinates, {
-          color,
-          weight: 4,
-          opacity: 0.76,
-          lineCap: "round",
-          lineJoin: "round",
-        }).addTo(routeLayer.current!);
+      orderedGroups.forEach(([dayId, entries]) => {
+        const day = days.find((item) => item.id === dayId);
+        const color = day?.color ?? "#4f7185";
+        const coordinates = entries.map(({ place }) => [place.lat, place.lng] as [number, number]);
 
         coordinates.slice(0, -1).forEach((current, index) => {
           const next = coordinates[index + 1];
@@ -137,8 +135,25 @@ export default function LeafletMapView({
             iconSize: [24, 24],
             iconAnchor: [12, 12],
           });
-          L.marker(midpoint, { icon, interactive: false, keyboard: false }).addTo(routeLayer.current!);
+          L.marker(midpoint, { icon, interactive: false, keyboard: false }).addTo(arrowLayer.current!);
         });
+      });
+    };
+
+    orderedGroups.forEach(([dayId, entries]) => {
+      const day = days.find((item) => item.id === dayId);
+      const color = day?.color ?? "#4f7185";
+      const coordinates = entries.map(({ place }) => [place.lat, place.lng] as [number, number]);
+      routeCoordinates.push(...coordinates);
+
+      if (coordinates.length > 1) {
+        L.polyline(coordinates, {
+          color,
+          weight: 4,
+          opacity: 0.76,
+          lineCap: "round",
+          lineJoin: "round",
+        }).addTo(routeLayer.current!);
       }
     });
 
@@ -194,10 +209,21 @@ export default function LeafletMapView({
       map.current.fitBounds(L.latLngBounds(boundsCoordinates), {
         padding: [32, 32],
         maxZoom: selectedDay === "all" ? 12 : 14,
+        animate: false,
       });
     } else if (boundsCoordinates.length === 1) {
-      map.current.setView(boundsCoordinates[0], 14, { animate: true });
+      map.current.setView(boundsCoordinates[0], 14, { animate: false });
     }
+
+    const redrawArrowsAfterViewportChange = () => {
+      window.requestAnimationFrame(drawRouteArrows);
+    };
+    map.current.on("moveend zoomend", redrawArrowsAfterViewportChange);
+    window.requestAnimationFrame(drawRouteArrows);
+
+    return () => {
+      map.current?.off("moveend zoomend", redrawArrowsAfterViewportChange);
+    };
   }, [days, places, routePlaces, selectedDay, selectedPlaceId, onSelectPlace, mapReady]);
 
   return (

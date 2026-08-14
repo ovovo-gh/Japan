@@ -846,18 +846,6 @@ const UPDATED_PLACES: Place[] = [
     link: "https://www.tokyoeki-1bangai.co.jp/shop/detail/?cd=000198",
   },
   {
-    id: "marunouchi",
-    title: "东京站丸之内站舍",
-    area: "丸之内",
-    category: "play",
-    day: 2,
-    routeOrder: 2,
-    lat: 35.6814,
-    lng: 139.7658,
-    note: "从 Character Street 上地面拍红砖站舍；不额外塞皇居和东京塔，给限定采购留弹性。",
-    link: "https://www.gotokyo.org/en/spot/1750/index.html",
-  },
-  {
     id: "ginza",
     title: "银座中央通",
     area: "银座",
@@ -890,10 +878,10 @@ const UPDATED_PLACES: Place[] = [
     area: "筑地",
     category: "food",
     day: 2,
-    routeOrder: 5,
+    routeOrder: 2,
     lat: 35.6655,
     lng: 139.7708,
-    note: "从银座步行可到；女友可单独安排寿司 / 刺身，你改选玉子烧、烤物等确认过的熟食。",
+    note: "从东京站南下先到筑地，之后向北进入银座；女友可单独安排寿司 / 刺身，你改选玉子烧、烤物等确认过的熟食。",
     link: "https://www.tsukiji.or.jp/english/",
     price: "¥2,000–5,000 / 人",
     meal: "早午餐 / 小食",
@@ -906,7 +894,7 @@ const UPDATED_PLACES: Place[] = [
     area: "秋叶原",
     category: "shop",
     day: 2,
-    routeOrder: 6,
+    routeOrder: 5,
     lat: 35.6984,
     lng: 139.7731,
     note: "下午到晚上逛 Radio Kaikan、扭蛋和二手店；动漫只看你们真正喜欢的 Chiikawa 相关。",
@@ -918,7 +906,7 @@ const UPDATED_PLACES: Place[] = [
     area: "秋叶原站电气街口",
     category: "shop",
     day: 2,
-    routeOrder: 7,
+    routeOrder: 6,
     lat: 35.6981,
     lng: 139.7717,
     note: "集中比较周边价格；二手商品检查盒况、配件、价格牌和是否为正版。",
@@ -930,23 +918,11 @@ const UPDATED_PLACES: Place[] = [
     area: "御茶之水 · 秋叶原",
     category: "play",
     day: 2,
-    routeOrder: 8,
+    routeOrder: 7,
     lat: 35.702,
     lng: 139.7673,
     note: "购物后的 30–45 分钟文化收尾；排队或购物超时就删掉，不影响主线。",
     link: "https://www.kandamyoujin.or.jp/",
-  },
-  {
-    id: "chiikawa-solamachi",
-    title: "Chiikawa Land Tokyo Solamachi（备选）",
-    area: "东京晴空塔",
-    category: "shop",
-    day: 2,
-    routeOrder: 9,
-    lat: 35.7101,
-    lng: 139.8107,
-    note: "如果东京站缺货再考虑；不要为了第二家店牺牲秋叶原晚餐和回酒店时间。",
-    link: "https://en.www.tokyo-solamachi.jp/shop/1607/",
   },
   {
     id: "tokyo-yakitori",
@@ -954,7 +930,7 @@ const UPDATED_PLACES: Place[] = [
     area: "秋叶原",
     category: "food",
     day: 2,
-    routeOrder: 10,
+    routeOrder: 8,
     lat: 35.6988,
     lng: 139.773,
     note: "用鸡肉、烤物、米饭把购物日收住；晚餐不再跑去很远的店。",
@@ -1513,9 +1489,9 @@ const STAY_PLANS: StayPlan[] = [
   {
     day: 2,
     title: "东京基地：上野 / 浅草酒店",
-    area: "东京站、银座、秋叶原往返",
+    area: "东京站 → 筑地 → 银座 → 秋叶原顺线",
     price: "¥14,000–28,000 / 晚",
-    note: "第 2 晚；Chiikawa、银座和秋叶原集中完成",
+    note: "第 2 晚；不再绕去晴空塔或丸之内，按一条线完成 Chiikawa、女友生鱼体验、银座和秋叶原",
     placeId: "tokyo-base-stay",
   },
   {
@@ -1595,7 +1571,7 @@ const STAY_OPTIONS = [
   },
 ];
 
-const TRIP_DATA_VERSION = 6;
+const TRIP_DATA_VERSION = 7;
 
 type ScheduleItem = {
   time: string;
@@ -1726,20 +1702,20 @@ const UPDATED_HOURLY_PLANS: HourlyPlan[] = [
   {
     day: 2,
     title: "Chiikawa · 银座 · 秋叶原",
-    summary: "先完成限定采购，再做银座和秋叶原；路线集中在东京站—银座—筑地—秋叶原一带，购物超时就删神田明神或 Solamachi 备选。",
+    summary: "按东京站 → 筑地 → 银座 → 秋叶原顺线走：先买限定，再让女友完成生鱼体验，之后向北逛银座和秋叶原；不再加入丸之内、晴空塔等折返点。",
     distance: "约 10–14k 步 · 住东京",
     items: [
       { time: "09:00–10:00", title: "起床、早餐、列购物清单", detail: "把 Chiikawa 分成‘必买 / 有货再买 / 不买’三档；预算先封顶，别第一家店就花完。", area: "东京酒店", price: "¥1,000–2,000 / 两人", tag: "准备" },
       { time: "10:00–11:15", title: "东京站 Character Street", detail: "先去 ちいかわらんど；库存、排队和限购以当天公告为准，买到的东西先寄回酒店。", area: "东京站", placeId: "tokyo-chiikawa", price: "购物预算 ¥5,000–15,000+", tag: "Chiikawa" },
-      { time: "11:15–12:00", title: "丸之内站舍", detail: "上地面拍红砖站舍，顺便买水；不要把皇居和东京塔硬塞进今天。", area: "丸之内", placeId: "marunouchi", tag: "文化" },
-      { time: "12:00–13:00", title: "东京站熟食午餐", detail: "烤鸡、咖喱或定食优先；站内店多，先看成分再点。", area: "东京站八重洲", placeId: "tokyo-yakitori", price: "¥2,000–4,000 / 两人", tag: "吃" },
-      { time: "13:00–15:00", title: "银座中央通与百货", detail: "药妆、伴手礼和品牌分批买；把大件集中装袋，不要带着战利品逛整晚。", area: "银座", placeId: "ginza", price: "购物预算 ¥5,000–20,000+", tag: "购物" },
-      { time: "15:00–15:45", title: "银座喫茶", detail: "坐下充电、整理购物袋；这是当天的体力缓冲，不建议跳过。", area: "银座", placeId: "ginza-dessert", price: "¥1,800–4,000 / 两人", tag: "休息" },
-      { time: "15:45–16:30", title: "筑地场外市场（女友可吃生鱼）", detail: "女友可以安排寿司 / 刺身，你选玉子烧或确认过的熟食；不共用餐具、酱油碟和不明汤底。", area: "筑地", placeId: "tsukiji", price: "¥2,000–6,000 / 两人", tag: "分开吃" },
-      { time: "17:00–19:00", title: "秋叶原 Radio Kaikan", detail: "先逛整栋再决定是否买二手周边；重点只看 Chiikawa 和真正喜欢的品类。", area: "秋叶原", placeId: "radio-kaikan", tag: "购物" },
-      { time: "19:00–19:45", title: "神田明神（可删）", detail: "如果排队或购物超时就删除；保留 30–45 分钟作为文化收尾。", area: "御茶之水", placeId: "kanda-myojin", tag: "文化" },
+      { time: "11:15–12:15", title: "筑地场外市场（女友可吃生鱼）", detail: "从东京站南下到筑地；女友可以安排寿司 / 刺身，你选玉子烧或确认过的熟食，不共用餐具、酱油碟和不明汤底。", area: "筑地", placeId: "tsukiji", price: "¥2,000–6,000 / 两人", tag: "分开吃" },
+      { time: "12:15–14:15", title: "银座中央通与午餐", detail: "从筑地向北进入银座，先吃熟食再逛百货、药妆和伴手礼；大件集中装袋，不要带着战利品逛整晚。", area: "银座", placeId: "ginza", price: "餐饮 ¥3,000–6,000 / 两人 · 购物 ¥5,000–20,000+", tag: "购物" },
+      { time: "14:15–15:00", title: "银座喫茶", detail: "坐下充电、整理购物袋；这是当天的体力缓冲，不建议跳过。", area: "银座", placeId: "ginza-dessert", price: "¥1,800–4,000 / 两人", tag: "休息" },
+      { time: "15:00–15:45", title: "银座 → 秋叶原", detail: "乘地铁向北移动，不在东京站和晴空塔之间来回；把购物袋收好后再开始秋叶原。", area: "银座 → 秋叶原", tag: "交通" },
+      { time: "15:45–16:15", title: "秋叶原电气街", detail: "先确定只买 Chiikawa 和真正喜欢的品类，再进入整栋商场；不为了凑店硬逛。", area: "秋叶原", placeId: "akihabara", tag: "购物" },
+      { time: "16:15–18:30", title: "秋叶原 Radio Kaikan", detail: "先逛整栋再决定是否买二手周边；检查盒况、配件、价格牌和正版标识。", area: "秋叶原", placeId: "radio-kaikan", tag: "购物" },
+      { time: "18:30–19:15", title: "神田明神（可删）", detail: "从秋叶原步行顺路到神田明神；如果购物排队超时就删除，不影响主线。", area: "御茶之水", placeId: "kanda-myojin", tag: "文化" },
       { time: "20:00–21:30", title: "秋叶原熟食晚餐", detail: "鸡肉、烤物、米饭或烧肉；不要默认熟食就没有鱼介，点单前问清楚。", area: "秋叶原", placeId: "tokyo-yakitori", price: "¥3,000–6,000 / 两人", tag: "吃" },
-      { time: "21:30–22:30", title: "回酒店整理战利品", detail: "把 Day 3 的河口湖随身包准备好，提前确认高速巴士回程班次和天气。", area: "东京酒店", tag: "收尾" },
+      { time: "21:30–22:30", title: "回酒店整理战利品", detail: "把 Day 3 的河口湖随身包准备好，提前确认高速巴士回程班次和天气；今天不再增加远处夜景。", area: "东京酒店", tag: "收尾" },
     ],
   },
   {
@@ -1888,8 +1864,8 @@ const RESEARCH_TIPS = [
     noteId: "6a4f37010000000015027bee",
     title: "Chiikawa 采购不只看一间店",
     text: "作者分享了餐厅、面包店、Chiikawa Land，以及银座联名店的步行扫货体验，并提到全程 walk-in；这篇对你们最有价值的是“按区域串店”，不是某件商品一定有货。",
-    decision: "把东京站 ちいかわらんど设为第一优先，再把银座和秋叶原作为同日补充；库存、限购、入场和限定商品不从笔记推断，改看当天官方公告。",
-    usedIn: "D3：东京站 → 银座 → 秋叶原",
+    decision: "把东京站 ちいかわらんど设为第一优先，并按区域串成东京站 → 筑地 → 银座 → 秋叶原；库存、限购、入场和限定商品不从笔记推断，改看当天官方公告。",
+    usedIn: "D2：东京站 → 筑地 → 银座 → 秋叶原",
     link: "https://www.xiaohongshu.com/explore/6a4f37010000000015027bee",
     linkText: "打开原笔记 ↗",
   },
@@ -1901,7 +1877,7 @@ const RESEARCH_TIPS = [
     title: "富士山拍照点要做减法",
     text: "笔记整理了富士吉田罗森、街道路口、忠灵塔，以及东京塔、晴空塔和大阪道顿堀等拍摄点，并强调蓝调时刻和天气对成片的影响。",
     decision: "只保留忠灵塔 + 河口湖湖畔作为主线，便利店和其他街道路口列为顺路备选；不为拍照跨城折返，也不在车道边停留。",
-    usedIn: "D2：忠灵塔、河口湖湖畔、天气备选",
+    usedIn: "D3：忠灵塔、河口湖湖畔、天气备选",
     link: "https://www.xiaohongshu.com/explore/6a15309d0000000038020711",
     linkText: "打开原笔记 ↗",
   },
@@ -1925,7 +1901,7 @@ const RESEARCH_TIPS = [
     title: "富士山点位要按顺序取舍",
     text: "笔记把山中湖、忍野八海、大石公园、富士吉田便利店、忠灵塔和日川时计店排成东京出发的一日路线，并把集合、拍照和返回时间写得很清楚。",
     decision: "参考其“先湖景、再河口湖、最后富士吉田机位”的顺序，但因你们 09:00 才起床，主线只留天上山 / 湖畔 + 忠灵塔或大石公园二选一，不把六个点硬塞进一天。",
-    usedIn: "D2 晚起版富士山、天气切换",
+    usedIn: "D3 晚起版富士山、天气切换",
     link: "https://www.xiaohongshu.com/explore/6a7bcb0a00000000050207de",
     linkText: "打开原笔记 ↗",
   },
@@ -1936,8 +1912,8 @@ const RESEARCH_TIPS = [
     noteId: "696bb308000000001a028df2",
     title: "羽田机场限定适合作为备选",
     text: "笔记实测羽田 T3 五楼 TOKYO POP TOWN 的 Haikala 店，位置在安检前的 Hot Zone，提到毛绒、挂件、文具、零食和羽田 / 地区限定，也提醒提前 2–3 小时到机场并预留挑选时间。",
-    decision: "把它列为去程 HND 才能使用的 Chiikawa 备选，不拿它替代 D3 东京站主线；若从 NRT 进或 KIX 回，就不为机场限定专门折返。",
-    usedIn: "D1 去程 HND 备选、Chiikawa 清单",
+    decision: "把它列为去程 HND 才能使用的 Chiikawa 备选，不拿它替代 D2 东京站主线；若从 NRT 进或 KIX 回，就不为机场限定专门折返。",
+    usedIn: "D1 去程 HND 备选、D2 Chiikawa 清单",
     link: "https://www.xiaohongshu.com/explore/696bb308000000001a028df2",
     linkText: "打开原笔记 ↗",
   },
@@ -2052,9 +2028,15 @@ function mergeDefaultPlaces(saved: Place[]) {
   return [...saved, ...PLACES.filter((place) => !existingIds.has(place.id))];
 }
 
+const BUILT_IN_PLACE_IDS = new Set([
+  ...LEGACY_PLACES.map((place) => place.id),
+  ...PLACES.map((place) => place.id),
+]);
+
 function migratePlaces(saved: Place[]) {
-  const legacyIds = new Set(LEGACY_PLACES.map((place) => place.id));
-  return mergeDefaultPlaces(saved.filter((place) => !legacyIds.has(place.id)));
+  // Rebuild built-in points when the route changes, while keeping points the
+  // couple added themselves through the CRUD editor.
+  return mergeDefaultPlaces(saved.filter((place) => !BUILT_IN_PLACE_IDS.has(place.id)));
 }
 
 function encodeShare(payload: TripState) {
