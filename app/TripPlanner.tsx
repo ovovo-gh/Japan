@@ -10,7 +10,7 @@ import {
   useRef,
   useState,
 } from "react";
-import type { DayId, DayPlan, Place, PlaceCategory, TripState } from "./types";
+import type { DayId, DayPlan, Place, PlaceCategory, TripState, XiaohongshuShare } from "./types";
 
 const MapView = dynamic(() => import("./LeafletMap"), {
   loading: () => <div className="map-frame map-placeholder">地图正在准备…</div>,
@@ -820,7 +820,7 @@ const STAY_OPTIONS = [
   },
 ];
 
-const TRIP_DATA_VERSION = 4;
+const TRIP_DATA_VERSION = 5;
 
 type ScheduleItem = {
   time: string;
@@ -1017,6 +1017,15 @@ const RESEARCH_TIPS = [
   },
 ];
 
+const DEFAULT_XHS_SHARES: XiaohongshuShare[] = RESEARCH_TIPS.map((tip) => ({
+  id: `researched-${tip.noteId}`,
+  title: tip.sourceTitle,
+  url: tip.link,
+  note: `${tip.title}：${tip.decision}`,
+  author: tip.author,
+  source: "researched",
+}));
+
 const CATEGORY_META: Record<PlaceCategory | "all", { label: string; icon: string }> = {
   all: { label: "全部", icon: "⌘" },
   food: { label: "吃", icon: "◌" },
@@ -1043,8 +1052,25 @@ function makeDraft(day: DayId = 1): PlaceDraft {
   };
 }
 
-function makeSnapshot(days: DayPlan[], places: Place[]): TripState {
-  return { version: TRIP_DATA_VERSION, days, places };
+function makeSnapshot(days: DayPlan[], places: Place[], xiaohongshuLinks: XiaohongshuShare[]): TripState {
+  return { version: TRIP_DATA_VERSION, days, places, xiaohongshuLinks };
+}
+
+const XHS_HOSTS = new Set([
+  "xiaohongshu.com",
+  "www.xiaohongshu.com",
+  "xhslink.com",
+  "www.xhslink.com",
+]);
+
+function normalizeXiaohongshuUrl(value: string) {
+  try {
+    const url = new URL(value.trim());
+    if (url.protocol !== "https:" || !XHS_HOSTS.has(url.hostname.toLowerCase())) return null;
+    return url.toString();
+  } catch {
+    return null;
+  }
 }
 
 function mergeDefaultPlaces(saved: Place[]) {
@@ -1089,6 +1115,7 @@ function dayFor(day: number): DayPlan {
 export default function Home() {
   const [days, setDays] = useState<DayPlan[]>(DAYS);
   const [places, setPlaces] = useState<Place[]>(PLACES);
+  const [xiaohongshuLinks, setXiaohongshuLinks] = useState<XiaohongshuShare[]>(DEFAULT_XHS_SHARES);
   const [selectedDay, setSelectedDay] = useState<number | "all">("all");
   const [categoryFilter, setCategoryFilter] = useState<PlaceCategory | "all">("all");
   const [search, setSearch] = useState("");
@@ -1096,6 +1123,9 @@ export default function Home() {
   const [editorOpen, setEditorOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draft, setDraft] = useState<PlaceDraft>(makeDraft());
+  const [xhsUrlDraft, setXhsUrlDraft] = useState("");
+  const [xhsTitleDraft, setXhsTitleDraft] = useState("");
+  const [xhsNoteDraft, setXhsNoteDraft] = useState("");
   const [toast, setToast] = useState("");
   const [hydrated, setHydrated] = useState(false);
   const importInput = useRef<HTMLInputElement | null>(null);
@@ -1121,6 +1151,7 @@ export default function Home() {
         const isCurrentVersion = next.version === TRIP_DATA_VERSION;
         setDays(isCurrentVersion && next.days.length ? next.days : DAYS);
         setPlaces(isCurrentVersion ? next.places : migratePlaces(next.places));
+        setXiaohongshuLinks(Array.isArray(next.xiaohongshuLinks) ? next.xiaohongshuLinks : DEFAULT_XHS_SHARES);
         if (shared) setToast("已载入分享行程");
       }
       setHydrated(true);
@@ -1130,8 +1161,8 @@ export default function Home() {
 
   useEffect(() => {
     if (!hydrated) return;
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(makeSnapshot(days, places)));
-  }, [days, hydrated, places]);
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(makeSnapshot(days, places, xiaohongshuLinks)));
+  }, [days, hydrated, places, xiaohongshuLinks]);
 
   useEffect(() => {
     if (!toast) return;
@@ -1152,6 +1183,11 @@ export default function Home() {
       })
       .sort((a, b) => a.day - b.day);
   }, [categoryFilter, places, search, selectedDay]);
+
+  const routePlaces = useMemo(
+    () => places.filter((place) => selectedDay === "all" || place.day === selectedDay),
+    [places, selectedDay],
+  );
 
   const groupedPlaces = useMemo(
     () =>
@@ -1233,8 +1269,36 @@ export default function Home() {
     setToast("地点已删除");
   };
 
+  const addXiaohongshuLink = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const url = normalizeXiaohongshuUrl(xhsUrlDraft);
+    if (!url) {
+      setToast("请粘贴有效的小红书链接（xiaohongshu.com 或 xhslink.com）");
+      return;
+    }
+
+    const item: XiaohongshuShare = {
+      id: `xhs-user-${Date.now()}`,
+      title: xhsTitleDraft.trim() || "我的小红书攻略",
+      url,
+      note: xhsNoteDraft.trim() || "自己收藏的攻略，出发前再核对交通、营业时间与库存。",
+      author: "你添加的链接",
+      source: "user",
+    };
+    setXiaohongshuLinks((current) => [item, ...current]);
+    setXhsUrlDraft("");
+    setXhsTitleDraft("");
+    setXhsNoteDraft("");
+    setToast("小红书链接已加入分享板块");
+  };
+
+  const removeXiaohongshuLink = (id: string) => {
+    setXiaohongshuLinks((current) => current.filter((item) => item.id !== id));
+    setToast("已移除这条小红书链接");
+  };
+
   const shareTrip = async () => {
-    const url = `${window.location.origin}${window.location.pathname}#share=${encodeShare(makeSnapshot(days, places))}`;
+    const url = `${window.location.origin}${window.location.pathname}#share=${encodeShare(makeSnapshot(days, places, xiaohongshuLinks))}`;
     window.history.replaceState(null, "", url);
     try {
       await navigator.clipboard.writeText(url);
@@ -1245,7 +1309,7 @@ export default function Home() {
   };
 
   const exportTrip = () => {
-    const file = new Blob([JSON.stringify(makeSnapshot(days, places), null, 2)], { type: "application/json" });
+    const file = new Blob([JSON.stringify(makeSnapshot(days, places, xiaohongshuLinks), null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(file);
     const anchor = document.createElement("a");
     anchor.href = url;
@@ -1264,6 +1328,7 @@ export default function Home() {
       const isCurrentVersion = parsed.version === TRIP_DATA_VERSION;
       setDays(isCurrentVersion && parsed.days.length ? parsed.days : DAYS);
       setPlaces(isCurrentVersion ? parsed.places : migratePlaces(parsed.places));
+      setXiaohongshuLinks(Array.isArray(parsed.xiaohongshuLinks) ? parsed.xiaohongshuLinks : DEFAULT_XHS_SHARES);
       setToast("行程已导入");
     } catch {
       setToast("导入失败，请选择这个网页导出的 JSON 文件");
@@ -1276,6 +1341,7 @@ export default function Home() {
     if (!window.confirm("恢复示例路线会覆盖当前地点数据，确定继续吗？")) return;
     setDays(DAYS);
     setPlaces(PLACES);
+    setXiaohongshuLinks(DEFAULT_XHS_SHARES);
     setSelectedDay("all");
     setCategoryFilter("all");
     setSearch("");
@@ -1370,11 +1436,11 @@ export default function Home() {
 
         <div className="map-layout">
           <div className="map-panel">
-            <MapView places={visiblePlaces} days={days} selectedDay={selectedDay} selectedPlaceId={selectedPlaceId} onSelectPlace={selectPlace} />
+            <MapView places={visiblePlaces} routePlaces={routePlaces} days={days} selectedDay={selectedDay} selectedPlaceId={selectedPlaceId} onSelectPlace={selectPlace} />
             <div className="map-legend">
               {days.map((day) => <span key={day.id}><i style={{ backgroundColor: day.color }} />D{day.id}</span>)}
             </div>
-            <div className="map-caption"><span>⌖</span> 每天从 1 开始编号 · 彩色线与箭头表示当日顺序 · 点选标记查看地点</div>
+            <div className="map-caption"><span>⌖</span> 完整日程按天连线并用箭头指向下一站；搜索 / 分类只隐藏标记，不会把不相邻地点重新连线</div>
           </div>
           <aside className="filter-panel">
             <div className="filter-head"><span>筛选标签</span><button onClick={() => { setCategoryFilter("all"); setSearch(""); }}>清除</button></div>
@@ -1584,6 +1650,42 @@ export default function Home() {
           </div>
           <button className="reset-button" onClick={resetTrip}>恢复示例路线</button>
         </aside>
+      </section>
+
+      <section className="xiaohongshu-board">
+        <div className="xhs-board-head">
+          <div>
+            <p className="section-label">RED NOTE / 小红书分享</p>
+            <h2>把想看的攻略，集中放在这里。</h2>
+            <p>左侧是你已核验的 7 篇小红书笔记，右侧可以继续粘贴自己的收藏。链接会和地点、打卡状态一起保存在浏览器，也会随导出文件和分享行程带走。</p>
+          </div>
+          <span className="xhs-board-count">{xiaohongshuLinks.length} 条链接</span>
+        </div>
+        <div className="xhs-board-layout">
+          <form className="xhs-add-form" onSubmit={addXiaohongshuLink}>
+            <div className="xhs-form-title"><span>＋</span><strong>添加一篇小红书</strong></div>
+            <label>小红书链接<input type="url" value={xhsUrlDraft} onChange={(event) => setXhsUrlDraft(event.target.value)} placeholder="https://www.xiaohongshu.com/explore/…" required /></label>
+            <label>标题 <span className="optional">（可选）</span><input value={xhsTitleDraft} onChange={(event) => setXhsTitleDraft(event.target.value)} placeholder="例如：东京 Chiikawa 扫货路线" /></label>
+            <label>你的备注 <span className="optional">（可选）</span><textarea value={xhsNoteDraft} onChange={(event) => setXhsNoteDraft(event.target.value)} placeholder="写下想吸收的点、适合哪一天或需要核对的事项" rows={4} /></label>
+            <button type="submit" className="button button-dark">加入分享板块 ↗</button>
+            <small>支持 xiaohongshu.com / xhslink.com；只保存链接和你的备注，不会代你发布内容。</small>
+          </form>
+          <div className="xhs-share-list">
+            {xiaohongshuLinks.map((item) => (
+              <article className="xhs-share-card" key={item.id}>
+                <div className="xhs-share-card-top">
+                  <span>{item.source === "user" ? "我的收藏" : "已核验笔记"}</span>
+                  {item.source === "user" && <button type="button" className="xhs-delete" onClick={() => removeXiaohongshuLink(item.id)}>移除</button>}
+                </div>
+                <h3>{item.title}</h3>
+                {item.author && <small className="xhs-author">作者：{item.author}</small>}
+                <p>{item.note}</p>
+                <a href={item.url} target="_blank" rel="noreferrer">打开原笔记 ↗</a>
+              </article>
+            ))}
+            {!xiaohongshuLinks.length && <div className="xhs-empty">还没有收藏的笔记，先从左侧加入一条链接。</div>}
+          </div>
+        </div>
       </section>
 
       <footer className="footer-strip"><span>东京 3 晚 + 大阪 1 晚 · 河口湖看天气决定</span><span>数据保存在浏览器，也可用分享链接带走</span><span>Made for two ↗</span></footer>

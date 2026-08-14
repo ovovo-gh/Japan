@@ -27,8 +27,18 @@ export type Place = {
   checked?: boolean;
 };
 
+export type XiaohongshuShare = {
+  id: string;
+  title: string;
+  url: string;
+  note?: string;
+  author?: string;
+  source?: "researched" | "user";
+};
+
 export type TripState = {
   version?: number;
   days: DayPlan[];
   places: Place[];
+  xiaohongshuLinks?: XiaohongshuShare[];
 };

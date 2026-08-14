@@ -6,6 +6,7 @@ import type { DayPlan, Place } from "./types";
 
 type Props = {
   places: Place[];
+  routePlaces: Place[];
   days: DayPlan[];
   selectedDay: number | "all";
   selectedPlaceId: string | null;
@@ -16,6 +17,7 @@ type LeafletApi = typeof import("leaflet");
 
 export default function LeafletMapView({
   places,
+  routePlaces,
   days,
   selectedDay,
   selectedPlaceId,
@@ -76,10 +78,14 @@ export default function LeafletMapView({
     const visiblePlaces = places.filter((place) =>
       selectedDay === "all" ? true : place.day === selectedDay,
     );
+    const routeablePlaces = routePlaces.filter((place) =>
+      selectedDay === "all" ? true : place.day === selectedDay,
+    );
     const selectedCoordinates: [number, number][] = [];
+    const routeCoordinates: [number, number][] = [];
 
     const routeGroups = new Map<number, Array<{ place: Place; sourceIndex: number }>>();
-    visiblePlaces.forEach((place, sourceIndex) => {
+    routeablePlaces.forEach((place, sourceIndex) => {
       const group = routeGroups.get(place.day) ?? [];
       group.push({ place, sourceIndex });
       routeGroups.set(place.day, group);
@@ -92,10 +98,16 @@ export default function LeafletMapView({
       ),
     ] as const);
 
+    const routeOrderById = new Map<string, number>();
+    orderedGroups.forEach(([, entries]) => {
+      entries.forEach(({ place }, index) => routeOrderById.set(place.id, index + 1));
+    });
+
     orderedGroups.forEach(([dayId, entries]) => {
       const day = days.find((item) => item.id === dayId);
       const color = day?.color ?? "#4f7185";
       const coordinates = entries.map(({ place }) => [place.lat, place.lng] as [number, number]);
+      routeCoordinates.push(...coordinates);
 
       if (coordinates.length > 1) {
         L.polyline(coordinates, {
@@ -108,11 +120,12 @@ export default function LeafletMapView({
 
         coordinates.slice(0, -1).forEach((current, index) => {
           const next = coordinates[index + 1];
-          const midpoint: [number, number] = [
-            (current[0] + next[0]) / 2,
-            (current[1] + next[1]) / 2,
-          ];
-          const angle = Math.atan2(next[1] - current[1], next[0] - current[0]) * (180 / Math.PI);
+          const fromPoint = map.current!.latLngToLayerPoint(L.latLng(current));
+          const toPoint = map.current!.latLngToLayerPoint(L.latLng(next));
+          const midpoint = map.current!.layerPointToLatLng(
+            L.point((fromPoint.x + toPoint.x) / 2, (fromPoint.y + toPoint.y) / 2),
+          );
+          const angle = Math.atan2(toPoint.y - fromPoint.y, toPoint.x - fromPoint.x) * (180 / Math.PI);
           const arrow = document.createElement("span");
           arrow.className = "route-arrow";
           arrow.textContent = "➜";
@@ -127,53 +140,65 @@ export default function LeafletMapView({
           L.marker(midpoint, { icon, interactive: false, keyboard: false }).addTo(routeLayer.current!);
         });
       }
-
-      entries.forEach(({ place }, index) => {
-        const isSelected = place.id === selectedPlaceId;
-        const markerNode = document.createElement("span");
-        markerNode.className = "route-marker";
-        markerNode.textContent = String(index + 1);
-        markerNode.style.backgroundColor = color;
-        markerNode.setAttribute("aria-label", `${place.title}，第 ${index + 1} 站`);
-        const icon = L.divIcon({
-          className: "route-marker-icon",
-          html: markerNode.outerHTML,
-          iconSize: [32, 32],
-          iconAnchor: [16, 16],
-          popupAnchor: [0, -17],
-        });
-        const marker = L.marker([place.lat, place.lng], {
-          icon,
-          zIndexOffset: isSelected ? 1000 : 100 + index,
-        });
-
-        const popup = document.createElement("div");
-        popup.className = "map-popup";
-        const title = document.createElement("strong");
-        title.textContent = place.title;
-        const detail = document.createElement("span");
-        detail.textContent = `${day?.label ?? `DAY ${dayId}`} · 第 ${index + 1} 站 · ${place.area}`;
-        popup.append(title, detail);
-        marker.bindPopup(popup, { closeButton: true });
-        marker.on("click", () => onSelectPlace(place.id));
-        marker.addTo(markerLayer.current!);
-
-        if (isSelected) {
-          marker.openPopup();
-        }
-        selectedCoordinates.push([place.lat, place.lng]);
-      });
     });
 
-    if (selectedCoordinates.length > 1) {
-      map.current.fitBounds(L.latLngBounds(selectedCoordinates), {
+    const markerEntries = visiblePlaces
+      .map((place, sourceIndex) => ({ place, sourceIndex }))
+      .sort((a, b) => {
+        const aOrder = routeOrderById.get(a.place.id) ?? Number.MAX_SAFE_INTEGER;
+        const bOrder = routeOrderById.get(b.place.id) ?? Number.MAX_SAFE_INTEGER;
+        return aOrder - bOrder || a.sourceIndex - b.sourceIndex;
+      });
+
+    markerEntries.forEach(({ place }, markerIndex) => {
+      const day = days.find((item) => item.id === place.day);
+      const color = day?.color ?? "#4f7185";
+      const routeNumber = routeOrderById.get(place.id) ?? markerIndex + 1;
+      const isSelected = place.id === selectedPlaceId;
+      const markerNode = document.createElement("span");
+      markerNode.className = "route-marker";
+      markerNode.textContent = String(routeNumber);
+      markerNode.style.backgroundColor = color;
+      markerNode.setAttribute("aria-label", `${place.title}，第 ${routeNumber} 站`);
+      const icon = L.divIcon({
+        className: "route-marker-icon",
+        html: markerNode.outerHTML,
+        iconSize: [32, 32],
+        iconAnchor: [16, 16],
+        popupAnchor: [0, -17],
+      });
+      const marker = L.marker([place.lat, place.lng], {
+        icon,
+        zIndexOffset: isSelected ? 1000 : 100 + routeNumber,
+      });
+
+      const popup = document.createElement("div");
+      popup.className = "map-popup";
+      const title = document.createElement("strong");
+      title.textContent = place.title;
+      const detail = document.createElement("span");
+      detail.textContent = `${day?.label ?? `DAY ${place.day}`} · 第 ${routeNumber} 站 · ${place.area}`;
+      popup.append(title, detail);
+      marker.bindPopup(popup, { closeButton: true });
+      marker.on("click", () => onSelectPlace(place.id));
+      marker.addTo(markerLayer.current!);
+
+      if (isSelected) {
+        marker.openPopup();
+      }
+      selectedCoordinates.push([place.lat, place.lng]);
+    });
+
+    const boundsCoordinates = routeCoordinates.length ? routeCoordinates : selectedCoordinates;
+    if (boundsCoordinates.length > 1) {
+      map.current.fitBounds(L.latLngBounds(boundsCoordinates), {
         padding: [32, 32],
         maxZoom: selectedDay === "all" ? 12 : 14,
       });
-    } else if (selectedCoordinates.length === 1) {
-      map.current.setView(selectedCoordinates[0], 14, { animate: true });
+    } else if (boundsCoordinates.length === 1) {
+      map.current.setView(boundsCoordinates[0], 14, { animate: true });
     }
-  }, [days, places, selectedDay, selectedPlaceId, onSelectPlace, mapReady]);
+  }, [days, places, routePlaces, selectedDay, selectedPlaceId, onSelectPlace, mapReady]);
 
   return (
     <div className="map-frame" aria-label="东京、富士山与大阪旅行地点地图">
