@@ -18,7 +18,7 @@ const MapView = dynamic(() => import("./LeafletMap"), {
 
 const DAYS: DayPlan[] = [
   { id: 1, label: "DAY 01", title: "抵达东京 · 浅草入门", focus: "浅草 · 上野", color: "#df6b5f" },
-  { id: 2, label: "DAY 02", title: "富士山 · 河口湖清晨", focus: "富士山 · 河口湖", color: "#e29b42" },
+  { id: 2, label: "DAY 02", title: "富士山 · 河口湖晚起版", focus: "富士山 · 河口湖", color: "#e29b42" },
   { id: 3, label: "DAY 03", title: "东京站 · 银座 · 秋叶原", focus: "Chiikawa · 银座 · 秋叶原", color: "#6e936a" },
   { id: 4, label: "DAY 04", title: "东京 → 大阪 · 道顿堀", focus: "大阪城 · 心斋桥 · 道顿堀", color: "#5488a0" },
   { id: 5, label: "DAY 05", title: "大阪最后一站 · 关西机场", focus: "黑门市场 · 难波 · KIX", color: "#806d9c" },
@@ -31,6 +31,7 @@ const LEGACY_PLACES: Place[] = [
     area: "浅草",
     category: "play",
     day: 1,
+    routeOrder: 2,
     lat: 35.7148,
     lng: 139.7967,
     note: "第一次到东京的文化开场；早上或傍晚更舒服。",
@@ -42,6 +43,7 @@ const LEGACY_PLACES: Place[] = [
     area: "浅草西侧",
     category: "shop",
     day: 1,
+    routeOrder: 3,
     lat: 35.7125,
     lng: 139.7889,
     note: "厨房用品、食品模型和有趣伴手礼；和浅草寺步行串联。",
@@ -53,6 +55,7 @@ const LEGACY_PLACES: Place[] = [
     area: "上野",
     category: "food",
     day: 1,
+    routeOrder: 1,
     lat: 35.7074,
     lng: 139.7746,
     note: "街头小吃和折扣店集中；你可优先选烤肉、鸡肉、拉面等熟食。",
@@ -83,6 +86,7 @@ const LEGACY_PLACES: Place[] = [
     area: "浅草",
     category: "drink",
     day: 1,
+    routeOrder: 4,
     lat: 35.7137,
     lng: 139.7952,
     note: "走累时的低强度停靠点：咖啡、茶和和菓子，给第一天留一点余量。",
@@ -344,6 +348,7 @@ const PLACES: Place[] = [
     area: "浅草",
     category: "play",
     day: 1,
+    routeOrder: 2,
     lat: 35.7148,
     lng: 139.7967,
     note: "第一次到东京的文化开场；早上或傍晚更舒服，雷门到本堂约 40–60 分钟。",
@@ -355,6 +360,7 @@ const PLACES: Place[] = [
     area: "浅草西侧",
     category: "shop",
     day: 1,
+    routeOrder: 3,
     lat: 35.7125,
     lng: 139.7889,
     note: "厨房用品、食品模型和有趣伴手礼；和浅草寺步行串联，店铺多在傍晚前结束营业。",
@@ -366,6 +372,7 @@ const PLACES: Place[] = [
     area: "浅草 · 传法院通",
     category: "food",
     day: 1,
+    routeOrder: 1,
     lat: 35.7127,
     lng: 139.7946,
     note: "第一顿安排热食，和浅草寺、仲见世一起慢慢逛；不用为了打卡硬吃刺身。",
@@ -381,6 +388,7 @@ const PLACES: Place[] = [
     area: "浅草",
     category: "drink",
     day: 1,
+    routeOrder: 4,
     lat: 35.7137,
     lng: 139.7952,
     note: "走累时的低强度停靠点：咖啡、茶和和菓子，给第一天留一点余量。",
@@ -396,6 +404,7 @@ const PLACES: Place[] = [
     area: "上野",
     category: "food",
     day: 1,
+    routeOrder: 5,
     lat: 35.7074,
     lng: 139.7746,
     note: "街头小吃和折扣店集中；把晚餐控制在一条街内，减少第一天的步数。",
@@ -411,9 +420,10 @@ const PLACES: Place[] = [
     area: "上野 · 浅草之间",
     category: "stay",
     day: 1,
+    routeOrder: 6,
     lat: 35.7114,
     lng: 139.777,
-    note: "主方案住东京 3 晚；靠近地铁或 JR 站，拖箱、河口湖早出发和换城都更轻松。",
+    note: "主方案住东京 3 晚；靠近地铁或 JR 站，拖箱、河口湖晚起往返和换城都更轻松。",
     link: "https://www.gotokyo.org/en/destinations/eastern-tokyo/asakusa/",
     price: "¥14,000–28,000 / 晚 / 双人房",
   },
@@ -423,9 +433,10 @@ const PLACES: Place[] = [
     area: "河口湖",
     category: "play",
     day: 2,
+    routeOrder: 1,
     lat: 35.4994,
     lng: 138.7689,
-    note: "从新宿高速巴士往返的主节点；早出发是看山和避开人流的关键。",
+    note: "从新宿高速巴士往返的主节点；晚起版先确认回程班次，能见度优先于打卡数量。",
     link: "https://highway-buses.jp/course/kawaguchiko.php",
   },
   {
@@ -434,6 +445,7 @@ const PLACES: Place[] = [
     area: "河口湖站周边",
     category: "play",
     day: 2,
+    routeOrder: 6,
     lat: 35.4992,
     lng: 138.7681,
     note: "只停留 20–30 分钟拍照和买水，不把网红机位当作整段行程。注意站前道路安全。",
@@ -444,6 +456,7 @@ const PLACES: Place[] = [
     area: "下吉田",
     category: "play",
     day: 2,
+    routeOrder: 4,
     lat: 35.4958,
     lng: 138.8014,
     note: "经典富士山视角；台阶约 400 级，按 60–90 分钟预留，雨雾天及时降低期待。",
@@ -455,6 +468,7 @@ const PLACES: Place[] = [
     area: "河口湖",
     category: "food",
     day: 2,
+    routeOrder: 2,
     lat: 35.4975,
     lng: 138.7683,
     note: "富士五湖代表性热食；午餐排队时优先保留 60 分钟，不为一家店打乱回程巴士。",
@@ -469,6 +483,7 @@ const PLACES: Place[] = [
     area: "河口湖畔",
     category: "play",
     day: 2,
+    routeOrder: 3,
     lat: 35.5069,
     lng: 138.7801,
     note: "天气好时看富士山和湖面；排队超过 30 分钟就改为湖畔散步，把时间留给回程。",
@@ -480,6 +495,7 @@ const PLACES: Place[] = [
     area: "河口湖北岸",
     category: "play",
     day: 2,
+    routeOrder: 5,
     lat: 35.5263,
     lng: 138.7548,
     note: "湖畔、花田和富士山的天气备选；适合把节奏放慢 45–60 分钟。",
@@ -491,6 +507,7 @@ const PLACES: Place[] = [
     area: "东京站 Character Street",
     category: "shop",
     day: 3,
+    routeOrder: 1,
     lat: 35.6812,
     lng: 139.7671,
     note: "Chiikawa 采购主任务：东京限定、毛绒和小挂件优先；入场方式、库存以当天官方信息为准。",
@@ -502,6 +519,7 @@ const PLACES: Place[] = [
     area: "丸之内",
     category: "play",
     day: 3,
+    routeOrder: 2,
     lat: 35.6814,
     lng: 139.7658,
     note: "从 Character Street 上到地面拍红砖站舍；不额外塞远景点，给购物留弹性。",
@@ -513,6 +531,7 @@ const PLACES: Place[] = [
     area: "银座",
     category: "shop",
     day: 3,
+    routeOrder: 3,
     lat: 35.6717,
     lng: 139.765,
     note: "百货、药妆、甜点和品牌集中；把预算留给真正想买的东西，下午再逛更从容。",
@@ -524,6 +543,7 @@ const PLACES: Place[] = [
     area: "银座",
     category: "drink",
     day: 3,
+    routeOrder: 4,
     lat: 35.6722,
     lng: 139.7657,
     note: "把购物拆成两段，中间坐下来喝茶；比连续逛百货更不累。",
@@ -538,6 +558,7 @@ const PLACES: Place[] = [
     area: "秋叶原",
     category: "shop",
     day: 3,
+    routeOrder: 5,
     lat: 35.6984,
     lng: 139.7731,
     note: "把秋叶原安排在傍晚：Radio Kaikan、扭蛋、二手店集中，喜欢的动漫只看 Chiikawa 相关即可。",
@@ -549,6 +570,7 @@ const PLACES: Place[] = [
     area: "秋叶原站电气街口",
     category: "shop",
     day: 3,
+    routeOrder: 6,
     lat: 35.6981,
     lng: 139.7717,
     note: "适合集中比较周边价格；二手商品检查盒况、配件和是否为正版。",
@@ -560,6 +582,7 @@ const PLACES: Place[] = [
     area: "御茶之水 · 秋叶原",
     category: "play",
     day: 3,
+    routeOrder: 7,
     lat: 35.702,
     lng: 139.7673,
     note: "秋叶原购物后的 30–45 分钟文化收尾；天黑后注意返回车站的路线。",
@@ -571,6 +594,7 @@ const PLACES: Place[] = [
     area: "秋叶原或东京站",
     category: "food",
     day: 3,
+    routeOrder: 8,
     lat: 35.6988,
     lng: 139.773,
     note: "用鸡肉、烤物、米饭把购物日收住；晚餐不要再跑去很远的店。",
@@ -585,6 +609,7 @@ const PLACES: Place[] = [
     area: "难波站步行圈",
     category: "stay",
     day: 4,
+    routeOrder: 7,
     lat: 34.6687,
     lng: 135.5013,
     note: "大阪只住 1 晚，优先选难波或心斋桥：晚餐、购物和第二天去关西机场都顺。",
@@ -596,6 +621,7 @@ const PLACES: Place[] = [
     area: "大阪城公园",
     category: "play",
     day: 4,
+    routeOrder: 1,
     lat: 34.6873,
     lng: 135.5262,
     note: "建议开馆后不久到；天守阁官方开放 9:00–18:00，馆内约 60 分钟，公园步行另留时间。",
@@ -607,6 +633,7 @@ const PLACES: Place[] = [
     area: "心斋桥",
     category: "shop",
     day: 4,
+    routeOrder: 2,
     lat: 34.6721,
     lng: 135.5005,
     note: "从大阪城向难波移动时顺路购物；药妆和伴手礼尽量集中买，别把行李拖散。",
@@ -618,6 +645,7 @@ const PLACES: Place[] = [
     area: "难波",
     category: "play",
     day: 4,
+    routeOrder: 3,
     lat: 34.6687,
     lng: 135.5013,
     note: "夜间看霓虹、格力高跑男和河道；晚餐就在附近解决，避免景点与餐厅来回折返。",
@@ -629,6 +657,7 @@ const PLACES: Place[] = [
     area: "道顿堀 / 心斋桥",
     category: "food",
     day: 4,
+    routeOrder: 4,
     lat: 34.6694,
     lng: 135.5022,
     note: "大阪代表性热食；可点猪肉、牛肉或蔬菜款，把海鲜和柴鱼片单独排除。",
@@ -643,6 +672,7 @@ const PLACES: Place[] = [
     area: "道顿堀小吃街",
     category: "food",
     day: 4,
+    routeOrder: 5,
     lat: 34.6681,
     lng: 135.5032,
     note: "只作为女友的小吃体验；你若对其他海鲜也敏感就跳过，改吃肉类或甜点。",
@@ -657,6 +687,7 @@ const PLACES: Place[] = [
     area: "通天阁 / 新世界",
     category: "food",
     day: 4,
+    routeOrder: 6,
     lat: 34.6525,
     lng: 135.5063,
     note: "如果体力和时间允许再加；从道顿堀过去约 15–20 分钟，和大阪烧二选一更舒服。",
@@ -671,6 +702,7 @@ const PLACES: Place[] = [
     area: "日本桥 · 难波",
     category: "food",
     day: 5,
+    routeOrder: 1,
     lat: 34.6657,
     lng: 135.5063,
     note: "返程日早餐 / 早午餐；店铺营业时间差异大，晚班机版本才安排，早班机直接删掉。",
@@ -686,6 +718,7 @@ const PLACES: Place[] = [
     area: "难波",
     category: "play",
     day: 5,
+    routeOrder: 2,
     lat: 34.6621,
     lng: 135.4959,
     note: "巨大狮子头适合安排 30–45 分钟；离难波近，适合放在取行李前。",
@@ -697,6 +730,7 @@ const PLACES: Place[] = [
     area: "难波",
     category: "drink",
     day: 5,
+    routeOrder: 3,
     lat: 34.6674,
     lng: 135.5011,
     note: "把最后一小时留给坐下、整理购物袋和确认机场交通，不要把返程日排满。",
@@ -730,7 +764,7 @@ const STAY_PLANS: StayPlan[] = [
     title: "东京基地：上野 / 浅草酒店",
     area: "轻装去河口湖，晚上回东京",
     price: "¥14,000–28,000 / 晚",
-    note: "第 2 晚；富士山一日往返，不带大件行李",
+    note: "第 2 晚；09:00 起床去河口湖，晚起版只带轻装",
     placeId: "tokyo-base-stay",
   },
   {
@@ -754,7 +788,7 @@ const STAY_PLANS: StayPlan[] = [
     title: "大阪住宿 → 关西机场",
     area: "退房后寄存行李，难波短线后前往 KIX",
     price: "已含第 4 晚；机场交通另计",
-    note: "返程日；早班机直接删掉黑门市场和难波短线",
+    note: "返程日；主方案按 18:00 后航班，早班机改住临空城 / KIX 附近",
     placeId: "osaka-namba-stay",
   },
 ];
@@ -786,7 +820,7 @@ const STAY_OPTIONS = [
   },
 ];
 
-const TRIP_DATA_VERSION = 3;
+const TRIP_DATA_VERSION = 4;
 
 type ScheduleItem = {
   time: string;
@@ -809,38 +843,38 @@ type HourlyPlan = {
 const HOURLY_PLANS: HourlyPlan[] = [
   {
     day: 1,
-    title: "抵达东京 · 浅草与上野",
-    summary: "第一天不跨大区，先用浅草建立方向感；如果航班晚到，删掉合羽桥，把晚餐提前。",
-    distance: "约 9–11k 步 · 住东京",
+    title: "晚起抵达东京 · 浅草与上野",
+    summary: "主方案选择中午前后的航班，09:00 起床后再出发；如果从 NRT 进城较晚，按顺序删掉合羽桥和上野，不熬夜补行程。",
+    distance: "约 8–11k 步 · 住东京",
     items: [
-      { time: "07:30–11:00", title: "上海 → 东京", detail: "示例按上午航班估算；HND 更省时间，NRT 需把机场进城再加 45–60 分钟。", area: "PVG / SHA → HND / NRT", tag: "交通" },
-      { time: "11:00–12:00", title: "入境、交通卡、酒店寄存", detail: "先办网络和交通，再把大件行李放下；不要第一站就拖箱去景点。", area: "机场 → 上野 / 浅草", price: "¥1,000–3,000 / 两人", tag: "落地" },
-      { time: "12:00–13:00", title: "热食午餐", detail: "天妇罗、鳗鱼或明确成分的定食；你出示过敏卡，女友想吃生鱼另行安排。", area: "浅草", placeId: "asakusa-tempura", price: "¥3,000–7,000 / 两人", tag: "吃" },
-      { time: "13:00–14:30", title: "雷门 · 浅草寺 · 仲见世", detail: "从雷门一路走到本堂，抽签和拍照都留余量；下午人多时不必排每个小店。", area: "浅草", placeId: "sensoji", tag: "文化" },
-      { time: "14:30–15:45", title: "合羽桥道具街", detail: "看食品模型、厨具和小伴手礼；店铺提前关门，临时关闭就直接去上野。", area: "浅草西侧", placeId: "kappabashi", tag: "购物" },
-      { time: "15:45–16:30", title: "喫茶与和甜点", detail: "给脚和时差一个缓冲，不建议第一天连续走满 15k 步。", area: "浅草", placeId: "asakusa-kissaten", price: "¥1,600–3,000 / 两人", tag: "休息" },
-      { time: "16:30–18:00", title: "上野公园与阿美横丁", detail: "从浅草往上野移动，逛折扣店和街头小店；买饮料、雨具等补给。", area: "上野", placeId: "ameyoko", tag: "散步" },
-      { time: "18:00–19:30", title: "上野熟食晚餐", detail: "鸡肉、烤物、拉面或烧肉优先；鱼介汤底、酱汁和共用锅仍要问。", area: "上野", placeId: "ameyoko", price: "¥2,000–4,000 / 两人", tag: "吃" },
-      { time: "19:30–20:30", title: "回酒店整理", detail: "确认 Day 2 新宿高速巴士、天气和起床闹钟；富士山日不要临时熬夜。", area: "上野 / 浅草", tag: "收尾" },
+      { time: "09:00–10:00", title: "起床、早餐、去机场", detail: "主方案只选不需要 09:00 前起床的航班；出发前确认护照、过敏药和日语过敏卡。", area: "上海 → PVG / SHA", tag: "出发" },
+      { time: "10:00–14:00", title: "上海 → 东京、入境", detail: "按 HND 进城较快的航班估算；NRT 要把机场进城和行李等待再加 45–60 分钟。", area: "PVG / SHA → HND / NRT", tag: "交通" },
+      { time: "14:00–15:30", title: "机场 → 酒店寄存行李", detail: "先办网络、交通卡和寄存；不要拖箱进浅草寺。若 NRT 到得晚，直接跳到晚餐。", area: "机场 → 上野 / 浅草", price: "¥1,000–3,000 / 两人", tag: "落地" },
+      { time: "15:30–16:15", title: "浅草热食午餐", detail: "天妇罗、鳗鱼或明确成分的定食；你先确认鱼介、鲑鱼和酱汁，女友生鱼另行安排。", area: "浅草", placeId: "asakusa-tempura", price: "¥3,000–7,000 / 两人", tag: "吃" },
+      { time: "16:15–17:45", title: "雷门 · 浅草寺 · 仲见世", detail: "从雷门走到本堂，抽签和拍照留余量；不为第一天的每一家小店排队。", area: "浅草", placeId: "sensoji", tag: "文化" },
+      { time: "17:45–18:30", title: "合羽桥道具街（可删）", detail: "看食品模型、厨具和小伴手礼；店铺关门或体力不足就直接去上野。", area: "浅草西侧", placeId: "kappabashi", tag: "购物" },
+      { time: "18:30–20:00", title: "上野公园与阿美横丁", detail: "逛折扣店并买雨具、饮料等补给；晚到时只保留阿美横丁。", area: "上野", placeId: "ameyoko", tag: "散步" },
+      { time: "20:00–21:00", title: "上野熟食晚餐", detail: "鸡肉、烤物、拉面或烧肉优先；鱼介汤底、酱汁和共用锅仍要问。", area: "上野", placeId: "ameyoko", price: "¥2,000–4,000 / 两人", tag: "吃" },
+      { time: "21:00–22:30", title: "回酒店、洗漱、确认 Day 2", detail: "看河口湖天气和巴士班次；主线不安排 00:00 后移动，保证 02:00 前睡。", area: "上野 / 浅草", tag: "收尾" },
     ],
   },
   {
     day: 2,
-    title: "富士山 · 河口湖早出发",
-    summary: "把小红书/UGC 攻略中反复出现的‘早出发—忠灵塔—河口湖—回新宿’做成可执行版本；能见度比打卡数量更重要。",
-    distance: "约 12–15k 步 · 住东京",
+    title: "晚起版富士山 · 河口湖一日",
+    summary: "按 09:00 起床重排：河口湖湖畔 + 天上山是主线，忠灵塔 / 大石公园二选一；晚起会牺牲部分机位，但更符合你们的作息。",
+    distance: "约 10–14k 步 · 住东京",
     items: [
-      { time: "06:15–06:45", title: "起床、便利店早餐", detail: "前一晚买好饭团、香蕉和水；把过敏药放在随身小包，不放托运行李。", area: "东京酒店", price: "¥800–1,500 / 两人", tag: "早起" },
-      { time: "06:45–07:30", title: "酒店 → 新宿高速巴士站", detail: "按车票站点提前 20 分钟到；周末或 9 月晴天日不要卡点。", area: "上野 / 浅草 → 新宿", price: "¥1,000–2,000 / 两人", tag: "交通" },
-      { time: "07:45–09:30", title: "高速巴士去河口湖", detail: "官方参考单程 ¥2,200 / 人、约 1 小时 45 分；实际班次与座位以预约页面为准。", area: "新宿 → 河口湖站", placeId: "fuji-kawaguchiko", price: "¥4,400 / 两人往返约 ¥8,800", tag: "交通" },
-      { time: "09:30–10:00", title: "车站补给与取景点", detail: "拍照控制在 20–30 分钟，注意不要站到车道；如果云层已压山，马上执行室内备选。", area: "河口湖站", placeId: "fuji-lawson", price: "¥500–1,000 / 两人", tag: "拍照" },
-      { time: "10:00–11:45", title: "下吉田 · 忠灵塔", detail: "乘富士急行线或当地公交到下吉田，再走台阶；台阶和排队按 60–90 分钟留足。", area: "下吉田", placeId: "chureito", price: "¥1,000–1,500 / 两人交通", tag: "自然" },
-      { time: "11:45–13:00", title: "ほうとう 午餐", detail: "安排一顿热汤面；你先确认鱼介、鲑鱼和柴鱼成分，女友再单独选择海鲜。", area: "河口湖", placeId: "fuji-hoto", price: "¥3,000–5,000 / 两人", tag: "吃" },
-      { time: "13:00–14:30", title: "天上山公园缆车 / 湖畔", detail: "天气好上缆车，排队超过 30 分钟就改湖畔散步；不要为了一个机位错过返程车。", area: "河口湖畔", placeId: "fuji-tenjo", price: "约 ¥2,000–2,500 / 两人", tag: "自然" },
-      { time: "14:30–15:30", title: "大石公园（天气好才去）", detail: "如果前面已经延误，这段直接删；云多时不必为了‘看富士山’继续跨湖。", area: "河口湖北岸", placeId: "oishi-park", tag: "备选" },
-      { time: "15:30–16:15", title: "河口湖站买伴手礼", detail: "留出厕所、补水和等车时间；提前确认回程站台。", area: "河口湖站", placeId: "fuji-kawaguchiko", tag: "补给" },
-      { time: "16:30–18:15", title: "巴士回新宿", detail: "返程可能受堵车影响；晚餐不要预约 18:30 前的不可取消座位。", area: "河口湖 → 新宿", price: "已含往返交通", tag: "交通" },
-      { time: "18:30–20:00", title: "新宿熟食晚餐", detail: "回东京后吃烤肉、鸡肉或定食；如果很累就直接回上野，不再加夜景。", area: "新宿 / 上野", price: "¥3,000–6,000 / 两人", tag: "吃" },
+      { time: "09:00–09:45", title: "起床、早餐、补给", detail: "前一晚买好饭团、香蕉和水；过敏药与日语过敏卡放在随身小包。", area: "东京酒店", price: "¥800–1,500 / 两人", tag: "出发" },
+      { time: "09:45–10:30", title: "酒店 → 新宿高速巴士站", detail: "按车票站点提前 15–20 分钟到；晚起版不追求最早一班，先保证状态。", area: "上野 / 浅草 → 新宿", price: "¥1,000–2,000 / 两人", tag: "交通" },
+      { time: "10:45–12:30", title: "高速巴士去河口湖", detail: "官方参考单程 ¥2,200 / 人、约 1 小时 45 分；实际班次、座位和堵车以预约页面为准。", area: "新宿 → 河口湖站", placeId: "fuji-kawaguchiko", price: "约 ¥8,800 / 两人往返", tag: "交通" },
+      { time: "12:30–13:00", title: "河口湖站补给", detail: "先确认回程站台、厕所和天气；晚起版不安排站前长时间拍照。", area: "河口湖站", placeId: "fuji-kawaguchiko", price: "¥500–1,000 / 两人", tag: "落地" },
+      { time: "13:00–14:00", title: "ほうとう 午餐", detail: "先确认鱼介、鲑鱼和柴鱼成分；女友想吃海鲜时单独点，不共用餐具和汤底。", area: "河口湖", placeId: "fuji-hoto", price: "¥3,000–5,000 / 两人", tag: "吃" },
+      { time: "14:00–15:15", title: "天上山公园缆车 / 湖畔", detail: "天气好上缆车，排队超过 30 分钟就改湖畔散步；这是晚起版富士山主线。", area: "河口湖畔", placeId: "fuji-tenjo", price: "约 ¥2,000–2,500 / 两人", tag: "自然" },
+      { time: "15:15–16:45", title: "忠灵塔或大石公园（二选一）", detail: "天气好、体力足选忠灵塔；想少换乘选大石公园。不要两处都塞，避免错过返程巴士。", area: "下吉田 / 河口湖北岸", placeId: "chureito", price: "¥1,000–2,000 / 两人交通", tag: "自然" },
+      { time: "16:45–17:15", title: "回河口湖站、买伴手礼", detail: "留出补水、厕所和站台确认时间；云层压山时不再追拍。", area: "河口湖站", placeId: "fuji-kawaguchiko", tag: "补给" },
+      { time: "17:30–19:15", title: "巴士回新宿", detail: "返程可能堵车；晚餐不要预约 19:30 前不可取消的座位。", area: "河口湖 → 新宿", price: "已含往返交通", tag: "交通" },
+      { time: "19:30–21:00", title: "新宿 / 上野熟食晚餐", detail: "吃烤肉、鸡肉或定食；很累就直接回酒店，不再加夜景。", area: "新宿 / 上野", price: "¥3,000–6,000 / 两人", tag: "吃" },
+      { time: "21:00–22:30", title: "回酒店、泡脚、看天气", detail: "整理 Day 3 购物清单，保证 02:00 前入睡；不把‘富士山没拍到’变成熬夜补救。", area: "东京酒店", tag: "收尾" },
     ],
   },
   {
@@ -849,16 +883,16 @@ const HOURLY_PLANS: HourlyPlan[] = [
     summary: "先买限定，再逛银座；秋叶原安排在下午到晚上，路线集中在东京站—银座—秋叶原一带。",
     distance: "约 10–13k 步 · 住东京",
     items: [
-      { time: "08:00–09:00", title: "早餐与购物清单确认", detail: "把 Chiikawa 预算分成‘必买 / 看库存再买 / 不买’，避免第一家店就花完。", area: "东京酒店", price: "¥1,000–2,000 / 两人", tag: "准备" },
-      { time: "09:30–10:45", title: "东京站 Character Street", detail: "先冲 ちいかわらんど；库存、排队和限购以当天店铺公告为准，买到就先寄回酒店。", area: "东京站", placeId: "tokyo-chiikawa", price: "购物预算 ¥5,000–15,000+", tag: "Chiikawa" },
-      { time: "10:45–11:30", title: "丸之内站舍与东京站周边", detail: "上地面拍红砖站舍，顺便买水；不要把皇居和东京塔硬塞进今天。", area: "丸之内", placeId: "marunouchi", tag: "文化" },
-      { time: "11:30–12:30", title: "东京站午餐", detail: "选择熟食定食、烤鸡或咖喱；站内店多，先看成分再点。", area: "东京站八重洲", placeId: "tokyo-yakitori", price: "¥2,000–4,000 / 两人", tag: "吃" },
-      { time: "12:30–15:00", title: "银座中央通与百货", detail: "药妆、伴手礼和品牌分批买；把大件集中装袋，不要带着战利品逛整晚。", area: "银座", placeId: "ginza", price: "购物预算 ¥5,000–20,000+", tag: "购物" },
-      { time: "15:00–15:45", title: "银座喫茶", detail: "坐下充电、整理购物袋；这是当天的体力缓冲，不建议跳过。", area: "银座", placeId: "ginza-dessert", price: "¥1,800–4,000 / 两人", tag: "休息" },
-      { time: "16:00–17:45", title: "秋叶原 Radio Kaikan", detail: "从银座乘地铁到秋叶原，先逛整栋，再决定是否买二手周边；重点只看 Chiikawa 和真正喜欢的品类。", area: "秋叶原", placeId: "radio-kaikan", tag: "购物" },
-      { time: "17:45–18:30", title: "神田明神短线", detail: "如果购物排队超时就删掉；保留 30–45 分钟作为文化收尾。", area: "御茶之水", placeId: "kanda-myojin", tag: "文化" },
-      { time: "18:45–20:00", title: "秋叶原熟食晚餐", detail: "鸡肉、烤物、米饭或烧肉；不要默认‘熟食’就没有鱼介，点单前问清楚。", area: "秋叶原", placeId: "tokyo-yakitori", price: "¥3,000–6,000 / 两人", tag: "吃" },
-      { time: "20:00–21:00", title: "回酒店打包", detail: "把 Day 4 的换城行李压缩成一件箱；新干线票、酒店地址和护照放在同一个随身袋。", area: "东京酒店", tag: "收尾" },
+      { time: "09:00–10:00", title: "起床、早餐与购物清单", detail: "把 Chiikawa 预算分成‘必买 / 看库存再买 / 不买’，避免第一家店就花完。", area: "东京酒店", price: "¥1,000–2,000 / 两人", tag: "准备" },
+      { time: "10:00–11:15", title: "东京站 Character Street", detail: "先去 ちいかわらんど；库存、排队和限购以当天公告为准，买到就先寄回酒店。", area: "东京站", placeId: "tokyo-chiikawa", price: "购物预算 ¥5,000–15,000+", tag: "Chiikawa" },
+      { time: "11:15–12:00", title: "丸之内站舍与东京站周边", detail: "上地面拍红砖站舍，顺便买水；不要把皇居和东京塔硬塞进今天。", area: "丸之内", placeId: "marunouchi", tag: "文化" },
+      { time: "12:00–13:00", title: "东京站午餐", detail: "选择熟食定食、烤鸡或咖喱；站内店多，先看成分再点。", area: "东京站八重洲", placeId: "tokyo-yakitori", price: "¥2,000–4,000 / 两人", tag: "吃" },
+      { time: "13:00–15:30", title: "银座中央通与百货", detail: "药妆、伴手礼和品牌分批买；把大件集中装袋，不要带着战利品逛整晚。", area: "银座", placeId: "ginza", price: "购物预算 ¥5,000–20,000+", tag: "购物" },
+      { time: "15:30–16:15", title: "银座喫茶", detail: "坐下充电、整理购物袋；这是当天的体力缓冲，不建议跳过。", area: "银座", placeId: "ginza-dessert", price: "¥1,800–4,000 / 两人", tag: "休息" },
+      { time: "16:30–18:15", title: "秋叶原 Radio Kaikan", detail: "从银座乘地铁到秋叶原，先逛整栋，再决定是否买二手周边；重点只看 Chiikawa 和真正喜欢的品类。", area: "秋叶原", placeId: "radio-kaikan", tag: "购物" },
+      { time: "18:15–19:00", title: "神田明神短线", detail: "如果购物排队超时就删掉；保留 30–45 分钟作为文化收尾。", area: "御茶之水", placeId: "kanda-myojin", tag: "文化" },
+      { time: "19:15–20:30", title: "秋叶原熟食晚餐", detail: "鸡肉、烤物、米饭或烧肉；不要默认‘熟食’就没有鱼介，点单前问清楚。", area: "秋叶原", placeId: "tokyo-yakitori", price: "¥3,000–6,000 / 两人", tag: "吃" },
+      { time: "20:30–22:00", title: "回酒店打包", detail: "把 Day 4 的换城行李压缩成一件箱；票、酒店地址和护照放在同一个随身袋。", area: "东京酒店", tag: "收尾" },
     ],
   },
   {
@@ -867,31 +901,31 @@ const HOURLY_PLANS: HourlyPlan[] = [
     summary: "今天唯一一次换城，上午移动、下午文化、晚上美食；不要再加京都或 USJ。",
     distance: "约 11–14k 步 · 住大阪",
     items: [
-      { time: "07:00–07:45", title: "退房、寄送 / 携带行李", detail: "尽量把行李压到一件；如果用宅急便，前一晚问酒店能否寄到大阪。", area: "东京酒店", tag: "换城" },
-      { time: "08:00–08:45", title: "东京站早餐与取票", detail: "提早到站，买水和便当；自由席也不要把出发卡在最后 5 分钟。", area: "东京站", price: "¥1,500–3,000 / 两人", tag: "交通" },
-      { time: "09:00–11:30", title: "东海道新干线去新大阪", detail: "预算版看 Kodama，时间版看 Nozomi；JR Central 当前页面列出的东京→新大阪 Platt-KODAMA 参考价为 ¥12,550 / 人，具体班次与产品以预约页为准。", area: "东京 → 新大阪", price: "约 ¥25,100 / 两人起", tag: "交通" },
-      { time: "11:30–12:30", title: "到大阪、酒店寄存行李", detail: "从新大阪先到难波，不要拖箱进大阪城；先把住处和晚餐区域定下来。", area: "新大阪 → 难波", price: "¥1,000–2,000 / 两人", tag: "落地" },
-      { time: "12:30–13:30", title: "大阪午餐", detail: "定食、乌冬或肉类热食；今天不要把大阪特色小吃一次吃满。", area: "大阪城周边", price: "¥2,000–4,000 / 两人", tag: "吃" },
-      { time: "14:00–16:00", title: "大阪城天守阁与公园", detail: "官方开放时间参考 9:00–18:00；天守阁约 60 分钟，公园和换乘另留 1 小时。", area: "大阪城公园", placeId: "osaka-castle", price: "门票约 ¥1,200 / 人", tag: "文化" },
-      { time: "16:00–17:00", title: "大阪城 → 心斋桥", detail: "用地铁前往难波方向；到酒店放下大件购物袋，晚上只带小包。", area: "大阪城 → 心斋桥", price: "约 ¥500–800 / 两人", tag: "交通" },
-      { time: "17:00–18:30", title: "心斋桥筋商店街", detail: "集中完成药妆和伴手礼；保留发票和免税包装，别为了打折走到很远。", area: "心斋桥", placeId: "shinsaibashi", tag: "购物" },
-      { time: "18:30–20:30", title: "大阪烧 / 章鱼烧晚餐", detail: "女友可尝章鱼烧；你选肉类大阪烧或其他熟食，明确排除鲑鱼、海鲜、柴鱼片和不明鱼粉。", area: "道顿堀", placeId: "osaka-okonomiyaki", price: "¥3,000–6,000 / 两人", tag: "大阪美食" },
-      { time: "20:30–21:30", title: "道顿堀夜景与法善寺横丁", detail: "看格力高跑男、戎桥和河道；人多时只沿主线走，不追求把每条巷子走完。", area: "道顿堀", placeId: "dotonbori", tag: "夜景" },
+      { time: "09:00–09:45", title: "起床、退房、整理行李", detail: "尽量把行李压到一件；如果用宅急便，前一晚问酒店能否寄到大阪。", area: "东京酒店", tag: "换城" },
+      { time: "09:45–10:30", title: "东京站早餐与取票", detail: "买水和便当，留出站内换乘余量；不把出发卡在最后 5 分钟。", area: "东京站", price: "¥1,500–3,000 / 两人", tag: "交通" },
+      { time: "10:45–13:15", title: "东海道新干线去新大阪", detail: "时间版看 Nozomi；预算版 Kodama 约 4 小时，会压缩大阪下午内容。具体班次和票价以预约页为准。", area: "东京 → 新大阪", price: "约 ¥25,100 / 两人起", tag: "交通" },
+      { time: "13:15–14:15", title: "到大阪、酒店寄存行李", detail: "从新大阪先到难波，不要拖箱进大阪城；先把住处和晚餐区域定下来。", area: "新大阪 → 难波", price: "¥1,000–2,000 / 两人", tag: "落地" },
+      { time: "14:15–15:00", title: "大阪午餐", detail: "定食、乌冬或肉类热食；今天不要把大阪特色小吃一次吃满。", area: "大阪城周边", price: "¥2,000–4,000 / 两人", tag: "吃" },
+      { time: "15:00–17:00", title: "大阪城天守阁与公园", detail: "官方开放时间参考 9:00–18:00；天守阁约 60 分钟，公园和换乘另留 1 小时。", area: "大阪城公园", placeId: "osaka-castle", price: "门票约 ¥1,200 / 人", tag: "文化" },
+      { time: "17:00–18:00", title: "大阪城 → 心斋桥", detail: "用地铁前往难波方向；到酒店放下大件购物袋，晚上只带小包。", area: "大阪城 → 心斋桥", price: "约 ¥500–800 / 两人", tag: "交通" },
+      { time: "18:00–19:15", title: "心斋桥筋商店街", detail: "集中完成药妆和伴手礼；保留发票和免税包装，别为了打折走到很远。", area: "心斋桥", placeId: "shinsaibashi", tag: "购物" },
+      { time: "19:15–21:15", title: "大阪烧 / 章鱼烧晚餐", detail: "女友可尝章鱼烧；你选肉类大阪烧或其他熟食，明确排除鲑鱼、海鲜、柴鱼片和不明鱼粉。", area: "道顿堀", placeId: "osaka-okonomiyaki", price: "¥3,000–6,000 / 两人", tag: "大阪美食" },
+      { time: "21:15–22:30", title: "道顿堀夜景与法善寺横丁", detail: "看格力高跑男、戎桥和河道；人多时只沿主线走，不追求把每条巷子走完。", area: "道顿堀", placeId: "dotonbori", tag: "夜景" },
     ],
   },
   {
     day: 5,
     title: "难波短线 · 关西机场",
-    summary: "返程日按航班切成早班机版和晚班机版；机场至少提前 2.5–3 小时到，购物不要压到最后一班车。",
+    summary: "主方案按 18:00 后航班安排，09:00 起床后走难波短线；如果买到早班机，前一晚应改住临空城 / KIX 附近，不把早起硬塞进这条主线。",
     distance: "约 5–9k 步 · 大阪 → 上海",
     items: [
-      { time: "06:30–08:00", title: "早班机版：直接去 KIX", detail: "如果 14:00 前起飞，删掉所有景点；从难波预留至少 90 分钟到机场并确认线路。", area: "难波 → 关西机场", price: "¥2,000–4,000 / 两人", tag: "返程" },
-      { time: "08:00–09:00", title: "晚班机版：退房与行李寄存", detail: "把护照、免税购物和药品放在随身包；向酒店确认最晚取行李时间。", area: "难波", tag: "返程" },
-      { time: "09:00–10:15", title: "黑门市场早午餐", detail: "晚班机才去；女友可吃海鲜，你选烤物、玉子烧等确认过的熟食，不共用餐具。", area: "日本桥", placeId: "kuromon", price: "¥2,000–6,000 / 两人", tag: "吃" },
-      { time: "10:15–11:00", title: "难波八阪神社", detail: "巨大狮子头拍照 30–45 分钟；如果下雨或买东西超时就删掉。", area: "难波", placeId: "namba-yasaka", tag: "文化" },
-      { time: "11:00–12:00", title: "咖啡、整理购物袋", detail: "最后确认护照、充电宝、药物和免税袋；不要再开启一段跨区购物。", area: "难波", placeId: "osaka-coffee", price: "¥1,400–3,000 / 两人", tag: "休息" },
-      { time: "12:00–13:00", title: "取行李、前往机场", detail: "从难波出发比从大阪城更稳；按航班时间反推，国际航班至少提前 2.5–3 小时到 KIX。", area: "难波 → KIX", price: "¥2,000–4,000 / 两人", tag: "交通" },
-      { time: "13:00–起飞前", title: "关西机场值机与免税", detail: "预留安检、退税 / 免税确认和登机口步行时间；不要把最后的 Chiikawa 采购押在机场。", area: "关西机场", tag: "返程" },
+      { time: "09:00–10:00", title: "起床、退房与行李寄存", detail: "主方案按 18:00 后航班；把护照、免税购物、过敏药放在随身包，向酒店确认最晚取行李时间。", area: "难波", tag: "返程" },
+      { time: "10:00–11:30", title: "黑门市场早午餐", detail: "女友可吃海鲜，你选烤物、玉子烧等确认过的熟食；不共用餐具、蘸料和不明汤底。", area: "日本桥", placeId: "kuromon", price: "¥2,000–6,000 / 两人", tag: "吃" },
+      { time: "11:30–12:15", title: "难波八阪神社", detail: "巨大狮子头拍照 30–45 分钟；如果下雨或买东西超时就删掉。", area: "难波", placeId: "namba-yasaka", tag: "文化" },
+      { time: "12:15–13:30", title: "咖啡、整理购物袋", detail: "最后确认护照、充电宝、药物和免税袋；不要再开启一段跨区购物。", area: "难波", placeId: "osaka-coffee", price: "¥1,400–3,000 / 两人", tag: "休息" },
+      { time: "13:30–14:15", title: "取行李、前往机场", detail: "从难波出发比从大阪城更稳；主方案按国际航班提前 2.5–3 小时到 KIX 反推。", area: "难波 → KIX", price: "¥2,000–4,000 / 两人", tag: "交通" },
+      { time: "14:15–15:45", title: "关西机场值机与免税", detail: "预留安检、退税 / 免税确认和登机口步行时间；不要把最后的 Chiikawa 采购押在机场。", area: "关西机场", tag: "返程" },
+      { time: "15:45–起飞前", title: "机场休息、按登机口候机", detail: "主方案要求航班约 18:00 后；若航班更早，改成前一晚住临空城 / KIX 附近。", area: "关西机场", tag: "返程" },
     ],
   },
 ];
@@ -916,7 +950,7 @@ const RESEARCH_TIPS = [
     noteId: "6a4288a70000000022018209",
     title: "5 天最重要的是少换乘",
     text: "笔记正文明确提醒：第一天不要硬塞景点；东京段可以把浅草、上野、银座放在同一大区；第四天东京去大阪，晚上只走心斋桥和道顿堀；返程日不要再硬塞京都奈良。",
-    decision: "直接采用“只换一次酒店”和 D4 东京→大阪的松弛边界；把银座移到 D3、保留 D1 浅草 + 上野，且把 D5 拆成早班机 / 晚班机两版。",
+    decision: "直接采用“只换一次酒店”和 D4 东京→大阪的松弛边界；把银座移到 D3、保留 D1 浅草 + 上野，并把早班机降为需要机场酒店的例外，不破坏你们的晚起作息。",
     usedIn: "D1、D3、D4、D5",
     link: "https://www.xiaohongshu.com/explore/6a4288a70000000022018209",
     linkText: "打开原笔记 ↗",
@@ -943,6 +977,42 @@ const RESEARCH_TIPS = [
     decision: "只保留忠灵塔 + 河口湖湖畔作为主线，便利店和其他街道路口列为顺路备选；不为拍照跨城折返，也不在车道边停留。",
     usedIn: "D2：忠灵塔、河口湖湖畔、天气备选",
     link: "https://www.xiaohongshu.com/explore/6a15309d0000000038020711",
+    linkText: "打开原笔记 ↗",
+  },
+  {
+    label: "小红书笔记 05",
+    sourceTitle: "日本双人五天四晚自由行攻略，人均五千!",
+    author: "KK",
+    noteId: "6a476ca80000000016027420",
+    title: "机场接驳、雨天和预算要留余量",
+    text: "作者公开记录了双人 5 天 4 晚的机场酒店、东京市区、跨城交通和餐饮花费，并提醒机场优先坐酒店接驳、雨天不要硬去高空观景台、第三方门票可能无法退改。",
+    decision: "吸收机场接驳优先、雨天删景点、酒店价格按两人整晚计算这三条经验；不照搬其香港出发和东京—京都路线，改成上海东京进、大阪出。",
+    usedIn: "D1 落地、D3 雨天备选、总预算",
+    link: "https://www.xiaohongshu.com/explore/6a476ca80000000016027420",
+    linkText: "打开原笔记 ↗",
+  },
+  {
+    label: "小红书笔记 06",
+    sourceTitle: "8.13 东京出发｜富士山一日懒人攻略✨",
+    author: "富士观光旅游",
+    noteId: "6a7bcb0a00000000050207de",
+    title: "富士山点位要按顺序取舍",
+    text: "笔记把山中湖、忍野八海、大石公园、富士吉田便利店、忠灵塔和日川时计店排成东京出发的一日路线，并把集合、拍照和返回时间写得很清楚。",
+    decision: "参考其“先湖景、再河口湖、最后富士吉田机位”的顺序，但因你们 09:00 才起床，主线只留天上山 / 湖畔 + 忠灵塔或大石公园二选一，不把六个点硬塞进一天。",
+    usedIn: "D2 晚起版富士山、天气切换",
+    link: "https://www.xiaohongshu.com/explore/6a7bcb0a00000000050207de",
+    linkText: "打开原笔记 ↗",
+  },
+  {
+    label: "小红书笔记 07",
+    sourceTitle: "Chiikawa 扫货攻略 | ~羽田机场t3!",
+    author: "曾小朵",
+    noteId: "696bb308000000001a028df2",
+    title: "羽田机场限定适合作为备选",
+    text: "笔记实测羽田 T3 五楼 TOKYO POP TOWN 的 Haikala 店，位置在安检前的 Hot Zone，提到毛绒、挂件、文具、零食和羽田 / 地区限定，也提醒提前 2–3 小时到机场并预留挑选时间。",
+    decision: "把它列为去程 HND 才能使用的 Chiikawa 备选，不拿它替代 D3 东京站主线；若从 NRT 进或 KIX 回，就不为机场限定专门折返。",
+    usedIn: "D1 去程 HND 备选、Chiikawa 清单",
+    link: "https://www.xiaohongshu.com/explore/696bb308000000001a028df2",
     linkText: "打开原笔记 ↗",
   },
 ];
@@ -1252,6 +1322,7 @@ export default function Home() {
           <div className="kicker"><span className="kicker-dot" />早秋出发，东京进大阪出</div>
           <h1>日本，<em>慢慢走。</em></h1>
           <p className="hero-subtitle">一份给两个人的 5 日地图计划：东京、富士山、大阪，按小时拆开，留出排队、天气和临场决定的余地。</p>
+          <p className="routine-note">作息约束：09:00 起床起步 · 02:00 前睡 · 富士山采用晚起舒适版</p>
           <div className="trip-facts">
             <div><strong>5</strong><span>天</span></div>
             <div><strong>1</strong><span>次换城</span></div>
@@ -1262,11 +1333,11 @@ export default function Home() {
         <div className="brief-card">
           <div className="brief-card-head"><span>ROUTE NOTE</span><span className="status-dot">● 已规划</span></div>
           <h2>东京 3 晚 + 大阪 1 晚</h2>
-          <p>从上海优先看东京进、大阪出的开口航班；河口湖清晨往返，酒店只换一次，把时间留给富士山、Chiikawa 和大阪夜食。</p>
+          <p>从上海优先看东京进、大阪出的开口航班；河口湖按晚起版往返，酒店只换一次，把时间留给富士山、Chiikawa 和大阪夜食。</p>
           <div className="brief-lines">
             <div><span>出发</span><b>上海 PVG / SHA → 东京 HND / NRT</b></div>
             <div><span>返程</span><b>大阪难波 → 关西机场 KIX → 上海</b></div>
-            <div><span>特别任务</span><b>河口湖清晨、东京站 Chiikawa、道顿堀</b></div>
+            <div><span>特别任务</span><b>河口湖湖畔、东京站 Chiikawa、道顿堀</b></div>
           </div>
         </div>
       </section>
@@ -1275,7 +1346,7 @@ export default function Home() {
         <div className="workspace-toolbar">
           <div>
             <p className="section-label">MAP / 路线地图</p>
-            <h2>把想去的地方，放回同一天。</h2>
+            <h2>路线地图：数字是顺序，彩线是方向。</h2>
           </div>
           <div className="toolbar-actions">
             <label className="search-box">
@@ -1303,7 +1374,7 @@ export default function Home() {
             <div className="map-legend">
               {days.map((day) => <span key={day.id}><i style={{ backgroundColor: day.color }} />D{day.id}</span>)}
             </div>
-            <div className="map-caption"><span>⌖</span> 地图图层来自 OpenStreetMap · 点选标记查看地点</div>
+            <div className="map-caption"><span>⌖</span> 每天从 1 开始编号 · 彩色线与箭头表示当日顺序 · 点选标记查看地点</div>
           </div>
           <aside className="filter-panel">
             <div className="filter-head"><span>筛选标签</span><button onClick={() => { setCategoryFilter("all"); setSearch(""); }}>清除</button></div>
@@ -1419,7 +1490,7 @@ export default function Home() {
           </div>
           <span className="muted">点击时间段可联动地图</span>
         </div>
-        <p className="expansion-intro">这是“主线 + 可删减点”的版本：有些时间是交通和排队缓冲，不建议把它们全部挤掉。Day 2 富士山最看天气，Day 5 最看航班。</p>
+        <p className="expansion-intro">这是“主线 + 可删减点”的版本：有些时间是交通和排队缓冲，不建议把它们全部挤掉。Day 2 富士山最看天气与返程班次，Day 5 最看航班。</p>
         <div className="hourly-list">
           {HOURLY_PLANS.filter((plan) => selectedDay === "all" || plan.day === selectedDay).map((plan) => (
             <article className="hourly-day" key={plan.day} style={{ "--day-color": dayFor(plan.day).color } as CSSProperties}>
@@ -1451,7 +1522,7 @@ export default function Home() {
       <section className="research-strip">
         <div className="research-heading">
           <p className="section-label">FIELD NOTES / 攻略吸收</p>
-          <h2>4 篇小红书笔记，逐条拆进路线。</h2>
+          <h2>7 篇小红书笔记，逐条拆进路线。</h2>
           <p>以下卡片来自你已登录的小红书站内搜索和笔记正文。笔记只负责提供路线灵感、体感和打卡经验；交通、票价、开放时间、库存和过敏安全仍以官方信息和现场确认执行。</p>
         </div>
         <div className="research-grid">
@@ -1497,7 +1568,7 @@ export default function Home() {
           <div className="note-card note-card-yellow">
             <div className="note-card-top"><span className="note-index">01</span><span>给你们的版本</span></div>
             <h3>早起，把富士山和限定都买在前面。</h3>
-            <p>Day 2 把河口湖放在清晨，Day 3 把东京站 Chiikawa 放在上午。天气、库存与入场规则会变，出发前一周和当天早上各看一次官方信息。</p>
+            <p>Day 2 按晚起版安排河口湖，Day 3 把东京站 Chiikawa 放在上午。天气、库存与入场规则会变，出发前一周和当天早上各看一次官方信息。</p>
           </div>
           <div className="note-card note-card-blue">
             <div className="note-card-top"><span className="note-index">02</span><span>过敏提醒</span></div>

@@ -16,6 +16,7 @@ export type Place = {
   area: string;
   category: PlaceCategory;
   day: DayId;
+  routeOrder?: number;
   lat: number;
   lng: number;
   note: string;
