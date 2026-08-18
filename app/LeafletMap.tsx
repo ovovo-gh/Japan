@@ -28,7 +28,7 @@ export default function LeafletMapView({
   const routeLayer = useRef<LayerGroup | null>(null);
   const arrowLayer = useRef<LayerGroup | null>(null);
   const markerLayer = useRef<LayerGroup | null>(null);
-  const leaflet = useRef<LeafletApi["default"] | null>(null);
+  const leaflet = useRef<LeafletApi | null>(null);
   const [mapReady, setMapReady] = useState(false);
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export default function LeafletMapView({
     void import("leaflet").then((module) => {
       if (cancelled || !mapNode.current) return;
 
-      const L = module.default;
+      const L = (module as unknown as { default: LeafletApi }).default;
       leaflet.current = L;
       const nextMap = L.map(mapNode.current, {
         zoomControl: false,
@@ -46,10 +46,25 @@ export default function LeafletMapView({
       }).setView([35.6812, 139.7671], 11);
 
       L.control.zoom({ position: "bottomright" }).addTo(nextMap);
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      const worldStreetLayer = L.tileLayer(
+        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+        {
+          attribution: '&copy; <a href="https://www.arcgis.com/">Esri</a> · World Street Map',
+          maxZoom: 19,
+        },
+      );
+      const fallbackLayer = L.tileLayer("https://tile.openstreetmap.de/{z}/{x}/{y}.png", {
+        attribution: '&copy; <a href="https://www.openstreetmap.de/">OpenStreetMap.de</a>',
         maxZoom: 19,
-      }).addTo(nextMap);
+      });
+      let fallbackActive = false;
+      worldStreetLayer.on("tileerror", () => {
+        if (fallbackActive) return;
+        fallbackActive = true;
+        nextMap.removeLayer(worldStreetLayer);
+        fallbackLayer.addTo(nextMap);
+      });
+      worldStreetLayer.addTo(nextMap);
 
       map.current = nextMap;
       routeLayer.current = L.layerGroup().addTo(nextMap);
@@ -227,8 +242,9 @@ export default function LeafletMapView({
   }, [days, places, routePlaces, selectedDay, selectedPlaceId, onSelectPlace, mapReady]);
 
   return (
-    <div className="map-frame" aria-label="东京、富士山、镰仓、京都、奈良与大阪旅行地点地图">
+    <div className="map-frame" aria-label="东京、富士山、京都、奈良与大阪旅行地点地图">
       <div ref={mapNode} className="leaflet-map" />
+      <div className="map-provider-note">底图：Esri World Street Map · 加载异常会自动切换 OpenStreetMap.de</div>
       {!mapReady && <div className="map-loading">正在加载地图图层…</div>}
     </div>
   );

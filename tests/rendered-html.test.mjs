@@ -29,6 +29,9 @@ test("server-renders the trip planner shell", async () => {
   assert.match(html, /美食清单/);
   assert.match(html, /已收藏 \/ 打卡/);
   assert.match(html, /小时级攻略/);
-  assert.match(html, /东京 4 晚 \+ 京都 2 晚 \+ 大阪 1 晚/);
+  assert.match(html, /东京 3 晚 \+ 京都 3 晚 \+ 大阪 1 晚/);
+  assert.match(html, /大阪城 → 中之岛 → 梅田/);
+  assert.match(html, /Esri World Street Map/);
+  assert.match(html, /trip\/tokyo\.jpg/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });
