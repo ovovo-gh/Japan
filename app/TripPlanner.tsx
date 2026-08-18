@@ -2011,13 +2011,39 @@ const XHS_HOSTS = new Set([
   "www.xiaohongshu.com",
   "xhslink.com",
   "www.xhslink.com",
+  "xhslink.cn",
+  "www.xhslink.cn",
 ]);
 
-function normalizeXiaohongshuUrl(value: string) {
+const XHS_URL_PATTERN = /(?:https?:\/\/)?(?:www\.)?(?:xiaohongshu\.com|xhslink\.com|xhslink\.cn)(?:\/[^\s<>"'`]+)?/i;
+const XHS_TRAILING_PUNCTUATION = /[.,!?;:，。！？；：、）)】\]}》」』]+$/gu;
+
+type ParsedXiaohongshuInput = {
+  url: string;
+  title: string;
+};
+
+function parseXiaohongshuInput(value: string): ParsedXiaohongshuInput | null {
+  const match = value.match(XHS_URL_PATTERN);
+  if (!match || match.index === undefined) return null;
+
+  const rawUrl = match[0]
+    .replace(/複製後開啟小紅書查看筆記.*$/u, "")
+    .replace(XHS_TRAILING_PUNCTUATION, "");
+  const candidate = /^https?:\/\//i.test(rawUrl) ? rawUrl : `https://${rawUrl}`;
+
   try {
-    const url = new URL(value.trim());
+    const url = new URL(candidate);
     if (url.protocol !== "https:" || !XHS_HOSTS.has(url.hostname.toLowerCase())) return null;
-    return url.toString();
+
+    const title = value
+      .slice(0, match.index)
+      .replace(/^[\s|｜:：\-—]+|[\s|｜:：\-—]+$/gu, "")
+      .replace(/\s+/gu, " ")
+      .trim()
+      .slice(0, 80);
+
+    return { url: url.toString(), title };
   } catch {
     return null;
   }
@@ -2085,6 +2111,7 @@ export default function Home() {
   const [toast, setToast] = useState("");
   const [hydrated, setHydrated] = useState(false);
   const importInput = useRef<HTMLInputElement | null>(null);
+  const xhsAutoTitleRef = useRef("");
 
   useEffect(() => {
     const shared = window.location.hash.startsWith("#share=")
@@ -2227,16 +2254,16 @@ export default function Home() {
 
   const addXiaohongshuLink = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const url = normalizeXiaohongshuUrl(xhsUrlDraft);
-    if (!url) {
-      setToast("请粘贴有效的小红书链接（xiaohongshu.com 或 xhslink.com）");
+    const parsed = parseXiaohongshuInput(xhsUrlDraft);
+    if (!parsed) {
+      setToast("请粘贴有效的小红书链接或手机端整段分享文案");
       return;
     }
 
     const item: XiaohongshuShare = {
       id: `xhs-user-${Date.now()}`,
-      title: xhsTitleDraft.trim() || "我的小红书攻略",
-      url,
+      title: xhsTitleDraft.trim() || parsed.title || "我的小红书攻略",
+      url: parsed.url,
       note: xhsNoteDraft.trim() || "自己收藏的攻略，出发前再核对交通、营业时间与库存。",
       author: "你添加的链接",
       source: "user",
@@ -2245,7 +2272,20 @@ export default function Home() {
     setXhsUrlDraft("");
     setXhsTitleDraft("");
     setXhsNoteDraft("");
+    xhsAutoTitleRef.current = "";
     setToast("小红书链接已加入分享板块");
+  };
+
+  const handleXiaohongshuInputChange = (value: string) => {
+    setXhsUrlDraft(value);
+    const parsed = parseXiaohongshuInput(value);
+    if (!parsed?.title) return;
+
+    setXhsTitleDraft((current) => {
+      if (!current.trim() || current === xhsAutoTitleRef.current) return parsed.title;
+      return current;
+    });
+    xhsAutoTitleRef.current = parsed.title;
   };
 
   const removeXiaohongshuLink = (id: string) => {
@@ -2620,11 +2660,11 @@ export default function Home() {
         <div className="xhs-board-layout">
           <form className="xhs-add-form" onSubmit={addXiaohongshuLink}>
             <div className="xhs-form-title"><span>＋</span><strong>添加一篇小红书</strong></div>
-            <label>小红书链接<input type="url" value={xhsUrlDraft} onChange={(event) => setXhsUrlDraft(event.target.value)} placeholder="https://www.xiaohongshu.com/explore/…" required /></label>
-            <label>标题 <span className="optional">（可选）</span><input value={xhsTitleDraft} onChange={(event) => setXhsTitleDraft(event.target.value)} placeholder="例如：东京 Chiikawa 扫货路线" /></label>
+            <label>小红书链接<input type="text" inputMode="url" autoComplete="url" spellCheck={false} value={xhsUrlDraft} onChange={(event) => handleXiaohongshuInputChange(event.target.value)} placeholder="粘贴手机端整段分享文案或链接" required /></label>
+            <label>标题 <span className="optional">（可选，整段文案会自动提取）</span><input value={xhsTitleDraft} onChange={(event) => { xhsAutoTitleRef.current = ""; setXhsTitleDraft(event.target.value); }} placeholder="例如：东京 Chiikawa 扫货路线" /></label>
             <label>你的备注 <span className="optional">（可选）</span><textarea value={xhsNoteDraft} onChange={(event) => setXhsNoteDraft(event.target.value)} placeholder="写下想吸收的点、适合哪一天或需要核对的事项" rows={4} /></label>
             <button type="submit" className="button button-dark">加入分享板块 ↗</button>
-            <small>支持 xiaohongshu.com / xhslink.com；只保存链接和你的备注，不会代你发布内容。</small>
+            <small>手机端可直接粘贴“标题 + 链接 + 複製後開啟小紅書查看筆記”整段文案，系统会自动提取链接和前面的标题。支持 xiaohongshu.com / xhslink.com / xhslink.cn；只保存链接和你的备注，不会代你发布内容。</small>
           </form>
           <div className="xhs-share-list">
             {xiaohongshuLinks.map((item) => (
