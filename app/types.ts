@@ -41,4 +41,5 @@ export type TripState = {
   days: DayPlan[];
   places: Place[];
   xiaohongshuLinks?: XiaohongshuShare[];
+  preDepartureChecklist?: Record<string, boolean>;
 };

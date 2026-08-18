@@ -1832,6 +1832,286 @@ const UPDATED_HOURLY_PLANS: HourlyPlan[] = [
 
 HOURLY_PLANS.splice(0, HOURLY_PLANS.length, ...UPDATED_HOURLY_PLANS);
 
+type ChecklistItem = {
+  id: string;
+  title: string;
+  detail: string;
+  timing: string;
+  priority?: "必做" | "建议" | "按需";
+};
+
+type ChecklistGroup = {
+  id: string;
+  kicker: string;
+  title: string;
+  note: string;
+  items: ChecklistItem[];
+};
+
+const PRE_DEPARTURE_GROUPS: ChecklistGroup[] = [
+  {
+    id: "documents",
+    kicker: "01 / 证件",
+    title: "身份、入境与保险",
+    note: "先把‘能不能顺利出发’的事情做完；护照、二维码和酒店地址不要只存在一个手机里。",
+    items: [
+      { id: "check-doc-passport", title: "护照原件与有效期", detail: "两个人分别检查姓名、出生日期、签名页和有效期；护照放在随身包，不放托运行李。", timing: "现在", priority: "必做" },
+      { id: "check-doc-visa", title: "签证 / 入境资格材料", detail: "你们已办好签证，仍要保存签证相关材料，并核对护照姓名与机票、酒店预订是否一致。", timing: "现在", priority: "必做" },
+      { id: "check-doc-copy", title: "证件备份", detail: "护照资料页、签证、机票、酒店确认单各留一份离线 PDF / 截图；可各自保存一份，不要只放在同一台手机。", timing: "出发前 7–14 天", priority: "必做" },
+      { id: "check-doc-vjw", title: "填写 Visit Japan Web", detail: "按入境机场和航班录入入境、海关信息，生成二维码；出发前再次打开确认，并保留纸质 / 截图备份。", timing: "出发前 72 小时", priority: "必做" },
+      { id: "check-doc-address", title: "酒店日文地址与电话", detail: "把东京、京都、大阪三处酒店的日文地址、电话、入住人姓名保存到备忘录；给司机或问路时直接出示。", timing: "出发前 7 天", priority: "必做" },
+      { id: "check-doc-flight", title: "往返机票与机场确认", detail: "确认上海出发机场、东京进港（HND / NRT）、大阪回程 KIX、行李额度、航站楼和在线值机时间。", timing: "出发前 7 天", priority: "必做" },
+      { id: "check-doc-insurance", title: "旅行保险与紧急联系人", detail: "保存保单号、理赔电话、两位家人 / 朋友联系方式；把过敏情况和常用药写进自己的紧急信息。", timing: "出发前 7–14 天", priority: "建议" },
+      { id: "check-doc-customs", title: "检查日本海关限制物品", detail: "肉制品、植物、药品和免税品规则不要凭攻略猜；不确定的物品先查日本海关官方说明。", timing: "出发前 7 天", priority: "必做" },
+    ],
+  },
+  {
+    id: "bookings",
+    kicker: "02 / 预订",
+    title: "机票、酒店与跨城交通",
+    note: "你们的路线是东京 → 京都 → 大阪，只有两次换酒店；提前锁定关键交通，现场只处理小调整。",
+    items: [
+      { id: "check-book-flight", title: "比较 HND / NRT 进东京", detail: "把票价、落地时间和进城耗时一起比较；不要为便宜一点的票牺牲你们 09:00 起床和第一天体力。", timing: "现在", priority: "必做" },
+      { id: "check-book-hotels", title: "确认 3 个住宿基地", detail: "东京 4 晚、京都 2 晚、大阪 1 晚；确认入住时间、寄存行李、洗衣机、浴室和晚到入住规则。", timing: "现在", priority: "必做" },
+      { id: "check-book-fuji", title: "预留东京—河口湖往返交通", detail: "按晚起版预留高速巴士 / 铁路方案，确认集合点、回程班次、退改规则和天气不好时的备选。", timing: "出发前 14–30 天", priority: "必做" },
+      { id: "check-book-shinkansen", title: "预订东京 → 京都新干线", detail: "比较 Nozomi / 其他班次和指定席；两个人坐一起，行李多时确认大件行李规则。", timing: "出发前 14–30 天", priority: "必做" },
+      { id: "check-book-kix", title: "确认大阪难波 → KIX 路线", detail: "根据航班时间倒推，提前看 Nankai / JR 机场快线和最晚班次；返程日不要临时从远处跨区。", timing: "出发前 7 天", priority: "必做" },
+      { id: "check-book-reservations", title: "预约必须预约的项目", detail: "把热门餐厅、富士山巴士、展望台、需要预约的温泉和限定活动分开列；不确定就留可取消方案。", timing: "出发前 7–30 天", priority: "按需" },
+      { id: "check-book-luggage", title: "决定行李寄送还是自己拖", detail: "东京换京都、京都换大阪时优先问酒店宅急便；随身只留 1 晚换洗、药物、充电器和证件。", timing: "出发前 7 天", priority: "建议" },
+      { id: "check-book-share", title: "把行程分享给女朋友和家人", detail: "用网页的‘分享行程’复制链接；再把酒店、航班和紧急联系人发给一位家人，避免只有一个人知道全程。", timing: "出发前 72 小时", priority: "建议" },
+    ],
+  },
+  {
+    id: "phone",
+    kicker: "03 / 网络",
+    title: "流量卡、手机与常用 App",
+    note: "手机是地图、翻译、二维码和联系酒店的核心；流量卡建议在国内买好并把激活步骤离线保存。",
+    items: [
+      { id: "check-phone-unlocked", title: "确认手机支持 eSIM / 实体 SIM 且未锁网", detail: "两个人分别确认机型、运营商限制、双卡能力和剩余存储；不确定就选择实体卡或 Wi‑Fi 备用。", timing: "现在", priority: "必做" },
+      { id: "check-phone-sim", title: "购买日本流量卡 / eSIM", detail: "按 8 天用量选套餐；比较总流量、热点、有效期、是否支持 5G 和客服方式，不要只看单价。", timing: "出发前 7–14 天", priority: "必做" },
+      { id: "check-phone-qr", title: "保存 eSIM QR 与安装说明", detail: "把 QR、APN、客服入口和激活步骤保存为截图 / PDF；部分产品安装或启用就开始计时，按商家说明操作。", timing: "出发前 72 小时", priority: "必做" },
+      { id: "check-phone-sms", title: "保留中国 SIM 接收短信", detail: "如果银行卡、航司或验证码依赖中国号码，确认双卡线路名称；关闭中国卡数据漫游，避免误产生费用。", timing: "出发前 72 小时", priority: "必做" },
+      { id: "check-phone-apps", title: "安装地图、翻译与交通 App", detail: "提前登录并测试 Google Maps / Apple 地图、翻译、航司、酒店、JR / 巴士购票页面；把关键路线截屏。", timing: "出发前 7 天", priority: "必做" },
+      { id: "check-phone-offline", title: "下载离线资料", detail: "保存机场到酒店、酒店到车站、富士山返程、京都到奈良和难波到 KIX 的地址与路线。", timing: "出发前 72 小时", priority: "建议" },
+      { id: "check-phone-backup", title: "准备网络备用方案", detail: "至少一部手机保留漫游 / 另一张 SIM / 移动 Wi‑Fi 其中一项；在山区和地下站不要假设信号一直稳定。", timing: "出发前 7 天", priority: "建议" },
+      { id: "check-phone-charge", title: "出门前把两台手机充满", detail: "飞机上、机场和长途巴士都可能需要导航；充电宝放随身包，别放托运行李。", timing: "每天出门前", priority: "必做" },
+    ],
+  },
+  {
+    id: "money",
+    kicker: "04 / 钱包",
+    title: "现金、银行卡与交通卡",
+    note: "日本城市里刷卡和 IC 卡很方便，但小店、神社、市场和部分机器仍可能只收现金；两个人不要只带一张卡。",
+    items: [
+      { id: "check-money-cards", title: "准备两张不同渠道的银行卡", detail: "两个人各自保管一张；出发前确认境外支付、磁条 / 芯片、取现和风控设置，别把卡号完整写进网页。", timing: "出发前 7 天", priority: "必做" },
+      { id: "check-money-bank", title: "告知银行出境旅行 / 检查限额", detail: "确认短信验证、境外手续费和每日限额；准备一张不依赖同一账户的备用支付方式。", timing: "出发前 7 天", priority: "建议" },
+      { id: "check-money-yen", title: "准备少量日元现金与硬币袋", detail: "机场交通、自动售票机、神社、市场和小店可能要现金；不要一次换太多，留意硬币收纳。", timing: "出发前 1–3 天", priority: "必做" },
+      { id: "check-money-ic", title: "决定 Suica / PASMO / ICOCA 方案", detail: "东京和关西都可按实际路线选择 IC 卡；提前确认手机地区、卡片兼容性或到站购买方式。", timing: "出发前 7 天", priority: "必做" },
+      { id: "check-money-taxfree", title: "准备免税购物的护照与预算", detail: "免税店通常需要本人护照；Chiikawa、药妆和伴手礼分开记预算，保留发票和包装。", timing: "出发前 7 天", priority: "建议" },
+      { id: "check-money-budget", title: "做每日上限与共同账本", detail: "把机酒、跨城交通、餐饮、Chiikawa、药妆和应急金分栏；当天超预算就删低优先级购物。", timing: "出发前 7 天", priority: "建议" },
+    ],
+  },
+  {
+    id: "clothes",
+    kicker: "05 / 衣物",
+    title: "衣服、裤子与 9 月体感",
+    note: "9 月仍可能闷热、下雨或遇台风；按出发前一周预报调整，宁可带轻薄可洗的衣物，也不要带一箱厚衣服。",
+    items: [
+      { id: "check-clothes-tops", title: "透气短袖 4–5 件", detail: "优先速干、容易洗和不怕皱的款式；按酒店洗衣条件决定是否少带一件。", timing: "出发前 7 天", priority: "必做" },
+      { id: "check-clothes-bottoms", title: "轻薄长裤 / 半裙 2–3 件", detail: "东京、京都、大阪每天步行多；选能坐车、爬台阶、应对空调和寺社场合的款式。", timing: "出发前 7 天", priority: "必做" },
+      { id: "check-clothes-underwear", title: "内衣裤与袜子按 8 天准备", detail: "建议 8 套起，再按是否中途洗衣调整；装一个干净袋和一个脏衣袋。", timing: "出发前 3 天", priority: "必做" },
+      { id: "check-clothes-sleep", title: "睡衣 / 轻薄家居服", detail: "酒店不一定提供适合你的睡衣；两个人各带一套，减少晚上临时买东西。", timing: "出发前 3 天", priority: "建议" },
+      { id: "check-clothes-layer", title: "薄外套或长袖衬衫", detail: "飞机、车站、商场和夜间可能偏冷；不需要厚羽绒，选择可卷起的轻薄层。", timing: "出发前 7 天", priority: "必做" },
+      { id: "check-clothes-rain", title: "折叠伞 / 轻便雨衣", detail: "富士山、京都和大阪都可能临时下雨；鞋袜湿了会明显影响步行体验。", timing: "出发前 3 天", priority: "必做" },
+      { id: "check-clothes-shoes", title: "已经磨合的步行鞋", detail: "至少带一双真正走过长距离的运动鞋；不要把新鞋留到日本第一天穿。", timing: "现在", priority: "必做" },
+      { id: "check-clothes-sandals", title: "备用凉鞋 / 拖鞋（按需）", detail: "温泉、酒店和洗衣后可用；如果行李紧张，优先保证主鞋和雨具。", timing: "出发前 3 天", priority: "按需" },
+      { id: "check-clothes-sun", title: "帽子、防晒和吸汗用品", detail: "富士山湖畔、奈良和大阪步行路段日晒明显；防晒霜、墨镜和小毛巾放日包。", timing: "出发前 3 天", priority: "必做" },
+      { id: "check-clothes-laundry", title: "洗衣袋、压缩袋和少量洗衣用品", detail: "把衣物按‘干净 / 待洗 / 明天穿’分开；液体用品按航空随身规则分装。", timing: "出发前 3 天", priority: "建议" },
+    ],
+  },
+  {
+    id: "health",
+    kicker: "06 / 健康",
+    title: "过敏药、常用药与安全边界",
+    note: "你对生三文鱼等海鲜过敏，‘带药’不等于可以试吃过敏原；把避让、沟通和就医信息一起准备好。",
+    items: [
+      { id: "check-health-loratadine", title: "氯雷他定片与个人常用药", detail: "按医生 / 药品说明准备足量，放随身包；不要只带一两片，也不要把全部药放托运行李。", timing: "出发前 7 天", priority: "必做" },
+      { id: "check-health-package", title: "保留原包装与药品说明", detail: "处方药或成分特殊的药先查日本携带规定；药名、成分、剂量和用法写成中英日对照。", timing: "出发前 14 天", priority: "必做" },
+      { id: "check-health-card", title: "制作日语过敏卡", detail: "写清：鮭 / 生魚等已知过敏项、不要共用餐具、确认鱼介出汁和酱汁；打印两张并存手机。", timing: "出发前 7 天", priority: "必做" },
+      { id: "check-health-cross", title: "约定‘不确定就不吃’规则", detail: "女朋友可以单独吃寿司或刺身；你不共用筷子、蘸料、汤底、烤网，也不把熟食默认成无鱼介。", timing: "出发前 7 天", priority: "必做" },
+      { id: "check-health-firstaid", title: "创可贴、磨脚贴与消毒用品", detail: "每天 1–1.5 万步很容易磨脚；小包装创可贴、消毒湿巾和备用袜子放日包。", timing: "出发前 3 天", priority: "必做" },
+      { id: "check-health-motion", title: "晕车 / 晕船与肠胃备用品", detail: "富士山巴士、奈良和长途车程准备个人适用的药品；先确认成分和携带规则。", timing: "出发前 7 天", priority: "按需" },
+      { id: "check-health-sanitize", title: "湿巾、纸巾、免洗洗手液", detail: "市场、车站和排队时很实用；注意液体随身容量与航空规定。", timing: "出发前 3 天", priority: "建议" },
+      { id: "check-health-sun", title: "防晒、止痒和防蚊用品", detail: "富士、奈良、公园和晚间河边都可能用到；按个人皮肤情况选择。", timing: "出发前 3 天", priority: "建议" },
+      { id: "check-health-emergency", title: "记录急救与就医信息", detail: "把保险电话、酒店地址、过敏卡和紧急联系人放在锁屏 / 钱包里；严重过敏按医生的应急方案处理。", timing: "出发前 72 小时", priority: "必做" },
+    ],
+  },
+  {
+    id: "electronics",
+    kicker: "07 / 电子",
+    title: "充电器、插头与随身设备",
+    note: "日本是 100V、Type A 插座；中国大陆设备是否需要转换插头 / 变压器，要看插头和设备铭牌。",
+    items: [
+      { id: "check-tech-adapter", title: "Type A 转换插头", detail: "日本常用两片平行插脚；确认充电器插头是否能直接使用，必要时带一个小型转换头。", timing: "出发前 7 天", priority: "必做" },
+      { id: "check-tech-voltage", title: "检查设备 100V 兼容性", detail: "手机、相机充电器通常支持宽电压，但吹风机、卷发棒等大功率设备要看铭牌，必要时别带。", timing: "出发前 7 天", priority: "必做" },
+      { id: "check-tech-chargers", title: "手机 / 手表 / 相机充电器", detail: "两个人各自准备自己的线，公共充电器再带一套；线材贴标签，避免换酒店遗漏。", timing: "出发前 3 天", priority: "必做" },
+      { id: "check-tech-powerbank", title: "充电宝放随身包", detail: "不要托运；提前确认容量标识、航空公司最新要求和是否需要单独收纳。", timing: "出发前 3 天", priority: "必做" },
+      { id: "check-tech-camera", title: "相机、备用电池与存储卡", detail: "富士山和 Chiikawa 购物都可能拍很多照片；出发前备份旧照片并格式化备用卡。", timing: "出发前 3 天", priority: "按需" },
+      { id: "check-tech-earbuds", title: "耳机、眼罩和耳塞", detail: "长途飞机、巴士和酒店隔音不确定；给 8 天路线留一点安静的恢复时间。", timing: "出发前 3 天", priority: "建议" },
+      { id: "check-tech-cable", title: "线材收纳袋", detail: "把充电头、线、转换头和充电宝放在同一小包，换酒店时一眼可见。", timing: "出发前 3 天", priority: "建议" },
+      { id: "check-tech-backup", title: "重要文件离线可读", detail: "机票、酒店、VJW、过敏卡和交通票不要只依赖登录状态；截图时遮住不必要的隐私信息。", timing: "出发前 72 小时", priority: "必做" },
+    ],
+  },
+  {
+    id: "daily",
+    kicker: "08 / 日包",
+    title: "每天真正会拿出来的东西",
+    note: "把大行李留在酒店，日包只装一天的必需品；特别是富士山和奈良，不要背着全部购物战利品。",
+    items: [
+      { id: "check-daily-bag", title: "轻便斜挎包 / 小背包", detail: "能放护照、手机、钱包、药物、充电宝、雨具和水；拉链比开放式托特更稳妥。", timing: "出发前 3 天", priority: "必做" },
+      { id: "check-daily-passport", title: "护照与小额现金随身", detail: "免税购物、酒店、交通和入境相关场景可能会用到；不要放在行李箱深处。", timing: "每天出门前", priority: "必做" },
+      { id: "check-daily-towel", title: "小毛巾 / 吸汗巾", detail: "日本很多洗手间不一定提供烘手机或纸巾；9 月步行时也能应对出汗。", timing: "出发前 3 天", priority: "建议" },
+      { id: "check-daily-bottle", title: "可重复使用水瓶", detail: "每天出门前装水；喝完再在便利店或酒店补，别因为找水打断路线。", timing: "每天出门前", priority: "建议" },
+      { id: "check-daily-bags", title: "折叠购物袋与密封袋", detail: "日本街头垃圾桶不一定随处可见；购物、湿伞、零食和小垃圾分开装。", timing: "出发前 3 天", priority: "必做" },
+      { id: "check-daily-pen", title: "笔与小纸条", detail: "填写纸质表格、记车次、写日文过敏说明或给店员看时都方便。", timing: "出发前 3 天", priority: "建议" },
+      { id: "check-daily-luggage", title: "行李牌、行李锁和备用绑带", detail: "给两个人的箱子写英文姓名和联系方式；购物后用绑带固定外袋。", timing: "出发前 3 天", priority: "建议" },
+      { id: "check-daily-phrases", title: "保存 5 句日语求助句", detail: "过敏、问路、确认站台、请帮忙和买单先写好；翻译软件失灵时也能直接出示。", timing: "出发前 7 天", priority: "必做" },
+    ],
+  },
+  {
+    id: "timeline",
+    kicker: "09 / 倒计时",
+    title: "出发前 14 天到起飞当天",
+    note: "把准备拆成小块，不要在起飞前一晚同时找护照、买流量卡和查天气。",
+    items: [
+      { id: "check-time-weather", title: "看东京、富士、京都、大阪预报", detail: "先看 7 天趋势，再在出发前 48 小时看降雨、台风和高温；富士山行程可和镰仓互换。", timing: "出发前 7 天 / 48 小时", priority: "必做" },
+      { id: "check-time-stock", title: "查 Chiikawa 店铺公告与库存规则", detail: "东京站店、秋叶原和可能的机场备选分开记录；不要把限定商品有货当成保证。", timing: "出发前 7 天 / 当天早上", priority: "必做" },
+      { id: "check-time-reserve", title: "复核预约和取消截止时间", detail: "把富士巴士、新干线、住宿、展望台和餐厅按日期排好；把不可退项目单独标红。", timing: "出发前 7 天", priority: "必做" },
+      { id: "check-time-vjw", title: "截图 VJW 二维码与酒店信息", detail: "用 Wi‑Fi 和流量各测试一次能否打开；截图不含多余隐私，二维码只给同行和工作人员看。", timing: "出发前 72 小时", priority: "必做" },
+      { id: "check-time-sim", title: "测试 eSIM / SIM 安装步骤", detail: "不要在不清楚计时规则时提前激活；把日本数据线路、漫游开关和 APN 步骤写在纸上。", timing: "出发前 72 小时", priority: "必做" },
+      { id: "check-time-cash", title: "换日元、检查银行卡与充电宝", detail: "现金、卡、手机和充电宝分开保管；两个人至少各有一套能独立完成一天的支付和导航工具。", timing: "出发前 48 小时", priority: "必做" },
+      { id: "check-time-online", title: "完成航司在线值机 / 座位确认", detail: "检查托运行李、机场航站楼、起飞时间和到达后的交通，不要只看购票邮件标题。", timing: "出发前 24 小时", priority: "必做" },
+      { id: "check-time-pack", title: "按随身包 / 托运行李分装", detail: "随身包：证件、药物、充电宝、充电器、过敏卡、贵重物；托运行李：衣物和非必要用品。", timing: "出发前 24 小时", priority: "必做" },
+      { id: "check-time-home", title: "关水电、清空易坏食物、备份钥匙", detail: "把家里、工作和宠物 / 植物安排好；不要让旅行第一天还在处理家中琐事。", timing: "出发前 24 小时", priority: "建议" },
+      { id: "check-time-final", title: "出门前最后 10 项点名", detail: "护照、钱包、手机、充电器、充电宝、药物、过敏卡、机票、VJW、酒店地址。", timing: "出发当天", priority: "必做" },
+    ],
+  },
+  {
+    id: "arrival",
+    kicker: "10 / 落地",
+    title: "抵达日本后的前两小时",
+    note: "这部分也提前看一遍：落地后只做必要动作，不要刚入境就拖箱跨城追景点。",
+    items: [
+      { id: "check-arrival-sim", title: "落地后再启用日本数据线路", detail: "按购买说明切换数据线路，确认能打开地图和联系酒店；中国号码保留接收验证码。", timing: "落地后", priority: "必做" },
+      { id: "check-arrival-immigration", title: "准备护照、VJW 二维码、酒店地址", detail: "把二维码和酒店信息放在容易打开的位置，入境与海关时按工作人员指引操作。", timing: "落地后", priority: "必做" },
+      { id: "check-arrival-luggage", title: "取行李后检查箱体与物品", detail: "确认行李牌、箱锁和贵重物；如果要寄送行李，先拍照留存并确认送达时间。", timing: "落地后", priority: "建议" },
+      { id: "check-arrival-ic", title: "完成 IC 卡 / 机场交通准备", detail: "先确认从 HND / NRT 到酒店的路线，再买卡或车票；不要拖着行李在站内来回找机器。", timing: "落地后", priority: "必做" },
+      { id: "check-arrival-hotel", title: "先到酒店寄存，再开始行程", detail: "把护照、药物、充电器和当晚换洗留在随身包；第一天只走浅草 / 上野主线。", timing: "落地后", priority: "必做" },
+      { id: "check-arrival-message", title: "给家人和同行者报平安", detail: "发送‘已入境 / 已到酒店’即可，不要在公共场合长时间掏出全部证件和现金。", timing: "到酒店后", priority: "建议" },
+      { id: "check-arrival-reset", title: "晚上不补行程", detail: "确认第二天车票、天气、药物和充电后休息；不为了打卡把睡觉拖到 02:00 以后。", timing: "每天 21:00 后", priority: "必做" },
+    ],
+  },
+];
+
+type ChecklistSource = {
+  title: string;
+  author: string;
+  noteId: string;
+  summary: string;
+  link: string;
+};
+
+const CHECKLIST_SOURCES: ChecklistSource[] = [
+  {
+    title: "第一次去日本需要带什么（J人版）",
+    author: "修勾礼宝 · 07-18",
+    noteId: "6a5b472b000000000a03b096",
+    summary: "从第一次出行的角度整理证件、衣物、电子设备、药品和随身小物，适合用来做漏项检查。",
+    link: "https://www.xiaohongshu.com/explore/6a5b472b000000000a03b096",
+  },
+  {
+    title: "🇯🇵日本旅行必备清单（临时出发版✈️）",
+    author: "Mandy · 2025-11-06",
+    noteId: "690ca5400000000007000be0",
+    summary: "临时出发视角，集中提醒护照、充电、网络、现金和行李减法，适合出发前 72 小时复核。",
+    link: "https://www.xiaohongshu.com/explore/690ca5400000000007000be0",
+  },
+  {
+    title: "日本玩了 7 天，分享超详细旅行清单！",
+    author: "囡囝囚团. · 07-16",
+    noteId: "6a58a34c000000000f00bb02",
+    summary: "7 天实测型清单，补充交通卡、防晒、现金、预约和衣物等容易被忽略的旅行细节。",
+    link: "https://www.xiaohongshu.com/explore/6a58a34c000000000f00bb02",
+  },
+  {
+    title: "🧾日本自由行保姆级行前准备清单",
+    author: "蟹宝爱睡觉 · 2025-09-10",
+    noteId: "68c161b7000000001d01e8a3",
+    summary: "按出发前、机场和抵达后的时间顺序整理，适合和本页倒计时区一起核对。",
+    link: "https://www.xiaohongshu.com/explore/68c161b7000000001d01e8a3",
+  },
+  {
+    title: "第一次去日本旅行的 check list🧾",
+    author: "空空 · 07-14",
+    noteId: "6a55e50e000000000702b4cf",
+    summary: "用 checklist 形式提醒证件、网络、换汇和日用品，适合两个人分工勾选。",
+    link: "https://www.xiaohongshu.com/explore/6a55e50e000000000702b4cf",
+  },
+  {
+    title: "去关西没提前买手机流量卡，怎么办？",
+    author: "马尼马 · 07-11",
+    noteId: "6a51b430000000002101b5b0",
+    summary: "提醒不要等落地后才处理网络；本页将 eSIM / 实体卡、二维码、双卡和备用方案拆开。",
+    link: "https://www.xiaohongshu.com/explore/6a51b430000000002101b5b0",
+  },
+  {
+    title: "新手向：两种日本流量开通方式",
+    author: "黑色麦芽 · 2025-10-01",
+    noteId: "68dd4b43000000000301e6a2",
+    summary: "围绕实体卡 / eSIM 的启用方式做对比；具体套餐、有效期和 APN 仍需看购买商家的最新说明。",
+    link: "https://www.xiaohongshu.com/explore/68dd4b43000000000301e6a2",
+  },
+  {
+    title: "日本签证 Visit Japan Web VJW 一定要提前填",
+    author: "CatCameBack · 2025-08-19",
+    noteId: "68a42945000000001c030a35",
+    summary: "围绕入境二维码和资料填写提醒提前准备；本页同时放了日本数字厅官方入口。",
+    link: "https://www.xiaohongshu.com/explore/68a42945000000001c030a35",
+  },
+  {
+    title: "日本一分钟丝滑入境！关西机场保姆级攻略",
+    author: "正在漫游 · 07-16",
+    noteId: "6a57d1f70000000008003731",
+    summary: "按 KIX 落地动线提示入境、取行李、交通与时间留余；适合核对返程和大阪落地两段流程。",
+    link: "https://www.xiaohongshu.com/explore/6a57d1f70000000008003731",
+  },
+  {
+    title: "赴日支付保姆级攻略✨90%场景全覆盖",
+    author: "Vivian · 08-10",
+    noteId: "6a79e2060000000005033a5b",
+    summary: "提醒现金、银行卡和移动支付要做备份；本页进一步按东京、京都、大阪的小店场景拆分。",
+    link: "https://www.xiaohongshu.com/explore/6a79e2060000000005033a5b",
+  },
+  {
+    title: "✅日本西瓜卡终极省钱技巧",
+    author: "FFMO · 2 小时前",
+    noteId: "6a83e4550000000005032bef",
+    summary: "围绕 IC 卡使用场景做提醒；实际选择手机卡、实体卡或关西 IC 卡要按设备和路线确认。",
+    link: "https://www.xiaohongshu.com/explore/6a83e4550000000005032bef",
+  },
+];
+
+const CHECKLIST_OFFICIAL_SOURCES = [
+  { label: "入境", title: "Visit Japan Web · 日本数字厅", href: "https://www.digital.go.jp/en/policies/visit_japan_web" },
+  { label: "海关", title: "Japan Customs · Passenger Clearance", href: "https://www.customs.go.jp/english/summary/passenger.htm" },
+  { label: "药品", title: "JNTO · Bringing Medication into Japan", href: "https://www.japan.travel/en/ca/bringing-medication-into-japan/" },
+  { label: "插座", title: "JNTO · Plugs & Electricity", href: "https://www.japan.travel/en/plan/plug-and-electricity/" },
+  { label: "行李", title: "JNTO · Luggage & Storage", href: "https://www.japan.travel/en/plan/getting-around/luggage-storage/" },
+  { label: "天气", title: "Japan Meteorological Agency · Forecast", href: "https://www.jma.go.jp/jma/en/Activities/forecast.html" },
+  { label: "规划", title: "JNTO · Japan Travel Planning", href: "https://www.japan.travel/en/plan/" },
+  { label: "免税", title: "JNTO · Japan’s Tax Exemption", href: "https://www.japan.travel/en/plan/japans-tax-exemption/" },
+];
+
 const RESEARCH_TIPS = [
   {
     label: "小红书笔记 01",
@@ -1967,14 +2247,35 @@ const RESEARCH_TIPS = [
   },
 ];
 
-const DEFAULT_XHS_SHARES: XiaohongshuShare[] = RESEARCH_TIPS.map((tip) => ({
-  id: `researched-${tip.noteId}`,
-  title: tip.sourceTitle,
-  url: tip.link,
-  note: `${tip.title}：${tip.decision}`,
-  author: tip.author,
-  source: "researched",
-}));
+const DEFAULT_XHS_SHARES: XiaohongshuShare[] = [
+  ...RESEARCH_TIPS.map((tip) => ({
+    id: `researched-${tip.noteId}`,
+    title: tip.sourceTitle,
+    url: tip.link,
+    note: `${tip.title}：${tip.decision}`,
+    author: tip.author,
+    source: "researched" as const,
+  })),
+  ...CHECKLIST_SOURCES.map((source) => ({
+    id: `researched-checklist-${source.noteId}`,
+    title: source.title,
+    url: source.link,
+    note: source.summary,
+    author: source.author,
+    source: "researched" as const,
+  })),
+];
+
+function mergeDefaultXhsShares(saved: XiaohongshuShare[]) {
+  const savedResearchIds = new Set(saved.filter((item) => item.source === "researched").map((item) => item.id));
+  const savedUserLinks = saved.filter((item) => item.source !== "researched");
+  const savedResearchLinks = saved.filter((item) => item.source === "researched");
+  return [
+    ...savedResearchLinks,
+    ...DEFAULT_XHS_SHARES.filter((item) => !savedResearchIds.has(item.id)),
+    ...savedUserLinks,
+  ];
+}
 
 const CATEGORY_META: Record<PlaceCategory | "all", { label: string; icon: string }> = {
   all: { label: "全部", icon: "⌘" },
@@ -2002,8 +2303,13 @@ function makeDraft(day: DayId = 1): PlaceDraft {
   };
 }
 
-function makeSnapshot(days: DayPlan[], places: Place[], xiaohongshuLinks: XiaohongshuShare[]): TripState {
-  return { version: TRIP_DATA_VERSION, days, places, xiaohongshuLinks };
+function makeSnapshot(
+  days: DayPlan[],
+  places: Place[],
+  xiaohongshuLinks: XiaohongshuShare[],
+  preDepartureChecklist: Record<string, boolean> = {},
+): TripState {
+  return { version: TRIP_DATA_VERSION, days, places, xiaohongshuLinks, preDepartureChecklist };
 }
 
 const XHS_HOSTS = new Set([
@@ -2098,6 +2404,7 @@ export default function Home() {
   const [days, setDays] = useState<DayPlan[]>(DAYS);
   const [places, setPlaces] = useState<Place[]>(PLACES);
   const [xiaohongshuLinks, setXiaohongshuLinks] = useState<XiaohongshuShare[]>(DEFAULT_XHS_SHARES);
+  const [preDepartureChecklist, setPreDepartureChecklist] = useState<Record<string, boolean>>({});
   const [selectedDay, setSelectedDay] = useState<number | "all">("all");
   const [categoryFilter, setCategoryFilter] = useState<PlaceCategory | "all">("all");
   const [search, setSearch] = useState("");
@@ -2134,7 +2441,8 @@ export default function Home() {
         const isCurrentVersion = next.version === TRIP_DATA_VERSION;
         setDays(isCurrentVersion && next.days.length ? next.days : DAYS);
         setPlaces(isCurrentVersion ? next.places : migratePlaces(next.places));
-        setXiaohongshuLinks(Array.isArray(next.xiaohongshuLinks) ? next.xiaohongshuLinks : DEFAULT_XHS_SHARES);
+        setXiaohongshuLinks(Array.isArray(next.xiaohongshuLinks) ? mergeDefaultXhsShares(next.xiaohongshuLinks) : DEFAULT_XHS_SHARES);
+        setPreDepartureChecklist(next.preDepartureChecklist ?? {});
         if (shared) setToast("已载入分享行程");
       }
       setHydrated(true);
@@ -2144,8 +2452,8 @@ export default function Home() {
 
   useEffect(() => {
     if (!hydrated) return;
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(makeSnapshot(days, places, xiaohongshuLinks)));
-  }, [days, hydrated, places, xiaohongshuLinks]);
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(makeSnapshot(days, places, xiaohongshuLinks, preDepartureChecklist)));
+  }, [days, hydrated, places, preDepartureChecklist, xiaohongshuLinks]);
 
   useEffect(() => {
     if (!toast) return;
@@ -2191,6 +2499,21 @@ export default function Home() {
   );
 
   const checkedFoodCount = foodPlaces.filter((place) => place.checked).length;
+
+  const checklistItems = useMemo(
+    () => PRE_DEPARTURE_GROUPS.flatMap((group) => group.items),
+    [],
+  );
+  const checkedChecklistCount = checklistItems.filter((item) => preDepartureChecklist[item.id]).length;
+
+  const toggleChecklistItem = (id: string) => {
+    setPreDepartureChecklist((current) => ({ ...current, [id]: !current[id] }));
+  };
+
+  const markChecklist = (checked: boolean) => {
+    setPreDepartureChecklist(Object.fromEntries(checklistItems.map((item) => [item.id, checked])));
+    setToast(checked ? "出发前清单已全部标记" : "已清空出发前清单勾选");
+  };
 
   const toggleFoodChecked = (id: string) => {
     setPlaces((current) => current.map((place) => (
@@ -2294,7 +2617,7 @@ export default function Home() {
   };
 
   const shareTrip = async () => {
-    const url = `${window.location.origin}${window.location.pathname}#share=${encodeShare(makeSnapshot(days, places, xiaohongshuLinks))}`;
+    const url = `${window.location.origin}${window.location.pathname}#share=${encodeShare(makeSnapshot(days, places, xiaohongshuLinks, preDepartureChecklist))}`;
     window.history.replaceState(null, "", url);
     try {
       await navigator.clipboard.writeText(url);
@@ -2305,7 +2628,7 @@ export default function Home() {
   };
 
   const exportTrip = () => {
-    const file = new Blob([JSON.stringify(makeSnapshot(days, places, xiaohongshuLinks), null, 2)], { type: "application/json" });
+    const file = new Blob([JSON.stringify(makeSnapshot(days, places, xiaohongshuLinks, preDepartureChecklist), null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(file);
     const anchor = document.createElement("a");
     anchor.href = url;
@@ -2324,7 +2647,8 @@ export default function Home() {
       const isCurrentVersion = parsed.version === TRIP_DATA_VERSION;
       setDays(isCurrentVersion && parsed.days.length ? parsed.days : DAYS);
       setPlaces(isCurrentVersion ? parsed.places : migratePlaces(parsed.places));
-      setXiaohongshuLinks(Array.isArray(parsed.xiaohongshuLinks) ? parsed.xiaohongshuLinks : DEFAULT_XHS_SHARES);
+      setXiaohongshuLinks(Array.isArray(parsed.xiaohongshuLinks) ? mergeDefaultXhsShares(parsed.xiaohongshuLinks) : DEFAULT_XHS_SHARES);
+      setPreDepartureChecklist(parsed.preDepartureChecklist ?? {});
       setToast("行程已导入");
     } catch {
       setToast("导入失败，请选择这个网页导出的 JSON 文件");
@@ -2338,6 +2662,7 @@ export default function Home() {
     setDays(DAYS);
     setPlaces(PLACES);
     setXiaohongshuLinks(DEFAULT_XHS_SHARES);
+    setPreDepartureChecklist({});
     setSelectedDay("all");
     setCategoryFilter("all");
     setSearch("");
@@ -2544,6 +2869,66 @@ export default function Home() {
         </section>
       </section>
 
+      <section className="departure-checklist-card">
+        <div className="checklist-heading">
+          <div>
+            <p className="section-label">BEFORE YOU GO / 出发前清单</p>
+            <h2>把护照、裤子、充电器和流量卡，一项项打勾。</h2>
+            <p className="expansion-intro">这份清单按你们的 8 天东京—富士山—京都—大阪路线整理：先合并小红书多篇行前清单，再补上日本官方的入境、海关、药品、插座、天气和行李资料。每一项都能勾选，勾选状态会随本地保存、导出和分享链接带走。</p>
+          </div>
+          <div className="checklist-score"><strong>{checkedChecklistCount}</strong><span>/ {checklistItems.length} 项已完成</span><i><b style={{ width: `${checklistItems.length ? (checkedChecklistCount / checklistItems.length) * 100 : 0}%` }} /></i></div>
+        </div>
+        <div className="checklist-toolbar">
+          <span>优先处理标有“必做”的项目；“建议 / 按需”可以按行李空间取舍。</span>
+          <div><button type="button" className="text-button" onClick={() => markChecklist(true)}>全部勾选</button><button type="button" className="text-button" onClick={() => markChecklist(false)}>清空勾选</button></div>
+        </div>
+        <div className="checklist-groups">
+          {PRE_DEPARTURE_GROUPS.map((group) => {
+            const groupDone = group.items.filter((item) => preDepartureChecklist[item.id]).length;
+            return (
+              <article className="checklist-group" key={group.id}>
+                <div className="checklist-group-top"><span>{group.kicker}</span><strong>{groupDone}/{group.items.length}</strong></div>
+                <h3>{group.title}</h3>
+                <p className="checklist-group-note">{group.note}</p>
+                <div className="checklist-items">
+                  {group.items.map((item) => {
+                    const checked = Boolean(preDepartureChecklist[item.id]);
+                    return (
+                      <button type="button" className={`checklist-item ${checked ? "is-done" : ""}`} key={item.id} aria-pressed={checked} onClick={() => toggleChecklistItem(item.id)}>
+                        <span className="checklist-box" aria-hidden="true">{checked ? "✓" : ""}</span>
+                        <span className="checklist-item-copy"><span><strong>{item.title}</strong>{item.priority && <em className={`checklist-priority priority-${item.priority === "必做" ? "must" : item.priority === "建议" ? "suggest" : "optional"}`}>{item.priority}</em>}</span><small><b>{item.timing}</b>{item.detail}</small></span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </article>
+            );
+          })}
+        </div>
+        <div className="checklist-sources">
+          <div className="checklist-sources-head">
+            <div><p className="section-label">SOURCE CHECK / 来源核对</p><h3>这份清单参考了哪些小红书笔记？</h3></div>
+            <span>小红书站内搜索 · 行前准备</span>
+          </div>
+          <p className="checklist-source-intro">下面保留笔记标题、作者和笔记 ID，方便你们手机打开原文复核。小红书内容是经验参考，套餐价格、入境规则、药品和天气请以右侧官方页面为准。</p>
+          <div className="checklist-source-grid">
+            {CHECKLIST_SOURCES.map((source) => (
+              <a className="checklist-source-card" href={source.link} target="_blank" rel="noreferrer" key={source.noteId}>
+                <span className="checklist-source-badge">小红书笔记</span>
+                <strong>{source.title}</strong>
+                <small>{source.author} · ID {source.noteId}</small>
+                <p>{source.summary}</p>
+                <em>打开原笔记 ↗</em>
+              </a>
+            ))}
+          </div>
+          <div className="checklist-official">
+            <span>官方核对入口</span>
+            <div>{CHECKLIST_OFFICIAL_SOURCES.map((source) => <a href={source.href} target="_blank" rel="noreferrer" key={source.href}><b>{source.label}</b>{source.title} ↗</a>)}</div>
+          </div>
+        </div>
+      </section>
+
       <section className="hourly-card">
         <div className="expansion-heading">
           <div>
@@ -2653,7 +3038,7 @@ export default function Home() {
           <div>
             <p className="section-label">RED NOTE / 小红书分享</p>
             <h2>把想看的攻略，集中放在这里。</h2>
-            <p>左侧是你已核验的 {RESEARCH_TIPS.length} 篇小红书笔记，右侧可以继续粘贴自己的收藏。链接会和地点、打卡状态一起保存在浏览器，也会随导出文件和分享行程带走。</p>
+            <p>网页已预置 {RESEARCH_TIPS.length + CHECKLIST_SOURCES.length} 篇路线与行前小红书笔记，下面还可以继续粘贴自己的收藏。链接会和地点、打卡状态、出发前清单一起保存在浏览器，也会随导出文件和分享行程带走。</p>
           </div>
           <span className="xhs-board-count">{xiaohongshuLinks.length} 条链接</span>
         </div>
