@@ -70,6 +70,18 @@ const TRIP_PHOTOS: TripPhoto[] = [
   },
 ];
 
+const PAGE_MODULES = [
+  { href: "#route-gallery", label: "行程图像" },
+  { href: "#map", label: "路线地图" },
+  { href: "#stays", label: "住宿" },
+  { href: "#food", label: "美食" },
+  { href: "#checklist", label: "出发清单" },
+  { href: "#sources", label: "来源" },
+  { href: "#hourly", label: "小时攻略" },
+  { href: "#tips", label: "旅行提示" },
+  { href: "#xhs-board", label: "小红书分享" },
+];
+
 const LEGACY_PLACES: Place[] = [
   {
     id: "sensoji",
@@ -2042,8 +2054,8 @@ const FLIGHT_DAY_4: HourlyPlan = {
   distance: "约 9–12k 步 · 京都住 2 晚",
   items: [
     { time: "09:00–10:00", title: "起床、整理、办理退房", detail: "常见退房时间是 10:00 左右，具体以你们预订酒店为准；把护照、药物和充电宝放在随身包。", area: "东京酒店", tag: "换城" },
-    { time: "10:00–10:45", title: "酒店 → 东京站取票", detail: "拖箱只走一段地铁；预留站内找月台和买水时间，不把新干线卡在最后 5 分钟。", area: "上野 / 浅草 → 东京站", price: "¥500–1,000 / 两人", tag: "交通" },
-    { time: "10:45–13:00", title: "东海道新干线去京都", detail: "小红书换城笔记反复提醒提前确认车票和大件行李；指定席与行李规则按购票页面执行。", area: "东京 → 京都", price: "约 ¥28,000–32,000 / 两人", tag: "交通" },
+    { time: "10:00–10:45", title: "酒店 → 东京站取票", detail: "从上野 / 浅草基地按酒店位置选 JR 山手线或东京 Metro，尽量只换乘一次；到站后先找月台、买水和确认行李位。", area: "上野 / 浅草 → 东京站", price: "¥500–1,000 / 两人", tag: "交通" },
+    { time: "10:45–13:00", title: "东海道新干线去京都", detail: "优先 Nozomi 普通车指定席；小红书换城搜索结果反复提醒提前确认车票和大件行李，三边合计超过 160cm 的行李按 JR 规则提前处理。", area: "东京 → 京都", price: "约 ¥28,000–32,000 / 两人", tag: "交通" },
     { time: "13:00–13:45", title: "京都酒店寄存行李", detail: "先把箱子放下；酒店常见 15:00 左右入住，提前入住要看房态，不把它当成必然。", area: "四条乌丸 / 河原町", placeId: "kyoto-arrival-stay", tag: "行李" },
     { time: "13:45–15:00", title: "锦市场熟食小吃", detail: "只挑能问清成分的食物；你优先肉类、玉子或明确蔬食，女友海鲜单独安排。", area: "锦市场", placeId: "kyoto-arrival-nishiki", price: "¥3,000–6,000 / 两人", tag: "吃" },
     { time: "15:00–15:30", title: "回酒店办理入住", detail: "把箱子放进房间、洗手和充电；如果房间尚未准备好，就继续在河原町咖啡店休息。", area: "京都酒店", placeId: "kyoto-arrival-stay", tag: "入住" },
@@ -2081,13 +2093,13 @@ const FLIGHT_DAY_6: HourlyPlan = {
   distance: "约 12–16k 步 · 大阪住 1 晚",
   items: [
     { time: "09:00–10:00", title: "起床、整理、京都退房", detail: "常见退房约 10:00，具体以酒店规定为准；把主箱压到一件，贵重物和药物随身带。", area: "京都酒店", tag: "换城" },
-    { time: "10:00–10:45", title: "京都 → 奈良", detail: "优先近铁方向，少走到景点的路；如果带箱，先确认近铁奈良站寄存柜或直接轻装乘车。", area: "京都 → 奈良", price: "约 ¥1,500–2,500 / 两人", tag: "交通" },
+    { time: "10:00–10:45", title: "京都酒店 → 近铁京都站", detail: "四条乌丸 / 河原町先步行或乘地铁到京都站，按酒店位置选择最少换乘的方案；到近铁京都站后乘近铁京都线前往近铁奈良站。", area: "京都 → 近铁奈良", price: "约 ¥1,500–2,500 / 两人", tag: "交通" },
     { time: "10:45–11:15", title: "奈良站寄存行李 / 买水", detail: "小红书行李经验提醒先确认柜子尺寸；放不下就不要硬塞，改为全程随身一件小箱。", area: "近铁奈良站", tag: "行李" },
     { time: "11:15–12:30", title: "奈良公园与鹿群", detail: "收好包、地图和食物，给鹿留距离；鹿仙贝只在指定处购买。", area: "奈良公园", placeId: "nara-park", tag: "自然" },
     { time: "12:30–13:30", title: "奈良熟食午餐", detail: "柿叶寿司列为女友可尝候选；你选择确认过的定食、乌冬或肉类，不共享餐具。", area: "奈良公园周边", placeId: "nara-food", price: "¥3,000–6,000 / 两人", tag: "吃" },
     { time: "13:30–15:00", title: "东大寺大佛殿", detail: "奈良文化主线预留 60–90 分钟；不把春日大社和若草山都当成必须。", area: "东大寺", placeId: "todaiji", tag: "古迹" },
     { time: "15:00–16:00", title: "春日大社 / 若草山（二选一）", detail: "森林参道选春日大社，想看远景选若草山；下雨或步数高就直接回车站。", area: "奈良公园东侧", placeId: "kasuga-taisha", tag: "文化" },
-    { time: "16:00–17:00", title: "奈良 → 大阪难波", detail: "直接乘近铁到大阪难波，不返回京都；到达后办理入住或寄存，今晚住难波。", area: "奈良 → 大阪难波", price: "约 ¥1,500–2,500 / 两人", tag: "换城" },
+    { time: "16:00–17:00", title: "奈良 → 大阪难波", detail: "从近铁奈良站乘近铁奈良线到大阪难波，优先看直达或少停站车次；不返回京都取箱，抵达后直接办理入住或寄存。", area: "近铁奈良 → 大阪难波", price: "约 ¥1,500–2,500 / 两人", tag: "换城" },
     { time: "17:00–18:00", title: "难波酒店入住 / 放行李", detail: "常见入住时间约 15:00，抵达时一般可直接办理；若预订有晚到规则，提前告知酒店。", area: "大阪难波", placeId: "osaka-namba-stay", tag: "入住" },
     { time: "18:00–20:30", title: "道顿堀 · 心斋桥晚餐", detail: "先熟悉返程日要用的南海难波动线；你吃肉类 / 蔬菜大阪烧，女友再单独安排海鲜。", area: "道顿堀 / 心斋桥", placeId: "dotonbori", price: "¥4,000–9,000 / 两人", tag: "大阪" },
     { time: "20:30–22:00", title: "回难波酒店，准备 KIX", detail: "确认南海电铁 / 机场快线、航站楼、退房与寄存凭证；不再跑梅田或中之岛。", area: "难波酒店", tag: "收尾" },
@@ -2101,14 +2113,14 @@ const FLIGHT_DAY_7: HourlyPlan = {
   distance: "约 9–13k 步 · 大阪 → 浦东",
   items: [
     { time: "09:00–10:00", title: "起床、早餐、退房寄存", detail: "日本酒店常见 10:00 左右退房；提前确认最晚取行李时间，把护照、免税单、药物和充电宝放随身包。", area: "难波酒店", placeId: "osaka-day7-start", tag: "返程" },
-    { time: "10:00–10:30", title: "难波 → 大阪城", detail: "只带小包去大阪城，不拖大箱；如果前一晚步数高，可把大阪城改成难波 / 黑门室内线。", area: "难波 → 大阪城", price: "约 ¥500–800 / 两人", tag: "交通" },
+    { time: "10:00–10:30", title: "难波 → 大阪城", detail: "只带小包；常用走法是 Osaka Metro 御堂筋线难波 → 本町，换中央线到谷町四丁目，再步行进公园，具体出口按当天导航确认。", area: "难波 → 谷町四丁目", price: "约 ¥500–800 / 两人", tag: "交通" },
     { time: "10:30–12:15", title: "大阪城天守阁与公园", detail: "大阪文化主线；天守阁约 60 分钟，公园和换乘另留 30–45 分钟。", area: "大阪城公园", placeId: "osaka-castle", price: "约 ¥1,200 / 人", tag: "文化" },
-    { time: "12:15–12:45", title: "大阪城 → 黑门市场", detail: "向南回到日本桥，路线不再上梅田；提前看好返程车站和最后取行李时间。", area: "大阪城 → 日本桥", price: "约 ¥500–800 / 两人", tag: "交通" },
+    { time: "12:15–12:45", title: "大阪城 → 黑门市场", detail: "从谷町四丁目乘中央线到堺筋本町，再换堺筋线到日本桥，向南回到黑门；全程不再上梅田，提前看好最后取行李时间。", area: "谷町四丁目 → 日本桥", price: "约 ¥500–800 / 两人", tag: "交通" },
     { time: "12:45–13:45", title: "黑门市场午餐 / 小食", detail: "女友可吃海鲜，你选择烤物、玉子烧等确认过的熟食；不同摊位交叉污染风险高。", area: "日本桥", placeId: "kuromon", price: "¥3,000–6,000 / 两人", tag: "吃" },
     { time: "13:45–14:15", title: "难波八阪神社", detail: "返程日前的 30 分钟文化收尾；如果黑门排队或天气不好，直接删除。", area: "难波", placeId: "namba-yasaka", tag: "文化" },
     { time: "14:15–15:00", title: "心斋桥 / 难波最后采购", detail: "只买清单内缺的 Chiikawa、药妆和伴手礼；保留发票和免税包装，不去梅田开新战线。", area: "难波 / 心斋桥", placeId: "namba-shopping", tag: "购物" },
     { time: "15:00–15:30", title: "取行李、整理购物袋", detail: "核对护照、登机牌、充电宝、药物、免税袋和酒店寄存凭证；预留一次厕所和补水。", area: "难波酒店", placeId: "osaka-coffee", price: "¥1,400–3,000 / 两人", tag: "收尾" },
-    { time: "15:30–16:20", title: "难波 → 关西机场", detail: "南海电铁到 KIX；具体车次、座位和航站楼按当天航班页面确认，尽量不要临时换线。", area: "难波 → KIX", price: "约 ¥2,000–4,000 / 两人", tag: "交通" },
+    { time: "15:30–16:20", title: "南海难波 → 关西机场", detail: "按小红书返程搜索结果采用南海电铁主线：提前确认机场急行或 Rapi:t 的车次、座位和航站楼；不临时绕去梅田换 JR。", area: "南海难波 → KIX", price: "约 ¥2,000–4,000 / 两人", tag: "交通" },
     { time: "16:20–19:30", title: "值机、免税、安检与候机", detail: "19:30 国际航班，目标 16:30 前到机场；不要把最后的 Chiikawa 采购押在机场。", area: "关西机场", placeId: "kix-airport", tag: "返程" },
     { time: "19:30–21:00", title: "关西 → 浦东", detail: "固定返程：2026/9/5 19:30 起飞、21:00 抵达上海浦东。", area: "KIX → PVG", tag: "航班" },
   ],
@@ -2679,43 +2691,46 @@ const RESEARCH_TIPS = [
     link: "https://www.xiaohongshu.com/search_result/?keyword=%E4%B8%9C%E4%BA%AC%20%E4%BA%AC%E9%83%BD%20%E6%96%B0%E5%B9%B2%E7%BA%BF%20%E8%A1%8C%E6%9D%8E%20%E9%85%92%E5%BA%97%20%E9%80%80%E6%88%BF&type=51",
     linkText: "打开小红书搜索页 ↗",
   },
-];
-
-type KansaiTradeoff = {
-  label: string;
-  title: string;
-  body: string;
-  action: string;
-  linkLabel: string;
-  link: string;
-};
-
-const KANSAI_TRADEOFFS: KansaiTradeoff[] = [
   {
-    label: "主线保留",
-    title: "D7 白天给大阪，下午直接去 KIX",
-    body: "9/5 19:30 从 KIX 回浦东，又要 09:00 后起床；大阪城、黑门、难波和道顿堀已经够完整，不再把梅田和中之岛硬塞进返程日。",
-    action: "保留：大阪城 + 黑门 + 难波 / 心斋桥 + 道顿堀",
-    linkLabel: "大阪官方景点",
-    link: "https://osaka-info.jp/en/",
+    label: "小红书搜索摘要 22",
+    sourceTitle: "第五天：京都-奈良 / 大阪出发｜奈良一日游完整攻略",
+    author: "小红书站内搜索结果",
+    noteId: "search-kyoto-nara-traffic",
+    sourceRef: "小红书站内搜索摘要",
+    title: "京都到奈良，近铁直达比折返更适合这条线",
+    text: "搜索‘京都 奈良 大阪 近铁 交通 一日游’时出现京都—奈良、‘大阪出发｜奈良一日游’等结果；本页只吸收按区域串联和近铁到近铁奈良站的方向，不把搜索卡片当作实时班次依据。",
+    decision: "D6 退京都房后先到京都站，乘近铁京都线到近铁奈良站寄存；看完奈良再乘近铁奈良线到大阪难波，不回京都取箱。",
+    usedIn: "D6 京都 → 奈良 → 大阪换城",
+    link: "https://www.xiaohongshu.com/search_result/?keyword=%E4%BA%AC%E9%83%BD%20%E5%A5%88%E8%89%AF%20%E5%A4%A7%E9%98%AA%20%E8%BF%91%E9%93%81%20%E4%BA%A4%E9%80%9A%20%E4%B8%80%E6%97%A5%E6%B8%B8&type=51",
+    linkText: "打开小红书搜索页 ↗",
   },
   {
-    label: "温泉替换",
-    title: "真的想泡温泉：用 D6 奈良替换有马温泉",
-    body: "有马温泉很值得，但京都、奈良、神户、有马、大阪全部塞进 7 天会重新变成赶路。若温泉优先，删掉奈良，把 D6 改为京都 → 有马日归，晚上住大阪或回京都只能二选一。",
-    action: "二选一：奈良鹿与东大寺 / 有马金泉银泉",
-    linkLabel: "有马温泉官方",
-    link: "https://www.arima-onsen.com/",
+    label: "小红书搜索摘要 23",
+    sourceTitle: "关西机场下飞机后，怎么去难波 / 从大阪市区到关西机场怎么坐电车？",
+    author: "小红书站内搜索结果",
+    noteId: "search-kix-namba-traffic",
+    sourceRef: "小红书站内搜索摘要",
+    title: "难波与 KIX 之间固定走南海电铁",
+    text: "搜索‘大阪 难波 关西机场 交通 返程 攻略’时出现机场—难波往返、南海电铁和机场快线图解等结果；车次、座席、航站楼和临时施工仍需出发前复核。",
+    decision: "D7 15:30 左右从南海难波站出发，优先确认机场急行或 Rapi:t 的可用车次；不在返程日改走梅田或临时跨线。",
+    usedIn: "D7 难波 → KIX 返程",
+    link: "https://www.xiaohongshu.com/search_result/?keyword=%E5%A4%A7%E9%98%AA%20%E9%9A%BE%E6%B3%A2%20%E5%85%B3%E8%A5%BF%E6%9C%BA%E5%9C%BA%20%E4%BA%A4%E9%80%9A%20%E8%BF%94%E7%A8%8B%20%E6%94%BB%E7%95%A5&type=51",
+    linkText: "打开小红书搜索页 ↗",
   },
   {
-    label: "本次删掉",
-    title: "删镰仓与江之岛，比删大阪更划算",
-    body: "镰仓是东京南侧的自然与古迹日归，但会占掉东京—关西换城前的完整一天；富士山已经提供自然，京都和奈良提供古迹，所以这次把时间给关西更合适。",
-    action: "保留：富士山自然 + 京都古迹 + 奈良鹿群",
-    linkLabel: "镰仓留作下次专题",
-    link: "https://www.japan.travel/en/destinations/kanto/kanagawa/kamakura-and-around/",
+    label: "小红书搜索摘要 24",
+    sourceTitle: "日本高铁带大箱没预约收1000 / 大件行李票不要慌",
+    author: "小红书站内搜索结果",
+    noteId: "search-shinkansen-large-baggage",
+    sourceRef: "小红书站内搜索摘要",
+    title: "跨城日只带一件主箱，提前处理大件行李",
+    text: "东京—京都新干线搜索页出现大件行李预约、纸质票和‘带 28 寸行李箱’等结果；这类内容用于提醒行李尺寸和座席确认，收费规则以 JR 官方购票页面为准。",
+    decision: "D4 退房前把购物袋收进一件主箱，提前订指定席并核对超大行李位；D6 只带小包进奈良，主箱不在奈良公园里拖行。",
+    usedIn: "D4 东京 → 京都、D6 京都 → 奈良",
+    link: "https://www.xiaohongshu.com/search_result/?keyword=%E4%B8%9C%E4%BA%AC%20%E4%BA%AC%E9%83%BD%20%E6%96%B0%E5%B9%B2%E7%BA%BF%20%E8%A1%8C%E6%9D%8E%20%E6%8D%A2%E5%9F%8E%20%E6%94%BB%E7%95%A5&type=51",
+    linkText: "打开小红书搜索页 ↗",
   },
-];
+]; 
 
 const DEFAULT_XHS_SHARES: XiaohongshuShare[] = [
   ...RESEARCH_TIPS.map((tip) => ({
@@ -2950,15 +2965,6 @@ export default function Home() {
     [places, selectedDay],
   );
 
-  const groupedPlaces = useMemo(
-    () =>
-      days.map((day) => ({
-        day,
-        places: visiblePlaces.filter((place) => place.day === day.id),
-      })),
-    [days, visiblePlaces],
-  );
-
   const foodPlaces = useMemo(
     () =>
       places
@@ -3159,7 +3165,7 @@ export default function Home() {
   };
 
   return (
-    <main className="trip-app">
+    <main className="trip-app" id="top">
       <header className="topbar">
         <div className="brand-mark" aria-label="Two in Tokyo">2<span>in</span>JP</div>
         <div className="topbar-copy">
@@ -3177,7 +3183,7 @@ export default function Home() {
       <section className="hero-grid">
         <div className="hero-copy">
           <div className="kicker"><span className="kicker-dot" />早秋出发，东京进大阪出</div>
-          <h1>日本，<em>慢慢走。</em></h1>
+          <h1>东京进，<em>大阪出。</em></h1>
           <p className="hero-subtitle">一份给两个人的 7 天地图计划：东京、富士山、京都、奈良、大阪，按小时拆开，留出酒店寄存、换城、排队和天气缓冲。</p>
           <p className="routine-note">作息约束：除凌晨去程外 09:00 起床 · 02:00 前睡 · 8/30 01:05 浦东 → 羽田，9/5 19:30 KIX → 浦东</p>
           <div className="trip-facts">
@@ -3207,7 +3213,12 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="route-gallery" aria-label="行程图片">
+      <nav className="module-nav" aria-label="页面模块快速跳转">
+        <span className="module-nav-title">快速跳转</span>
+        <div>{PAGE_MODULES.map((module) => <a href={module.href} key={module.href}>{module.label}</a>)}</div>
+      </nav>
+
+      <section className="route-gallery" id="route-gallery" aria-label="行程图片">
         <div className="route-gallery-heading">
           <div>
             <p className="section-label">VISUAL ROUTE / 行程图像</p>
@@ -3225,7 +3236,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="workspace-card">
+      <section className="workspace-card" id="map">
         <div className="workspace-toolbar">
           <div>
             <p className="section-label">MAP / 路线地图</p>
@@ -3271,12 +3282,24 @@ export default function Home() {
             <div className="filter-divider" />
             <div className="stats-mini"><div><strong>{visiblePlaces.length}</strong><span>当前地点</span></div><div><strong>{new Set(visiblePlaces.map((place) => place.area)).size}</strong><span>覆盖区域</span></div></div>
             <div className="helper-note"><span>✦</span><p>每个地点都能编辑。把你们临时发现的小店也加进来，分享链接会同步这份地图。</p></div>
+            <details className="place-manager">
+              <summary><span>地点管理</span><b>{visiblePlaces.length} 个地点</b></summary>
+              <div className="place-manager-list">
+                {visiblePlaces.map((place) => (
+                  <div className="place-manager-row" key={place.id}>
+                    <button type="button" className="place-manager-name" onClick={() => selectPlace(place.id)}><strong>{place.title}</strong><small>{categoryLabel(place.category)} · D{place.day}</small></button>
+                    <div><button type="button" onClick={() => openEdit(place)}>编辑</button><button type="button" onClick={() => deletePlace(place)}>删除</button></div>
+                  </div>
+                ))}
+                {!visiblePlaces.length && <p className="place-manager-empty">当前筛选没有地点。</p>}
+              </div>
+            </details>
           </aside>
         </div>
       </section>
 
       <section className="planner-expansion">
-        <section className="lodging-card">
+        <section className="lodging-card" id="stays">
           <div className="expansion-heading">
             <div>
               <p className="section-label">STAY / 住宿节奏</p>
@@ -3321,7 +3344,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="food-card">
+        <section className="food-card" id="food">
           <div className="expansion-heading">
             <div>
               <p className="section-label">EAT / 美食清单</p>
@@ -3365,7 +3388,7 @@ export default function Home() {
         </section>
       </section>
 
-      <section className="departure-checklist-card">
+      <section className="departure-checklist-card" id="checklist">
         <div className="checklist-heading">
           <div>
             <p className="section-label">BEFORE YOU GO / 出发前清单</p>
@@ -3401,7 +3424,7 @@ export default function Home() {
             );
           })}
         </div>
-        <div className="checklist-sources">
+        <div className="checklist-sources" id="sources">
           <div className="checklist-sources-head">
             <div><p className="section-label">SOURCE CHECK / 来源核对</p><h3>这份清单参考了哪些小红书笔记？</h3></div>
             <span>小红书站内搜索 · 行前准备</span>
@@ -3425,7 +3448,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="hourly-card">
+      <section className="hourly-card" id="hourly">
         <div className="expansion-heading">
           <div>
             <p className="section-label">HOUR BY HOUR / 小时级攻略</p>
@@ -3462,74 +3485,15 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="kansai-tradeoff-card">
-        <div className="expansion-heading">
+      <section className="support-notes" id="tips">
+        <div className="support-notes-heading">
           <div>
-            <p className="section-label">KANSAI EDIT / 关西取舍</p>
-            <h2>这次删什么、留什么，我替你们做了减法。</h2>
+            <p className="section-label">QUICK NOTES / 旅行提示</p>
+            <h2>出发时记住这三件事。</h2>
           </div>
-          <span className="muted">参考大阪 / 夜景 / 美食小红书搜索结果</span>
+          <span className="muted">地图与小时攻略已合并为主线</span>
         </div>
-        <p className="expansion-intro">关西不是把神户、有马、奈良、大阪全塞进去才算丰富。结合 9/5 周六 19:30 KIX 返程、09:00 起床和不想频繁拖箱的约束，D6 用奈良串到大阪，D7 把白天留给大阪；有马温泉作为替换，不让它破坏路线。</p>
-        <div className="kansai-tradeoff-grid">
-          {KANSAI_TRADEOFFS.map((item) => (
-            <article className="kansai-tradeoff" key={item.title}>
-              <span>{item.label}</span>
-              <h3>{item.title}</h3>
-              <p>{item.body}</p>
-              <strong>{item.action}</strong>
-              <a href={item.link} target="_blank" rel="noreferrer">{item.linkLabel} ↗</a>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="research-strip">
-        <div className="research-heading">
-          <p className="section-label">FIELD NOTES / 攻略吸收</p>
-          <h2>{RESEARCH_TIPS.length} 篇小红书笔记，逐条拆进路线。</h2>
-          <p>以下卡片来自你已登录的小红书站内搜索；能打开的笔记按正文提炼，其余明确标注为搜索结果摘要。笔记只负责提供路线灵感、体感和打卡经验；交通、票价、开放时间、库存和过敏安全仍以官方信息和现场确认执行。</p>
-        </div>
-        <div className="research-grid">
-          {RESEARCH_TIPS.map((tip) => (
-            <article className="research-card" key={tip.title}>
-              <span>{tip.label}</span>
-              <h3>{tip.title}</h3>
-              <div className="research-source"><strong>{tip.sourceTitle}</strong><small>{tip.author} · {"sourceRef" in tip ? tip.sourceRef : `笔记 ID ${tip.noteId}`}</small></div>
-              <p>{tip.text}</p>
-              <p className="research-decision"><b>落地：</b>{tip.decision}</p>
-              <p className="research-used"><b>对应：</b>{tip.usedIn}</p>
-              <a href={tip.link} target="_blank" rel="noreferrer">{tip.linkText}</a>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="lower-grid">
-        <div className="itinerary-section">
-          <div className="section-heading"><div><p className="section-label">DAY BY DAY / 行程卡</p><h2>{selectedDay === "all" ? "七天的节奏" : dayFor(selectedDay).title}</h2></div><span className="muted">{selectedDay === "all" ? "可按天气调换 D3 富士山 / D7 大阪城" : `${visiblePlaces.length} 个地点`}</span></div>
-          <div className="itinerary-list">
-            {groupedPlaces.filter(({ day }) => selectedDay === "all" || day.id === selectedDay).map(({ day, places: dayPlaces }) => (
-              <article className="day-card" key={day.id} style={{ "--day-color": day.color } as CSSProperties}>
-                <div className="day-card-rail"><span>{String(day.id).padStart(2, "0")}</span><i /></div>
-                <div className="day-card-content">
-                  <div className="day-card-heading"><div><p>{day.label} · {day.focus}</p><h3>{day.title}</h3></div><button className="text-button" onClick={() => openCreate(day.id)}>＋ 加地点</button></div>
-                  <div className="day-places">
-                    {dayPlaces.length ? dayPlaces.map((place) => (
-                      <div className={`place-row ${selectedPlaceId === place.id ? "is-selected" : ""}`} key={place.id} role="button" tabIndex={0} onClick={() => selectPlace(place.id)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); selectPlace(place.id); } }}>
-                        <span className="place-dot" style={{ backgroundColor: day.color }} />
-                        <div className="place-main"><div><strong>{place.title}</strong><span className="place-category">{categoryLabel(place.category)} · {place.area}</span>{place.price && <span className="place-price">{place.price}</span>}</div><p>{place.note}</p></div>
-                        <div className="place-actions"><button aria-label={`编辑${place.title}`} onClick={(event) => { event.stopPropagation(); openEdit(place); }}>编辑</button><button aria-label={`删除${place.title}`} onClick={(event) => { event.stopPropagation(); deletePlace(place); }}>删除</button>{place.link && <a href={place.link} target="_blank" rel="noreferrer" onClick={(event) => event.stopPropagation()}>↗</a>}</div>
-                      </div>
-                    )) : <div className="empty-day">这一天暂时没有符合筛选条件的地点。<button className="text-button" onClick={() => openCreate(day.id)}>现在添加</button></div>}
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-
-        <aside className="notes-column">
+        <div className="notes-column">
           <div className="note-card note-card-yellow">
             <div className="note-card-top"><span className="note-index">01</span><span>给你们的版本</span></div>
             <h3>早起，把富士山和限定都买在前面。</h3>
@@ -3548,15 +3512,15 @@ export default function Home() {
             <a href="https://www.caa.go.jp/en/policy/food_labeling/" target="_blank" rel="noreferrer"><span>CAA</span>日本食品过敏沟通卡</a>
           </div>
           <button className="reset-button" onClick={resetTrip}>恢复示例路线</button>
-        </aside>
+        </div>
       </section>
 
-      <section className="xiaohongshu-board">
+      <section className="xiaohongshu-board" id="xhs-board">
         <div className="xhs-board-head">
           <div>
             <p className="section-label">RED NOTE / 小红书分享</p>
             <h2>把想看的攻略，集中放在这里。</h2>
-            <p>网页已预置 {RESEARCH_TIPS.length + CHECKLIST_SOURCES.length} 篇路线与行前小红书笔记，下面还可以继续粘贴自己的收藏。链接会和地点、打卡状态、出发前清单一起保存在浏览器，也会随导出文件和分享行程带走。</p>
+            <p>这里集中放路线与行前小红书笔记；你还可以继续粘贴自己的收藏。链接会和地点、打卡状态、出发前清单一起保存在浏览器，也会随导出文件和分享行程带走。</p>
           </div>
           <span className="xhs-board-count">{xiaohongshuLinks.length} 条链接</span>
         </div>
@@ -3588,6 +3552,7 @@ export default function Home() {
       </section>
 
       <footer className="footer-strip"><span>东京 3 晚 + 京都 2 晚 + 大阪 1 晚 · 两次换酒店</span><span>08/30 PVG → HND · 09/05 19:30 KIX → PVG</span><span>Made for two ↗</span></footer>
+      <a className="back-to-top" href="#top" aria-label="返回顶部" title="返回顶部">↑</a>
 
       {editorOpen && <div className="modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) closeEditor(); }}>
         <section className="editor-modal" role="dialog" aria-modal="true" aria-labelledby="editor-title">
