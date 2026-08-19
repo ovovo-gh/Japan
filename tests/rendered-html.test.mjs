@@ -27,6 +27,8 @@ test("server-renders the trip planner shell", async () => {
   assert.match(html, /地图/);
   assert.match(html, /住宿节奏/);
   assert.match(html, /美食清单/);
+  assert.match(html, /添加美食/);
+  assert.match(html, /删除/);
   assert.match(html, /已收藏 \/ 打卡/);
   assert.match(html, /小时级攻略/);
   assert.match(html, /快速跳转/);
@@ -36,8 +38,10 @@ test("server-renders the trip planner shell", async () => {
   assert.match(html, /大阪城/);
   assert.match(html, /01:05 浦东/);
   assert.match(html, /19:30 KIX/);
+  assert.match(html, /羽田 → 东京市区/);
+  assert.match(html, /筑地场外市场早饭/);
   assert.match(html, /日本酒店为什么都是10:00退房/);
-  assert.doesNotMatch(html, /关西取舍|攻略吸收|DAY BY DAY \/ 行程卡/);
+  assert.doesNotMatch(html, /关西取舍|攻略吸收|DAY BY DAY \/ 行程卡|旅行提示|QUICK NOTES/);
   assert.match(html, /Esri World Street Map/);
   assert.match(html, /trip\/tokyo\.jpg/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);

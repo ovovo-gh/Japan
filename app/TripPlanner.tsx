@@ -78,7 +78,6 @@ const PAGE_MODULES = [
   { href: "#checklist", label: "出发清单" },
   { href: "#sources", label: "来源" },
   { href: "#hourly", label: "小时攻略" },
-  { href: "#tips", label: "旅行提示" },
   { href: "#xhs-board", label: "小红书分享" },
 ];
 
@@ -1523,6 +1522,22 @@ const UPDATED_PLACES: Place[] = [
 
 const FLIGHT_ROUTE_EXTRA_PLACES: Place[] = [
   {
+    id: "tsukiji-d1-breakfast",
+    title: "筑地场外市场 · D1 早饭",
+    area: "筑地",
+    category: "food",
+    day: 1,
+    routeOrder: 1,
+    lat: 35.6655,
+    lng: 139.7708,
+    note: "8/30 05:00 羽田落地后直接进城；周日部分店铺可能休息，前一晚确认营业店。女友海鲜、你选择能问清成分的熟食。",
+    link: "https://www.tsukiji.or.jp/english/shopping/",
+    price: "¥2,000–6,000 / 两人",
+    meal: "早餐",
+    foodNote: "你必须说明鲑鱼过敏并确认交叉污染；不要共用餐具、酱油碟或不明汤底。",
+    checked: false,
+  },
+  {
     id: "kyoto-arrival-stay",
     title: "京都基地：四条乌丸 / 河原町酒店",
     area: "四条乌丸或河原町站步行圈",
@@ -1672,6 +1687,13 @@ const FLIGHT_ROUTE_PLACES: Place[] = [
   if (place.id === "kix-airport") return { ...place, day: 7 as DayId, routeOrder: 11 };
   if (place.id === "kyoto-day6-start") return { ...place, day: 6 as DayId, routeOrder: 1 };
   if (place.id === "osaka-day7-start") return { ...place, day: 7 as DayId, routeOrder: 1 };
+  if (place.id === "tsukiji-d1-breakfast") return { ...place, day: 1 as DayId, routeOrder: 1 };
+  if (place.id === "sensoji") return { ...place, day: 1 as DayId, routeOrder: 2 };
+  if (place.id === "asakusa-tempura") return { ...place, day: 1 as DayId, routeOrder: 3 };
+  if (place.id === "kappabashi") return { ...place, day: 1 as DayId, routeOrder: 4 };
+  if (place.id === "asakusa-kissaten") return { ...place, day: 1 as DayId, routeOrder: 5 };
+  if (place.id === "tokyo-base-stay") return { ...place, day: 1 as DayId, routeOrder: 6 };
+  if (place.id === "ameyoko") return { ...place, day: 1 as DayId, routeOrder: 7 };
   if (place.id === "kyoto-base-stay") return { ...place, day: 5 as DayId, routeOrder: 1 };
   if (place.id === "fushimi-inari") return { ...place, day: 5 as DayId, routeOrder: 2 };
   if (place.id === "kiyomizu") return { ...place, day: 5 as DayId, routeOrder: 3 };
@@ -1705,7 +1727,7 @@ const STAY_PLANS: StayPlan[] = [
     title: "东京基地：上野 / 浅草酒店",
     area: "建议住上野御徒町或浅草地铁站步行圈",
     price: "¥14,000–28,000 / 晚",
-    note: "8/30 入住第 1 晚；标准通常 15:00 后入住，凌晨落地先寄存。想 07:00 直接进房需加订 8/29 晚或付费早入住。",
+    note: "8/30 入住第 1 晚；本方案不加订 8/29 晚，05:00 落地先直接进城逛，15:00 左右再回酒店办理入住。",
     placeId: "tokyo-base-stay",
   },
   {
@@ -2129,21 +2151,22 @@ const FLIGHT_DAY_7: HourlyPlan = {
 const FLIGHT_DAY_1: HourlyPlan = {
   day: 1,
   title: "8/30 周日 · 01:05 浦东 → 05:00 羽田",
-  summary: "凌晨航班是唯一一次早起例外；落地后不要把 05:00 当作景点开始时间。先入境、早餐、把行李寄到酒店，下午 15:00 左右再入住和补觉。",
-  distance: "约 6–10k 步 · 东京住 3 晚",
+  summary: "不额外订 8/29 晚：05:00 到羽田后直接进市区，先吃一顿早饭、逛筑地和浅草，下午 15:00 左右才回东京基地办理入住、放行李，再安排低强度晚线。",
+  distance: "约 9–13k 步 · 东京住 3 晚",
   items: [
     { time: "8/29 22:00–23:00", title: "到浦东机场办理值机", detail: "01:05 国际航班建议提前到机场；护照、登机牌、过敏药、日语过敏卡和充电宝放在随身包。", area: "浦东机场 T1 / T2", tag: "出发" },
     { time: "01:05–05:00", title: "浦东 → 东京羽田", detail: "固定航班：2026/8/30 01:05 起飞、05:00 抵达；日本比上海快 1 小时。", area: "PVG → HND", tag: "航班" },
-    { time: "05:00–07:00", title: "入境、取行李、买网络", detail: "预留入境排队和取行李时间；不要把抵达后的每一分钟都排成景点。", area: "羽田 T3", tag: "落地" },
-    { time: "07:00–08:30", title: "羽田早餐 / 休息", detail: "小红书搜索到羽田 T3 有行李寄存和过夜方案；若酒店暂时不能收箱，可先在机场完成早餐与补觉。", area: "羽田机场 T3", price: "¥1,000–3,000 / 两人", tag: "缓冲" },
-    { time: "08:30–10:00", title: "羽田 → 上野 / 浅草酒店寄存", detail: "先确认酒店可否提前收存行李；酒店通常 15:00 左右入住，不能把早到当成一定能进房。", area: "HND → 上野 / 浅草", price: "约 ¥1,000–2,000 / 两人", tag: "行李" },
-    { time: "10:00–12:00", title: "上野公园与阿美横丁（低强度）", detail: "只走短线，买水和补给；如果夜航后很困，改为附近咖啡店休息，不硬撑。", area: "上野", placeId: "ameyoko", tag: "散步" },
-    { time: "12:00–13:30", title: "上野熟食午餐", detail: "鸡肉、烤物、拉面或烧肉优先；鱼介汤底、酱汁和共用锅仍要问。", area: "上野", placeId: "ameyoko", price: "¥2,000–4,000 / 两人", tag: "吃" },
-    { time: "13:30–15:00", title: "回酒店周边休息，等待入住", detail: "不要为了填满空档跨区移动；把充电、洗漱和换衣留给入住后。", area: "上野 / 浅草", tag: "缓冲" },
-    { time: "15:00–16:30", title: "办理入住、洗漱、补觉", detail: "若酒店只允许 15:00 后入住，这段就是标准入住窗口；若提前入住需以酒店确认和收费为准。", area: "东京酒店", placeId: "tokyo-base-stay", tag: "入住" },
-    { time: "17:00–19:00", title: "雷门 · 浅草寺 · 仲见世", detail: "状态好再走浅草主线；体力不足就只看雷门和本堂，合羽桥从第一天删除。", area: "浅草", placeId: "sensoji", tag: "文化" },
-    { time: "19:00–20:30", title: "浅草热食晚餐", detail: "天妇罗、鳗鱼或明确成分的定食；你确认鱼介、鲑鱼和酱汁，女友生鱼另行安排。", area: "浅草", placeId: "asakusa-tempura", price: "¥3,000–7,000 / 两人", tag: "吃" },
-    { time: "20:30–22:00", title: "回酒店早休息", detail: "第一天不安排夜景和深夜购物；恢复后续 09:00 起床、02:00 前睡的节奏。", area: "东京酒店", tag: "收尾" },
+    { time: "05:00–06:30", title: "入境、取行李、买网络", detail: "先完成入境和取行李；如果首班车前有空档就在机场补水，不把 05:00 当作景点开始时间。", area: "羽田 T3", tag: "落地" },
+    { time: "06:30–07:30", title: "羽田 → 东京市区", detail: "首选当天可用的京急线，优先看直通都营浅草线、前往东银座 / 浅草方向的车次；若班次不合适，备选东京单轨到滨松町再换 JR。首班时刻出发前一周再核对。", area: "HND T3 → 东银座 / 浅草", price: "约 ¥1,000–2,000 / 两人", tag: "交通" },
+    { time: "07:30–09:30", title: "筑地场外市场早饭与散步", detail: "小红书搜索里多次出现筑地早晨路线；但 8/30 是周日，场外市场部分店铺可能休息，前一晚确认营业店。女友可选寿司，你选择玉子烧、烤物或明确成分的热食。", area: "筑地", placeId: "tsukiji-d1-breakfast", price: "¥2,000–6,000 / 两人", tag: "早饭" },
+    { time: "09:30–10:15", title: "筑地 → 浅草", detail: "按当天导航从筑地乘东京 Metro 日比谷线到上野，再换银座线到浅草；不先回酒店，保持早上的顺线。", area: "筑地 → 浅草", price: "约 ¥500–800 / 两人", tag: "交通" },
+    { time: "10:15–12:00", title: "雷门 · 浅草寺 · 仲见世", detail: "浅草寺本堂和雷门适合早到先逛；仲见世店铺营业时间各不相同，店没开就先看寺院和隅田川，不为了购物停留。", area: "浅草", placeId: "sensoji", tag: "文化" },
+    { time: "12:00–13:30", title: "浅草热食午餐", detail: "天妇罗、鳗鱼或明确成分的定食；你继续确认鱼介、鲑鱼、柴鱼和酱汁，女友生鱼另行安排。", area: "浅草", placeId: "asakusa-tempura", price: "¥3,000–7,000 / 两人", tag: "吃" },
+    { time: "13:30–14:30", title: "浅草 → 东京基地", detail: "回上野 / 浅草酒店办理入住；如果房间还没准备好，先寄存行李、充电和换衣，15:00 后再进房。", area: "浅草 → 上野 / 浅草酒店", price: "约 ¥500–1,000 / 两人", tag: "入住" },
+    { time: "15:00–16:30", title: "办理入住、放行李、洗漱", detail: "这次不加订前一晚酒店，下午按标准入住窗口处理；把大件行李放下后再出门，不拖箱继续逛。", area: "东京酒店", placeId: "tokyo-base-stay", tag: "入住" },
+    { time: "17:00–19:00", title: "浅草低强度晚线", detail: "状态好就补逛仲见世、合羽桥或隅田川；夜航后很累就只在酒店周边吃饭，不再跨区。", area: "浅草", placeId: "sensoji", tag: "散步" },
+    { time: "19:00–20:30", title: "浅草热食晚餐", detail: "鸡肉、烤物或明确成分的定食优先；第一天不挑战成分不明的鱼汤、酱汁和共用锅。", area: "浅草", placeId: "asakusa-tempura", price: "¥3,000–7,000 / 两人", tag: "吃" },
+    { time: "20:30–22:00", title: "回酒店、为 D2 充电", detail: "第二天要去东京站、筑地、银座和秋叶原；今天早起已经消耗体力，22:00 左右收尾。", area: "东京酒店", tag: "收尾" },
   ],
 };
 
@@ -2424,6 +2447,9 @@ const CHECKLIST_SOURCES: ChecklistSource[] = [
 ];
 
 const CHECKLIST_OFFICIAL_SOURCES = [
+  { label: "羽田交通", title: "Keikyu · Haneda Airport access", href: "https://www.keikyu.co.jp/en/visit/haneda-airport/access/train.html" },
+  { label: "单轨", title: "Tokyo Monorail · Haneda Terminal 3", href: "https://www.tokyo-monorail.co.jp/sc/guidance/kokusaisen/index.html" },
+  { label: "筑地", title: "Tsukiji Outer Market · Official", href: "https://www.tsukiji.or.jp/english/shopping/" },
   { label: "入境", title: "Visit Japan Web · 日本数字厅", href: "https://www.digital.go.jp/en/policies/visit_japan_web" },
   { label: "海关", title: "Japan Customs · Passenger Clearance", href: "https://www.customs.go.jp/english/summary/passenger.htm" },
   { label: "药品", title: "JNTO · Bringing Medication into Japan", href: "https://www.japan.travel/en/ca/bringing-medication-into-japan/" },
@@ -2671,11 +2697,37 @@ const RESEARCH_TIPS = [
     author: "Miu · 2023-07-09",
     noteId: "search-haneda-t3-overnight",
     sourceRef: "小红书站内搜索摘要",
-    title: "凌晨到羽田：机场休息与寄存是 D1 备用线",
-    text: "‘东京凌晨到达 羽田 酒店 寄存行李’搜索结果中出现羽田 T3 过夜、温泉和寄存方案，也有东京羽田机场住宿对比；这里只作为抵达后缓冲思路，不替代酒店预订。",
-    decision: "D1 05:00 到羽田后先入境、早餐、寄存；若酒店不能收箱或你们需要洗漱，就在羽田完成休息，再去上野 / 浅草，不把凌晨落地硬排成景点冲刺。",
-    usedIn: "D1 05:00–10:00 落地缓冲",
+    title: "凌晨到羽田：机场过夜只做备用，不占用早晨",
+    text: "‘东京凌晨到达 羽田 酒店 寄存行李’搜索结果中出现羽田 T3 过夜、温泉和寄存方案；本次不额外订前一晚酒店，机场休息只作为首班车前的临时备选。",
+    decision: "D1 05:00 到羽田后先入境，按首班京急 / 都营浅草线或单轨方案进市区；如果入境过慢或身体不适，才退回机场休息，不硬撑。",
+    usedIn: "D1 羽田 → 市区早饭",
     link: "https://www.xiaohongshu.com/search_result/?keyword=%E4%B8%9C%E4%BA%AC%E5%87%8C%E6%99%A8%E5%88%B0%E8%BE%BE%20%E7%BE%BD%E7%94%B0%20%E9%85%92%E5%BA%97%20%E5%AF%84%E5%AD%98%E8%A1%8C%E6%9D%8E&type=51",
+    linkText: "打开小红书搜索页 ↗",
+  },
+  {
+    label: "小红书搜索摘要 25",
+    sourceTitle: "凌晨1点到羽田机场，坐5:26首班地铁（京急线）",
+    author: "小红书站内搜索结果",
+    noteId: "search-haneda-first-keikyu",
+    sourceRef: "小红书站内搜索摘要",
+    title: "羽田凌晨进城：先查首班京急，不默认打车",
+    text: "搜索‘羽田机场 凌晨5点 到达 东京市区 交通 早餐’时出现首班京急线、羽田机场交通图解和凌晨落地经验；截图中的时间不能替代 8/30 当天时刻表。",
+    decision: "D1 06:30–07:30 优先查京急线直通都营浅草线；车次不合适时再用东京单轨到滨松町换 JR，交通预算不把出租车作为默认项。",
+    usedIn: "D1 羽田 → 东银座 / 浅草",
+    link: "https://www.xiaohongshu.com/search_result/?keyword=%E7%BE%BD%E7%94%B0%E6%9C%BA%E5%9C%BA%20%E5%87%8C%E6%99%A85%E7%82%B9%20%E5%88%B0%E8%BE%BE%20%E4%B8%9C%E4%BA%AC%E5%B8%82%E5%8C%BA%20%E4%BA%A4%E9%80%9A%20%E6%97%A9%E9%A4%90&type=51",
+    linkText: "打开小红书搜索页 ↗",
+  },
+  {
+    label: "小红书搜索摘要 26",
+    sourceTitle: "6:30am 就排队，开了70年的牛丼 / 东京筑地市场完整攻略",
+    author: "小红书站内搜索结果",
+    noteId: "search-tokyo-morning-food",
+    sourceRef: "小红书站内搜索摘要",
+    title: "早饭优先选筑地，周日必须准备备选",
+    text: "搜索‘东京 早上6点 早餐 逛街 上野 浅草 筑地 攻略’时出现 6:30 排队的老店牛丼、东京筑地市场和东京早午餐结果；具体店铺营业日和排队情况仍需当天确认。",
+    decision: "D1 把筑地场外市场设为早饭主线，周日若店休就切换为浅草 / 上野的热食早餐，不为了某一家店打乱下午入住。",
+    usedIn: "D1 07:30–09:30 筑地早饭",
+    link: "https://www.xiaohongshu.com/search_result/?keyword=%E4%B8%9C%E4%BA%AC%20%E6%97%A9%E4%B8%8A6%E7%82%B9%20%E6%97%A9%E9%A4%90%20%E9%80%9B%E8%A1%97%20%E4%B8%8A%E9%87%8E%20%E6%B5%85%E8%8D%89%20%E7%AD%91%E5%9C%B0%20%E6%94%BB%E7%95%A5&type=51",
     linkText: "打开小红书搜索页 ↗",
   },
   {
@@ -2997,9 +3049,9 @@ export default function Home() {
     )));
   };
 
-  const openCreate = (day: DayId = selectedDay === "all" ? 1 : (selectedDay as DayId)) => {
+  const openCreate = (day: DayId = selectedDay === "all" ? 1 : (selectedDay as DayId), category: PlaceCategory = "play") => {
     setEditingId(null);
-    setDraft(makeDraft(day));
+    setDraft({ ...makeDraft(day), category });
     setEditorOpen(true);
   };
 
@@ -3209,7 +3261,7 @@ export default function Home() {
         <span className="flight-alert-icon">!</span>
         <div>
           <strong>固定机票已落地：这次实际是 7 天 6 晚，且去程需要凌晨出发。</strong>
-          <p>8/30 01:05 浦东起飞、05:00 到羽田；酒店通常下午 15:00 左右入住、上午 10:00 左右退房，D1 先寄存行李再休息，D4 / D6 按 10:00 退房换城。若想落地马上进房，需额外订 8/29 晚或向酒店确认付费早入住。</p>
+          <p>8/30 01:05 浦东起飞、05:00 到羽田；本方案不额外订前一晚酒店，先按首班交通进市区吃早饭、逛筑地和浅草，15:00 左右再回东京基地办理入住、放行李。D4 / D6 仍按常见 10:00 退房换城，具体以订单为准。</p>
         </div>
       </section>
 
@@ -3294,6 +3346,7 @@ export default function Home() {
                 {!visiblePlaces.length && <p className="place-manager-empty">当前筛选没有地点。</p>}
               </div>
             </details>
+            <button className="reset-button" onClick={resetTrip}>恢复示例路线</button>
           </aside>
         </div>
       </section>
@@ -3350,7 +3403,10 @@ export default function Home() {
               <p className="section-label">EAT / 美食清单</p>
               <h2>先收藏，再决定这一餐吃什么。</h2>
             </div>
-            <span className="muted">{selectedDay === "all" ? "全程清单" : `Day ${selectedDay} · 当前日`}</span>
+            <div className="food-heading-actions">
+              <span className="muted">{selectedDay === "all" ? "全程清单" : `Day ${selectedDay} · 当前日`}</span>
+              <button type="button" className="button button-accent" onClick={() => openCreate(selectedDay === "all" ? 1 : (selectedDay as DayId), "food")}>＋ 添加美食</button>
+            </div>
           </div>
           <p className="expansion-intro">清单里的每一项都和地图相连：点击名称定位，点击圆点打卡。价格按人均粗估，临近出发再看营业日、预约和菜单。</p>
           <div className="food-layout">
@@ -3372,6 +3428,7 @@ export default function Home() {
                     <p>{place.foodNote ?? place.note}</p>
                   </button>
                   <span className="food-price">{place.price ?? "价格待补"}</span>
+                  <button type="button" className="food-delete" aria-label={`删除${place.title}`} onClick={() => deletePlace(place)}>删除</button>
                 </div>
               ))}
               {!foodPlaces.length && <div className="food-empty">这一天还没有美食清单，切回“全部”查看全程候选。</div>}
@@ -3482,36 +3539,6 @@ export default function Home() {
               </div>
             </article>
           ))}
-        </div>
-      </section>
-
-      <section className="support-notes" id="tips">
-        <div className="support-notes-heading">
-          <div>
-            <p className="section-label">QUICK NOTES / 旅行提示</p>
-            <h2>出发时记住这三件事。</h2>
-          </div>
-          <span className="muted">地图与小时攻略已合并为主线</span>
-        </div>
-        <div className="notes-column">
-          <div className="note-card note-card-yellow">
-            <div className="note-card-top"><span className="note-index">01</span><span>给你们的版本</span></div>
-            <h3>早起，把富士山和限定都买在前面。</h3>
-            <p>Day 3 按晚起版安排河口湖，Day 2 把东京站 Chiikawa 放在上午。天气、库存与入场规则会变，出发前一周和当天早上各看一次官方信息。</p>
-          </div>
-          <div className="note-card note-card-blue">
-            <div className="note-card-top"><span className="note-index">02</span><span>过敏提醒</span></div>
-            <h3>你的安全优先于“尝一口”。</h3>
-            <p>准备日语卡片：<em>鮭（さけ）アレルギーがあります。生魚・加熱した魚・だしも確認してください。</em> 女朋友可以吃生鱼，但你不要共用餐具或把不确定的汤底当作安全。</p>
-          </div>
-          <div className="source-card">
-            <div className="source-card-head"><span>出发前资料</span><span>↗</span></div>
-            <a href="https://highway-buses.jp/course/kawaguchiko.php" target="_blank" rel="noreferrer"><span>BUS</span>新宿 · 河口湖高速巴士</a>
-            <a href="https://travel.jr-central.co.jp/plan/en/" target="_blank" rel="noreferrer"><span>JR</span>东京 · 新大阪 Platt-KODAMA</a>
-            <a href="https://www.osaka-info.jp/en/spot/osaka-castle-main-keep/" target="_blank" rel="noreferrer"><span>OSAKA</span>大阪城开放与交通</a>
-            <a href="https://www.caa.go.jp/en/policy/food_labeling/" target="_blank" rel="noreferrer"><span>CAA</span>日本食品过敏沟通卡</a>
-          </div>
-          <button className="reset-button" onClick={resetTrip}>恢复示例路线</button>
         </div>
       </section>
 
