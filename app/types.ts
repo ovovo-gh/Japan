@@ -10,6 +10,16 @@ export type DayPlan = {
   color: string;
 };
 
+export type StayPlan = {
+  id: string;
+  day: DayId;
+  title: string;
+  area: string;
+  price: string;
+  note: string;
+  placeId?: string;
+};
+
 export type Place = {
   id: string;
   title: string;
@@ -40,6 +50,7 @@ export type TripState = {
   version?: number;
   days: DayPlan[];
   places: Place[];
+  stays?: StayPlan[];
   xiaohongshuLinks?: XiaohongshuShare[];
   preDepartureChecklist?: Record<string, boolean>;
 };

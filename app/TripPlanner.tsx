@@ -10,7 +10,7 @@ import {
   useRef,
   useState,
 } from "react";
-import type { DayId, DayPlan, Place, PlaceCategory, TripState, XiaohongshuShare } from "./types";
+import type { DayId, DayPlan, Place, PlaceCategory, StayPlan, TripState, XiaohongshuShare } from "./types";
 
 const MapView = dynamic(() => import("./LeafletMap"), {
   loading: () => <div className="map-frame map-placeholder">地图正在准备…</div>,
@@ -26,52 +26,7 @@ const DAYS: DayPlan[] = [
   { id: 7, label: "DAY 07 · 09/05 周六", title: "大阪整日 · 19:30 KIX 返沪", focus: "大阪城 · 黑门 · 难波 · KIX", color: "#806d9c" },
 ];
 
-type TripPhoto = {
-  src: string;
-  alt: string;
-  label: string;
-  days: string;
-  credit: string;
-  href: string;
-};
-
-const TRIP_PHOTOS: TripPhoto[] = [
-  {
-    src: "trip/tokyo.jpg",
-    alt: "东京塔与城市街景",
-    label: "TOKYO / 东京",
-    days: "D1–D2",
-    credit: "Unsplash 图片",
-    href: "https://unsplash.com/s/photos/tokyo-tower",
-  },
-  {
-    src: "trip/fuji.jpg",
-    alt: "樱花围绕的富士山",
-    label: "FUJI / 富士山",
-    days: "D3",
-    credit: "Unsplash 图片",
-    href: "https://unsplash.com/s/photos/mount-fuji",
-  },
-  {
-    src: "trip/kyoto.jpg",
-    alt: "京都东山传统街道",
-    label: "KYOTO / 京都",
-    days: "D4–D5",
-    credit: "Unsplash 图片",
-    href: "https://unsplash.com/s/photos/kyoto-gion",
-  },
-  {
-    src: "trip/osaka.jpg",
-    alt: "大阪新世界通天阁街景",
-    label: "KANSAI / 关西",
-    days: "D6–D7",
-    credit: "Unsplash 图片",
-    href: "https://unsplash.com/s/photos/osaka-shinsekai",
-  },
-];
-
 const PAGE_MODULES = [
-  { href: "#route-gallery", label: "行程图像" },
   { href: "#map", label: "路线地图" },
   { href: "#stays", label: "住宿" },
   { href: "#food", label: "美食" },
@@ -1712,17 +1667,9 @@ const FLIGHT_ROUTE_PLACES: Place[] = [
 
 PLACES.splice(0, PLACES.length, ...FLIGHT_ROUTE_PLACES);
 
-type StayPlan = {
-  day: DayId;
-  title: string;
-  area: string;
-  price: string;
-  note: string;
-  placeId: string;
-};
-
 const STAY_PLANS: StayPlan[] = [
   {
+    id: "stay-day-1",
     day: 1,
     title: "东京基地：上野 / 浅草酒店",
     area: "建议住上野御徒町或浅草地铁站步行圈",
@@ -1731,6 +1678,7 @@ const STAY_PLANS: StayPlan[] = [
     placeId: "tokyo-base-stay",
   },
   {
+    id: "stay-day-2",
     day: 2,
     title: "东京基地：上野 / 浅草酒店",
     area: "东京站 → 筑地 → 银座 → 秋叶原顺线",
@@ -1739,6 +1687,7 @@ const STAY_PLANS: StayPlan[] = [
     placeId: "tokyo-base-stay",
   },
   {
+    id: "stay-day-3",
     day: 3,
     title: "东京基地：上野 / 浅草酒店",
     area: "轻装去河口湖，晚上回东京",
@@ -1747,6 +1696,7 @@ const STAY_PLANS: StayPlan[] = [
     placeId: "tokyo-base-stay",
   },
   {
+    id: "stay-day-4",
     day: 4,
     title: "京都基地：四条乌丸 / 河原町酒店",
     area: "9/2 东京退房 → 京都，15:00 后入住",
@@ -1755,6 +1705,7 @@ const STAY_PLANS: StayPlan[] = [
     placeId: "kyoto-arrival-stay",
   },
   {
+    id: "stay-day-5",
     day: 5,
     title: "京都基地：四条乌丸 / 河原町酒店",
     area: "京都东山与鴨川整日",
@@ -1763,6 +1714,7 @@ const STAY_PLANS: StayPlan[] = [
     placeId: "kyoto-base-stay",
   },
   {
+    id: "stay-day-6",
     day: 6,
     title: "大阪住宿：难波 / 心斋桥",
     area: "9/4 京都退房 → 奈良 → 大阪难波",
@@ -1771,39 +1723,13 @@ const STAY_PLANS: StayPlan[] = [
     placeId: "osaka-namba-stay",
   },
   {
+    id: "stay-day-7",
     day: 7,
     title: "大阪住宿 → 关西机场",
     area: "9/5 退房寄存 → 大阪城 / 难波 → KIX",
     price: "已含第 6 晚；机场交通另计",
     note: "返程日；常见 10:00 退房，行李寄存在难波，15:00 左右取行李去 KIX，19:30 起飞。",
     placeId: "osaka-day7-start",
-  },
-];
-
-const STAY_OPTIONS = [
-  {
-    label: "预算优先",
-    title: "上野御徒町商务酒店",
-    price: "¥14,000–22,000 / 晚",
-    total: "东京 3 晚约 ¥42,000–66,000",
-    note: "JR、地铁和机场动线都顺，把预算留给吃、富士山巴士和 Chiikawa。",
-    link: "https://www.gotokyo.org/en/destinations/eastern-tokyo/asakusa/",
-  },
-  {
-    label: "平衡推荐",
-    title: "京都四条乌丸 + 大阪难波",
-    price: "京都 ¥16,000–30,000 / 晚；大阪 ¥14,000–26,000 / 晚",
-    total: "京都 2 晚 + 大阪 1 晚约 ¥46,000–86,000",
-    note: "京都连续住 2 晚、大阪住难波 1 晚；实际只换两次酒店，最适合你们的晚起作息。",
-    link: "https://kyoto.travel/en/",
-  },
-  {
-    label: "温泉替换",
-    title: "河口湖住 1 晚 + 日式温泉旅馆",
-    price: "¥25,000–55,000 / 晚 / 两人",
-    total: "把东京第 3 晚替换，酒店变为 3 次换城",
-    note: "如果温泉优先于少换酒店，可把 D3 改为河口湖住一晚；主方案不采用，避免 7 天拖箱过多。",
-    link: "https://www.japan.travel/en/destinations/kanto/yamanashi/fuji-five-lakes/",
   },
 ];
 
@@ -2826,6 +2752,7 @@ const CATEGORY_META: Record<PlaceCategory | "all", { label: string; icon: string
 const STORAGE_KEY = "tokyo-two-person-trip-v1";
 
 type PlaceDraft = Omit<Place, "id">;
+type StayDraft = Omit<StayPlan, "id">;
 
 function makeDraft(day: DayId = 1): PlaceDraft {
   return {
@@ -2840,13 +2767,25 @@ function makeDraft(day: DayId = 1): PlaceDraft {
   };
 }
 
+function makeStayDraft(day: DayId = 1): StayDraft {
+  return {
+    day,
+    title: "",
+    area: "",
+    price: "",
+    note: "",
+    placeId: undefined,
+  };
+}
+
 function makeSnapshot(
   days: DayPlan[],
   places: Place[],
+  stays: StayPlan[],
   xiaohongshuLinks: XiaohongshuShare[],
   preDepartureChecklist: Record<string, boolean> = {},
 ): TripState {
-  return { version: TRIP_DATA_VERSION, days, places, xiaohongshuLinks, preDepartureChecklist };
+  return { version: TRIP_DATA_VERSION, days, places, stays, xiaohongshuLinks, preDepartureChecklist };
 }
 
 const XHS_HOSTS = new Set([
@@ -2940,6 +2879,7 @@ function dayFor(day: number): DayPlan {
 export default function Home() {
   const [days, setDays] = useState<DayPlan[]>(DAYS);
   const [places, setPlaces] = useState<Place[]>(PLACES);
+  const [stayPlans, setStayPlans] = useState<StayPlan[]>(STAY_PLANS);
   const [xiaohongshuLinks, setXiaohongshuLinks] = useState<XiaohongshuShare[]>(DEFAULT_XHS_SHARES);
   const [preDepartureChecklist, setPreDepartureChecklist] = useState<Record<string, boolean>>({});
   const [selectedDay, setSelectedDay] = useState<number | "all">("all");
@@ -2949,6 +2889,9 @@ export default function Home() {
   const [editorOpen, setEditorOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draft, setDraft] = useState<PlaceDraft>(makeDraft());
+  const [stayEditorOpen, setStayEditorOpen] = useState(false);
+  const [editingStayId, setEditingStayId] = useState<string | null>(null);
+  const [stayDraft, setStayDraft] = useState<StayDraft>(makeStayDraft());
   const [xhsUrlDraft, setXhsUrlDraft] = useState("");
   const [xhsTitleDraft, setXhsTitleDraft] = useState("");
   const [xhsNoteDraft, setXhsNoteDraft] = useState("");
@@ -2978,6 +2921,7 @@ export default function Home() {
         const isCurrentVersion = next.version === TRIP_DATA_VERSION;
         setDays(isCurrentVersion && next.days.length ? next.days : DAYS);
         setPlaces(isCurrentVersion ? next.places : migratePlaces(next.places));
+        setStayPlans(Array.isArray(next.stays) ? next.stays : STAY_PLANS);
         setXiaohongshuLinks(Array.isArray(next.xiaohongshuLinks) ? mergeDefaultXhsShares(next.xiaohongshuLinks) : DEFAULT_XHS_SHARES);
         setPreDepartureChecklist(next.preDepartureChecklist ?? {});
         if (shared) setToast("已载入分享行程");
@@ -2989,8 +2933,8 @@ export default function Home() {
 
   useEffect(() => {
     if (!hydrated) return;
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(makeSnapshot(days, places, xiaohongshuLinks, preDepartureChecklist)));
-  }, [days, hydrated, places, preDepartureChecklist, xiaohongshuLinks]);
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(makeSnapshot(days, places, stayPlans, xiaohongshuLinks, preDepartureChecklist)));
+  }, [days, hydrated, places, preDepartureChecklist, stayPlans, xiaohongshuLinks]);
 
   useEffect(() => {
     if (!toast) return;
@@ -3064,6 +3008,66 @@ export default function Home() {
   const closeEditor = () => {
     setEditorOpen(false);
     setEditingId(null);
+  };
+
+  const openStayCreate = (day: DayId = selectedDay === "all" ? 1 : (selectedDay as DayId)) => {
+    setEditingStayId(null);
+    setStayDraft(makeStayDraft(day));
+    setStayEditorOpen(true);
+  };
+
+  const openStayEdit = (plan: StayPlan) => {
+    setEditingStayId(plan.id);
+    setStayDraft({ day: plan.day, title: plan.title, area: plan.area, price: plan.price, note: plan.note, placeId: plan.placeId });
+    setStayEditorOpen(true);
+  };
+
+  const closeStayEditor = () => {
+    setStayEditorOpen(false);
+    setEditingStayId(null);
+  };
+
+  const updateStayDraft = <K extends keyof StayDraft>(key: K, value: StayDraft[K]) => {
+    setStayDraft((current) => ({ ...current, [key]: value }));
+  };
+
+  const submitStay = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!stayDraft.title.trim() || !stayDraft.area.trim()) {
+      setToast("请先填写住宿名称和区域");
+      return;
+    }
+
+    const normalized: StayPlan = {
+      ...stayDraft,
+      id: editingStayId ?? `stay-${Date.now()}`,
+      title: stayDraft.title.trim(),
+      area: stayDraft.area.trim(),
+      price: stayDraft.price.trim() || "价格待补",
+      note: stayDraft.note.trim() || "入住 / 退房时间和行李寄存以订单与酒店前台为准。",
+      placeId: stayDraft.placeId || undefined,
+    };
+
+    setStayPlans((current) => {
+      const next = editingStayId
+        ? current.map((plan) => (plan.id === editingStayId ? normalized : plan))
+        : [...current, normalized];
+      return next.sort((a, b) => a.day - b.day || a.id.localeCompare(b.id));
+    });
+    setToast(editingStayId ? "住宿安排已更新" : "住宿安排已加入");
+    closeStayEditor();
+  };
+
+  const deleteStay = (plan: StayPlan) => {
+    if (!window.confirm(`确定删除“${plan.title}”这条住宿安排吗？`)) return;
+    setStayPlans((current) => current.filter((item) => item.id !== plan.id));
+    setToast("住宿安排已删除");
+  };
+
+  const restoreStayPlans = () => {
+    if (!window.confirm("恢复示例住宿会覆盖当前住宿安排，确定继续吗？")) return;
+    setStayPlans(STAY_PLANS);
+    setToast("已恢复示例住宿安排");
   };
 
   const updateDraft = <K extends keyof PlaceDraft>(key: K, value: PlaceDraft[K]) => {
@@ -3145,7 +3149,7 @@ export default function Home() {
   };
 
   const shareTrip = async () => {
-    const url = `${window.location.origin}${window.location.pathname}#share=${encodeShare(makeSnapshot(days, places, xiaohongshuLinks, preDepartureChecklist))}`;
+    const url = `${window.location.origin}${window.location.pathname}#share=${encodeShare(makeSnapshot(days, places, stayPlans, xiaohongshuLinks, preDepartureChecklist))}`;
     window.history.replaceState(null, "", url);
     try {
       await navigator.clipboard.writeText(url);
@@ -3156,7 +3160,7 @@ export default function Home() {
   };
 
   const exportTrip = () => {
-    const file = new Blob([JSON.stringify(makeSnapshot(days, places, xiaohongshuLinks, preDepartureChecklist), null, 2)], { type: "application/json" });
+    const file = new Blob([JSON.stringify(makeSnapshot(days, places, stayPlans, xiaohongshuLinks, preDepartureChecklist), null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(file);
     const anchor = document.createElement("a");
     anchor.href = url;
@@ -3175,6 +3179,7 @@ export default function Home() {
       const isCurrentVersion = parsed.version === TRIP_DATA_VERSION;
       setDays(isCurrentVersion && parsed.days.length ? parsed.days : DAYS);
       setPlaces(isCurrentVersion ? parsed.places : migratePlaces(parsed.places));
+      setStayPlans(Array.isArray(parsed.stays) ? parsed.stays : STAY_PLANS);
       setXiaohongshuLinks(Array.isArray(parsed.xiaohongshuLinks) ? mergeDefaultXhsShares(parsed.xiaohongshuLinks) : DEFAULT_XHS_SHARES);
       setPreDepartureChecklist(parsed.preDepartureChecklist ?? {});
       setToast("行程已导入");
@@ -3189,6 +3194,7 @@ export default function Home() {
     if (!window.confirm("恢复示例路线会覆盖当前地点数据，确定继续吗？")) return;
     setDays(DAYS);
     setPlaces(PLACES);
+    setStayPlans(STAY_PLANS);
     setXiaohongshuLinks(DEFAULT_XHS_SHARES);
     setPreDepartureChecklist({});
     setSelectedDay("all");
@@ -3270,24 +3276,6 @@ export default function Home() {
         <div>{PAGE_MODULES.map((module) => <a href={module.href} key={module.href}>{module.label}</a>)}</div>
       </nav>
 
-      <section className="route-gallery" id="route-gallery" aria-label="行程图片">
-        <div className="route-gallery-heading">
-          <div>
-            <p className="section-label">VISUAL ROUTE / 行程图像</p>
-            <h2>先用几张图，建立这趟旅行的感觉。</h2>
-          </div>
-          <span>图片已随网页打包，不依赖外部图片站点</span>
-        </div>
-        <div className="route-gallery-grid">
-          {TRIP_PHOTOS.map((photo) => (
-            <figure className="route-photo" key={photo.src}>
-              <img src={photo.src} alt={photo.alt} loading="lazy" />
-              <figcaption><span><b>{photo.label}</b><small>{photo.days}</small></span><a href={photo.href} target="_blank" rel="noreferrer">{photo.credit} ↗</a></figcaption>
-            </figure>
-          ))}
-        </div>
-      </section>
-
       <section className="workspace-card" id="map">
         <div className="workspace-toolbar">
           <div>
@@ -3356,44 +3344,55 @@ export default function Home() {
           <div className="expansion-heading">
             <div>
               <p className="section-label">STAY / 住宿节奏</p>
-              <h2>住哪里，比多换一个景点更重要。</h2>
+              <h2>住宿按你的真实订单来写。</h2>
             </div>
-            <span className="muted">两人一间 · 价格参考</span>
+            <div className="stay-heading-actions">
+              <span className="muted">可新增、编辑、删除</span>
+              <button type="button" className="button button-accent" onClick={() => openStayCreate()}>＋ 添加住宿</button>
+            </div>
           </div>
-          <p className="expansion-intro">固定航班版主方案是东京 3 晚、京都 2 晚、大阪 1 晚，只换两次酒店；河口湖做日归，镰仓 / 江之岛从主线删掉。每一天标出标准入住 / 退房与寄存窗口；价格是 2026 年 8–9 月的预算占位，不是实时房价。</p>
+          <p className="expansion-intro">下面只是按路线生成的住宿占位，不代表你必须住这些区域或酒店。把你实际订到的酒店名称、区域、价格、入住 / 退房和寄存规则写进来；住宿安排会跟网页的本地保存、导出和分享链接一起带走。</p>
           <div className="lodging-grid">
             <div className="stay-timeline">
-              {STAY_PLANS.map((plan) => (
-                <button
-                  type="button"
-                  className="stay-row"
-                  key={plan.day}
-                  onClick={() => {
-                    setSelectedDay("all");
-                    setSelectedPlaceId(plan.placeId);
-                    setCategoryFilter("all");
-                    setSearch("");
-                  }}
-                >
-                  <span className="stay-day" style={{ "--stay-color": dayFor(plan.day).color } as CSSProperties}>D{plan.day}</span>
-                  <span className="stay-copy"><strong>{plan.title}</strong><small>{plan.area} · {plan.note}</small></span>
+              {stayPlans.map((plan) => (
+                <div className="stay-row" key={plan.id}>
+                  <button
+                    type="button"
+                    className="stay-row-main"
+                    onClick={() => {
+                      setSelectedDay("all");
+                      setCategoryFilter("all");
+                      setSearch("");
+                      if (plan.placeId) {
+                        setSelectedPlaceId(plan.placeId);
+                      } else {
+                        setSelectedPlaceId(null);
+                        setToast("这条住宿还没有绑定地图地点");
+                      }
+                    }}
+                  >
+                    <span className="stay-day" style={{ "--stay-color": dayFor(plan.day).color } as CSSProperties}>D{plan.day}</span>
+                    <span className="stay-copy"><strong>{plan.title}</strong><small>{plan.area} · {plan.note}</small></span>
+                    <span className="stay-arrow" aria-hidden="true">{plan.placeId ? "⌖" : "·"}</span>
+                  </button>
                   <span className="stay-price">{plan.price}</span>
-                  <span className="stay-arrow" aria-hidden="true">⌖</span>
-                </button>
+                  <div className="stay-actions">
+                    <button type="button" onClick={() => openStayEdit(plan)}>编辑</button>
+                    <button type="button" onClick={() => deleteStay(plan)}>删除</button>
+                  </div>
+                </div>
               ))}
+              {!stayPlans.length && <div className="stay-empty">还没有住宿安排，点击右上角添加第一条。</div>}
             </div>
-            <div className="stay-options">
-              {STAY_OPTIONS.map((option) => (
-                <a className="stay-option" href={option.link} target="_blank" rel="noreferrer" key={option.label}>
-                  <span className="option-kicker">{option.label}</span>
-                  <strong>{option.title}</strong>
-                  <span className="option-price">{option.price}</span>
-                  <span className="option-total">{option.total}</span>
-                  <p>{option.note}</p>
-                  <span className="option-link">看区域资料 ↗</span>
-                </a>
-              ))}
-            </div>
+            <aside className="stay-guidance">
+              <span className="option-kicker">CUSTOM STAY / 自定义</span>
+              <h3>把你订好的住宿填进来</h3>
+              <p>每条住宿可以单独改名、改区域、改价格和备注；如果在地图里新增了“住”地点，还能在编辑时把它关联起来。</p>
+              <div className="stay-guidance-rule"><b>入住</b><span>常见 15:00 左右，提前入住看房态。</span></div>
+              <div className="stay-guidance-rule"><b>退房</b><span>常见 10:00 左右，具体以订单为准。</span></div>
+              <div className="stay-guidance-rule"><b>寄存</b><span>先问前台是否能提前收箱或退房后寄存。</span></div>
+              <button type="button" className="text-button stay-restore" onClick={restoreStayPlans}>恢复示例住宿</button>
+            </aside>
           </div>
         </section>
 
@@ -3591,6 +3590,19 @@ export default function Home() {
             <label>备注<textarea value={draft.note} onChange={(event) => updateDraft("note", event.target.value)} placeholder="写下预约、过敏、营业时间或你们自己的提醒" rows={3} /></label>
             <label>参考链接 <span className="optional">（可选）</span><input type="url" value={draft.link ?? ""} onChange={(event) => updateDraft("link", event.target.value)} placeholder="https://…" /></label>
             <div className="editor-footer"><span>颜色会跟随 Day {draft.day}：<i style={{ backgroundColor: dayFor(draft.day).color }} /></span><div><button type="button" className="button button-ghost" onClick={closeEditor}>取消</button><button type="submit" className="button button-dark">保存地点</button></div></div>
+          </form>
+        </section>
+      </div>}
+
+      {stayEditorOpen && <div className="modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) closeStayEditor(); }}>
+        <section className="editor-modal stay-editor-modal" role="dialog" aria-modal="true" aria-labelledby="stay-editor-title">
+          <div className="editor-head"><div><p className="section-label">住宿管理 / CUSTOM STAY</p><h2 id="stay-editor-title">{editingStayId ? "编辑住宿安排" : "新增住宿安排"}</h2></div><button type="button" className="close-button" onClick={closeStayEditor} aria-label="关闭">×</button></div>
+          <form onSubmit={submitStay}>
+            <div className="form-grid form-grid-wide"><label>住宿名称<input value={stayDraft.title} onChange={(event) => updateStayDraft("title", event.target.value)} placeholder="例如：上野站旁的酒店 / 河口湖温泉旅馆" required /></label><label>归属日<select value={stayDraft.day} onChange={(event) => updateStayDraft("day", Number(event.target.value) as DayId)}>{days.map((day) => <option value={day.id} key={day.id}>Day {day.id} · {day.title}</option>)}</select></label></div>
+            <div className="form-grid"><label>区域或地址<input value={stayDraft.area} onChange={(event) => updateStayDraft("area", event.target.value)} placeholder="例如：上野御徒町，距车站 5 分钟" required /></label><label>价格<input value={stayDraft.price} onChange={(event) => updateStayDraft("price", event.target.value)} placeholder="例如：¥18,000 / 晚" /></label></div>
+            <label>入住 / 退房 / 寄存备注<textarea value={stayDraft.note} onChange={(event) => updateStayDraft("note", event.target.value)} placeholder="例如：15:00 入住，10:00 退房；可提前寄存；已含早餐" rows={4} /></label>
+            <label>关联地图住宿点 <span className="optional">（可选）</span><select value={stayDraft.placeId ?? ""} onChange={(event) => updateStayDraft("placeId", event.target.value || undefined)}><option value="">不关联地图地点</option>{places.filter((place) => place.category === "stay").map((place) => <option value={place.id} key={place.id}>D{place.day} · {place.title} · {place.area}</option>)}</select></label>
+            <div className="editor-footer"><span>颜色会跟随 Day {stayDraft.day}：<i style={{ backgroundColor: dayFor(stayDraft.day).color }} /></span><div><button type="button" className="button button-ghost" onClick={closeStayEditor}>取消</button><button type="submit" className="button button-dark">保存住宿</button></div></div>
           </form>
         </section>
       </div>}
