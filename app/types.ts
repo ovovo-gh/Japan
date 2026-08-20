@@ -43,6 +43,7 @@ export type XiaohongshuShare = {
   url: string;
   note?: string;
   author?: string;
+  sourceRef?: string;
   source?: "researched" | "user";
 };
 

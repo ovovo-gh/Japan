@@ -51,6 +51,8 @@ test("server-renders the trip planner shell", async () => {
   assert.match(html, /すみません/);
   assert.match(html, /空耳/);
   assert.match(html, /050-3816-2787/);
+  assert.match(html, /小红书搜索摘要/);
+  assert.match(html, /小红书笔记/);
   assert.match(html, /href="#language"/);
   assert.doesNotMatch(html, /行程图像|VISUAL ROUTE|trip\/tokyo\.jpg/);
   assert.doesNotMatch(html, /关西取舍|攻略吸收|DAY BY DAY \/ 行程卡|旅行提示|QUICK NOTES/);

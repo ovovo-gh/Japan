@@ -2814,6 +2814,7 @@ const DEFAULT_XHS_SHARES: XiaohongshuShare[] = [
     url: tip.link,
     note: `${tip.title}：${tip.decision}`,
     author: tip.author,
+    sourceRef: tip.sourceRef ?? "小红书原笔记",
     source: "researched" as const,
   })),
   ...CHECKLIST_SOURCES.map((source) => ({
@@ -2822,6 +2823,7 @@ const DEFAULT_XHS_SHARES: XiaohongshuShare[] = [
     url: source.link,
     note: source.summary,
     author: source.author,
+    sourceRef: "小红书原笔记",
     source: "researched" as const,
   })),
 ];
@@ -3726,7 +3728,7 @@ export default function Home() {
             {xiaohongshuLinks.map((item) => (
               <article className="xhs-share-card" key={item.id}>
                 <div className="xhs-share-card-top">
-                  <span>{item.source === "user" ? "我的收藏" : "已核验笔记"}</span>
+                  <span>{item.source === "user" ? "我的收藏" : item.sourceRef === "小红书站内搜索结果" ? "小红书搜索摘要" : "小红书笔记"}</span>
                   {item.source === "user" && <button type="button" className="xhs-delete" onClick={() => removeXiaohongshuLink(item.id)}>移除</button>}
                 </div>
                 <h3>{item.title}</h3>
