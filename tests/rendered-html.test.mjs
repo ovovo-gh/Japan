@@ -44,6 +44,14 @@ test("server-renders the trip planner shell", async () => {
   assert.match(html, /羽田 → 东京市区/);
   assert.match(html, /筑地场外市场早饭/);
   assert.match(html, /日本酒店为什么都是10:00退房/);
+  assert.match(html, /现金估算/);
+  assert.match(html, /¥40,000–50,000/);
+  assert.match(html, /WeChat Pay/);
+  assert.match(html, /常用日语口语/);
+  assert.match(html, /すみません/);
+  assert.match(html, /空耳/);
+  assert.match(html, /050-3816-2787/);
+  assert.match(html, /href="#language"/);
   assert.doesNotMatch(html, /行程图像|VISUAL ROUTE|trip\/tokyo\.jpg/);
   assert.doesNotMatch(html, /关西取舍|攻略吸收|DAY BY DAY \/ 行程卡|旅行提示|QUICK NOTES/);
   assert.match(html, /Esri World Street Map/);
