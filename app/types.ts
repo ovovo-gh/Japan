@@ -63,42 +63,6 @@ export type NearbyCandidate = {
   checked?: boolean;
 };
 
-export type PersonalExpense = {
-  id: string;
-  group: string;
-  label: string;
-  amount: number;
-  dayLabel?: string;
-  note?: string;
-  planned?: boolean;
-  checked?: boolean;
-};
-
-export type PersonalTask = {
-  id: string;
-  group: string;
-  title: string;
-  detail?: string;
-  checked?: boolean;
-};
-
-export type PersonalRouteItem = {
-  id: string;
-  time?: string;
-  title: string;
-  detail?: string;
-  tag?: string;
-  checked?: boolean;
-};
-
-export type PersonalDayMemo = {
-  id: string;
-  label: string;
-  title: string;
-  note?: string;
-  items: PersonalRouteItem[];
-};
-
 export type TripState = {
   version?: number;
   days: DayPlan[];
@@ -108,7 +72,4 @@ export type TripState = {
   preDepartureChecklist?: Record<string, boolean>;
   nearbyCandidates?: NearbyCandidate[];
   nearbyCandidateCatalogVersion?: number;
-  personalExpenses?: PersonalExpense[];
-  personalTasks?: PersonalTask[];
-  personalDays?: PersonalDayMemo[];
 };
