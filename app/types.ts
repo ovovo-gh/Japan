@@ -47,6 +47,22 @@ export type XiaohongshuShare = {
   source?: "researched" | "user";
 };
 
+export type NearbyRegion = "东京" | "大阪" | "京都" | "富士山";
+
+export type NearbyCandidate = {
+  id: string;
+  region: NearbyRegion;
+  title: string;
+  area: string;
+  distance: string;
+  note: string;
+  sourceTitle: string;
+  sourceAuthor: string;
+  sourceNoteId: string;
+  sourceUrl: string;
+  checked?: boolean;
+};
+
 export type TripState = {
   version?: number;
   days: DayPlan[];
@@ -54,4 +70,6 @@ export type TripState = {
   stays?: StayPlan[];
   xiaohongshuLinks?: XiaohongshuShare[];
   preDepartureChecklist?: Record<string, boolean>;
+  nearbyCandidates?: NearbyCandidate[];
+  nearbyCandidateCatalogVersion?: number;
 };

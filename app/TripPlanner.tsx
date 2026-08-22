@@ -10,7 +10,7 @@ import {
   useRef,
   useState,
 } from "react";
-import type { DayId, DayPlan, Place, PlaceCategory, StayPlan, TripState, XiaohongshuShare } from "./types";
+import type { DayId, DayPlan, NearbyCandidate, NearbyRegion, Place, PlaceCategory, StayPlan, TripState, XiaohongshuShare } from "./types";
 
 const MapView = dynamic(() => import("./LeafletMap"), {
   loading: () => <div className="map-frame map-placeholder">地图正在准备…</div>,
@@ -28,6 +28,7 @@ const DAYS: DayPlan[] = [
 
 const PAGE_MODULES = [
   { href: "#map", label: "路线地图" },
+  { href: "#nearby", label: "周边候选" },
   { href: "#stays", label: "住宿" },
   { href: "#food", label: "美食" },
   { href: "#checklist", label: "出发清单" },
@@ -1734,7 +1735,7 @@ const STAY_PLANS: StayPlan[] = [
   },
 ];
 
-const TRIP_DATA_VERSION = 9;
+const TRIP_DATA_VERSION = 11;
 
 type ScheduleItem = {
   time: string;
@@ -2807,6 +2808,521 @@ const LANGUAGE_PHRASES = [
   { scene: "求助", zh: "请帮帮我。", jp: "助けてください。", read: "tasukete kudasai", ear: "他苏凯特 库达赛", use: "迷路、身体不适或需要工作人员帮助时用。" },
 ] as const;
 
+const NEARBY_CANDIDATES: NearbyCandidate[] = [
+  {
+    id: "nearby-tokyo-kamakura-enoshima",
+    region: "东京",
+    title: "镰仓 + 江之岛：寺院、海岸线和江之电",
+    area: "镰仓 · 江之岛",
+    distance: "东京单程约 1 小时",
+    note: "小红书高频的一日海边线：小町通、镰仓大佛、长谷和江之岛可以按体力删减。晴天优先，阴雨天不建议硬追日落。",
+    sourceTitle: "🇯🇵 镰仓＋江之岛｜东京出发一日游攻略 🌊⛩️",
+    sourceAuthor: "Audrey 💎",
+    sourceNoteId: "6a88854500000000370340f3",
+    sourceUrl: "https://www.xiaohongshu.com/explore/6a88854500000000370340f3",
+  },
+  {
+    id: "nearby-tokyo-hakone",
+    region: "东京",
+    title: "箱根：温泉街 + 雕刻之森 + 芦之湖",
+    area: "箱根",
+    distance: "东京单程约 1.5–2 小时",
+    note: "温泉、火山景观和湖景的一日组合；如果已经安排富士山，不建议同一趟再塞箱根，适合替换富士山雨天方案。",
+    sourceTitle: "箱根一日游⛩️🌋",
+    sourceAuthor: "芒果yaya🥕",
+    sourceNoteId: "6958fa18000000001e031c47",
+    sourceUrl: "https://www.xiaohongshu.com/explore/6958fa18000000001e031c47",
+  },
+  {
+    id: "nearby-tokyo-nikko",
+    region: "东京",
+    title: "日光：东照宫 + 中禅寺湖",
+    area: "日光",
+    distance: "东京单程约 2 小时",
+    note: "历史建筑和山湖自然一次结合，适合想把文化古迹和自然放在同一天的人；往返较长，不建议和银座购物同日。",
+    sourceTitle: "🇯🇵东京暑假好去处｜日光一日游完整攻略",
+    sourceAuthor: "常常",
+    sourceNoteId: "6a7802330000000005033960",
+    sourceUrl: "https://www.xiaohongshu.com/explore/6a7802330000000005033960",
+  },
+  {
+    id: "nearby-tokyo-izu",
+    region: "东京",
+    title: "伊豆：大室山 + 城崎海岸",
+    area: "伊豆高原",
+    distance: "东京单程约 2.5–3 小时",
+    note: "火山草原、海岸步道和海景的组合，风景很强但交通时间长；只有愿意牺牲东京购物日才值得加入。",
+    sourceTitle: "东京出发｜伊豆一日游🌊大室山+城ヶ崎海岸",
+    sourceAuthor: "王小王在大理",
+    sourceNoteId: "6a7db04d00000000290314c6",
+    sourceUrl: "https://www.xiaohongshu.com/explore/6a7db04d00000000290314c6",
+  },
+  {
+    id: "nearby-tokyo-yokohama",
+    region: "东京",
+    title: "横滨：港未来 + 山下公园 + 中华街",
+    area: "横滨",
+    distance: "东京约 30–40 分钟",
+    note: "最适合临时加进半天的候选：海港散步、红砖仓库和中华街，强度比镰仓低，适合作为东京购物日的替换。",
+    sourceTitle: "东京周边半小时宝藏横滨一日CityWalk完整攻",
+    sourceAuthor: "Vivian",
+    sourceNoteId: "6a7673720000000022031069",
+    sourceUrl: "https://www.xiaohongshu.com/explore/6a7673720000000022031069",
+  },
+  {
+    id: "nearby-osaka-nara",
+    region: "大阪",
+    title: "奈良：鹿群 + 东大寺 + 若草山",
+    area: "奈良公园",
+    distance: "大阪约 45–60 分钟",
+    note: "你们现有路线已经安排奈良；勾选后保留鹿群和东大寺，春日大社 / 若草山按步数二选一，不要全塞。",
+    sourceTitle: "第一次来奈良，请直接复制这条一日游行程",
+    sourceAuthor: "大侠V5",
+    sourceNoteId: "68b4ec29000000001d01d083",
+    sourceUrl: "https://www.xiaohongshu.com/explore/68b4ec29000000001d01d083",
+  },
+  {
+    id: "nearby-osaka-kobe",
+    region: "大阪",
+    title: "神户：北野异人馆 + 港口夜景",
+    area: "神户",
+    distance: "大阪约 30–45 分钟",
+    note: "城市散步、洋馆、港口和神户牛可以组合；如果大阪整日已经很满，优先把它留作下一次，不要替换奈良。",
+    sourceTitle: "🇯🇵Kobe｜神户不赶路一日游（往返大阪版）",
+    sourceAuthor: "YY一条小鱼干",
+    sourceNoteId: "69ee053b00000000220279b7",
+    sourceUrl: "https://www.xiaohongshu.com/explore/69ee053b00000000220279b7",
+  },
+  {
+    id: "nearby-osaka-uji",
+    region: "大阪",
+    title: "宇治：平等院 + 抹茶街 + 宇治川",
+    area: "宇治",
+    distance: "大阪约 45–60 分钟",
+    note: "抹茶和古迹的轻松半日线；更适合从京都出发，若大阪只留一整天，不建议为宇治再折返。",
+    sourceTitle: "宇治半日游攻略｜被抹茶包围的下午好幸福🍵",
+    sourceAuthor: "1yu",
+    sourceNoteId: "69eb94c1000000003803551e",
+    sourceUrl: "https://www.xiaohongshu.com/explore/69eb94c1000000003803551e",
+  },
+  {
+    id: "nearby-osaka-wakayama",
+    region: "大阪",
+    title: "和歌山：贵志站 + 小玉电车",
+    area: "和歌山",
+    distance: "大阪约 1.5–2 小时",
+    note: "猫猫电车和乡下小站是特色，但往返时间明显更长；适合猫咪主题专程去，不适合塞进你们现有大阪一晚。",
+    sourceTitle: "🇯🇵和歌山｜全世界唯一的小猫车站🐈🚉！",
+    sourceAuthor: "格格小仙女🌝",
+    sourceNoteId: "68e610bf000000000302272f",
+    sourceUrl: "https://www.xiaohongshu.com/explore/68e610bf000000000302272f",
+  },
+  {
+    id: "nearby-osaka-arima",
+    region: "大阪",
+    title: "有马温泉：金泉银泉 + 温泉街",
+    area: "神户北部",
+    distance: "大阪约 1–1.5 小时",
+    note: "如果温泉比大阪购物更重要，可以把大阪整日换成有马；你们这次不建议再增加换酒店，日归即可。",
+    sourceTitle: "🇯🇵大阪电车1小时可达！有马温泉一日游攻略",
+    sourceAuthor: "旅行的大钊🍉",
+    sourceNoteId: "69414040000000001b026c0e",
+    sourceUrl: "https://www.xiaohongshu.com/explore/69414040000000001b026c0e",
+  },
+  {
+    id: "nearby-kyoto-uji",
+    region: "京都",
+    title: "宇治：平等院 + 抹茶体验",
+    area: "宇治",
+    distance: "京都约 20–30 分钟",
+    note: "京都周边最容易加入的半日候选，适合替换重复的商店街；伏见稻荷和宇治可安排同一方向，但要看体力。",
+    sourceTitle: "一定要把伏见稻荷和宇治安排在一天‼️",
+    sourceAuthor: "小红书搜索结果",
+    sourceNoteId: "6a819fb00000000006005102",
+    sourceUrl: "https://www.xiaohongshu.com/explore/6a819fb00000000006005102",
+  },
+  {
+    id: "nearby-kyoto-biwa",
+    region: "京都",
+    title: "琵琶湖：大津湖畔 + 近江景色",
+    area: "大津 / 琵琶湖",
+    distance: "京都约 10–30 分钟",
+    note: "离京都近、自然感强，适合高温或想放慢的一天；湖边风景优先，别为了多景点反复换乘。",
+    sourceTitle: "🇯🇵京都周边｜请一定要留一天时间来琵琶湖！",
+    sourceAuthor: "小红书搜索结果",
+    sourceNoteId: "68c146d5000000001b032e96",
+    sourceUrl: "https://www.xiaohongshu.com/explore/68c146d5000000001b032e96",
+  },
+  {
+    id: "nearby-kyoto-kifune",
+    region: "京都",
+    title: "贵船 + 三千院 + 琉璃光院",
+    area: "京都北山",
+    distance: "京都约 40–60 分钟",
+    note: "森林、溪流和寺院的避暑线；景点分散，适合早出发的一整天，不适合和清水寺东山线硬拼。",
+    sourceTitle: "🇯🇵京都一日游攻略|三千院+琉璃光院+贵船",
+    sourceAuthor: "小红书搜索结果",
+    sourceNoteId: "6a27f434000000002103dac4",
+    sourceUrl: "https://www.xiaohongshu.com/explore/6a27f434000000002103dac4",
+  },
+  {
+    id: "nearby-kyoto-nekojinja",
+    region: "京都",
+    title: "猫猫寺：京都北部小众寺院",
+    area: "京都北山",
+    distance: "京都约 30–45 分钟",
+    note: "喜欢猫咪主题可以去，和你们喜欢 Chiikawa 的兴趣有一点呼应；体量小，适合作为北山半日而不是专程跨城。",
+    sourceTitle: "京都 来猫猫寺为小猫祈福🐈",
+    sourceAuthor: "小红书搜索结果",
+    sourceNoteId: "68de40d60000000007003a1a",
+    sourceUrl: "https://www.xiaohongshu.com/explore/68de40d60000000007003a1a",
+  },
+  {
+    id: "nearby-kyoto-ine",
+    region: "京都",
+    title: "天桥立 + 伊根舟屋",
+    area: "京都府北部",
+    distance: "京都单程约 2–2.5 小时",
+    note: "海景和舟屋很特别，但对你们这次 2 晚京都来说太远；除非明确放弃东山 / 奈良，否则建议删除。",
+    sourceTitle: "京都往返天桥立伊根一日游——伊根篇",
+    sourceAuthor: "小红书搜索结果",
+    sourceNoteId: "68839a350000000012021722",
+    sourceUrl: "https://www.xiaohongshu.com/explore/68839a350000000012021722",
+  },
+  {
+    id: "nearby-fuji-kawaguchiko",
+    region: "富士山",
+    title: "河口湖：天上山 + 大石公园",
+    area: "河口湖",
+    distance: "东京单程约 2 小时",
+    note: "你们现有富士山日归的主选：天气好时做缆车和湖畔，排队或云雾严重就删掉一个机位，保证回程。",
+    sourceTitle: "🗻富士山游玩图鉴｜这些打卡地别错过！",
+    sourceAuthor: "星辰海鸥票务服务",
+    sourceNoteId: "690481a50000000004020dc3",
+    sourceUrl: "https://www.xiaohongshu.com/explore/690481a50000000004020dc3",
+  },
+  {
+    id: "nearby-fuji-five-stops",
+    region: "富士山",
+    title: "富士山一日 5 站：河口湖经典机位",
+    area: "河口湖站周边",
+    distance: "东京往返约 10–12 小时",
+    note: "适合第一次去富士山做路线参考，但你们晚起，建议只保留 2–3 站，不要照搬五站打卡。",
+    sourceTitle: "富士山一日游｜5站打卡保姆级攻略✨",
+    sourceAuthor: "和风旅-日本旅行定制师Saku",
+    sourceNoteId: "6983e7170000000028009770",
+    sourceUrl: "https://www.xiaohongshu.com/explore/6983e7170000000028009770",
+  },
+  {
+    id: "nearby-fuji-yamanakako",
+    region: "富士山",
+    title: "山中湖：湖畔视角与河口湖二选一",
+    area: "山中湖",
+    distance: "东京单程约 2–2.5 小时",
+    note: "比河口湖更安静，但交通和站点衔接更复杂；如果想少逛商业设施、专注湖景，可以把它作为河口湖替换。",
+    sourceTitle: "🇯🇵富士山的AB面｜河口湖 vs 山中湖",
+    sourceAuthor: "Eatchhh",
+    sourceNoteId: "6a7f20bb0000000022030fdc",
+    sourceUrl: "https://www.xiaohongshu.com/explore/6a7f20bb0000000022030fdc",
+  },
+  {
+    id: "nearby-fuji-transport",
+    region: "富士山",
+    title: "新宿往返河口湖：高速巴士线",
+    area: "新宿 · 河口湖",
+    distance: "单程约 2 小时，堵车需留余量",
+    note: "这是交通候选，不是景点：你们晚起版本一定要先锁回程班次，天气差时不要临时改成更远的山中湖。",
+    sourceTitle: "🇯🇵东京往返富士山🗻｜自由行交通攻略",
+    sourceAuthor: "小红书搜索结果",
+    sourceNoteId: "69141158000000000300eac6",
+    sourceUrl: "https://www.xiaohongshu.com/explore/69141158000000000300eac6",
+  },
+  {
+    id: "nearby-fuji-shizuoka",
+    region: "富士山",
+    title: "静冈：三保松原 / 日本平海景",
+    area: "静冈",
+    distance: "东京单程约 1.5–2.5 小时",
+    note: "适合想从另一侧看富士山和海景的人；这次已经有河口湖，不建议再加，作为以后住静冈的备选。",
+    sourceTitle: "富士山-静冈周边游",
+    sourceAuthor: "小红书搜索结果",
+    sourceNoteId: "6968dd1f000000001a01e9ce",
+    sourceUrl: "https://www.xiaohongshu.com/explore/6968dd1f000000001a01e9ce",
+  },
+  {
+    id: "nearby-tokyo-kawagoe",
+    region: "东京",
+    title: "川越：藏造街 + 时之钟 + 菓子屋横丁",
+    area: "埼玉 · 川越",
+    distance: "东京单程约 45–60 分钟",
+    note: "老街、抹茶和小点心集中，步行线路清楚；比镰仓更适合不想跑海边、又想加一段日式街景的日子。",
+    sourceTitle: "小红书检索：东京周边 · 川越一日游",
+    sourceAuthor: "小红书搜索结果（公开检索页）",
+    sourceNoteId: "search:东京周边川越一日游",
+    sourceUrl: "https://www.xiaohongshu.com/search_result/?keyword=%E4%B8%9C%E4%BA%AC%20%E5%91%A8%E8%BE%B9%20%E5%B7%9D%E8%B6%8A%20%E4%B8%80%E6%97%A5%E6%B8%B8&type=51",
+  },
+  {
+    id: "nearby-tokyo-naritasan",
+    region: "东京",
+    title: "成田山新胜寺：寺院 + 表参道老街",
+    area: "成田",
+    distance: "东京单程约 1–1.5 小时",
+    note: "更适合和成田机场进出结合；如果从羽田落地，不建议为了它专程往返，作为下次或返程机场附近的备选。",
+    sourceTitle: "小红书检索：东京周边 · 成田山一日游",
+    sourceAuthor: "小红书搜索结果（公开检索页）",
+    sourceNoteId: "search:东京周边成田山一日游",
+    sourceUrl: "https://www.xiaohongshu.com/search_result/?keyword=%E4%B8%9C%E4%BA%AC%20%E5%91%A8%E8%BE%B9%20%E6%88%90%E7%94%B0%E5%B1%B1%20%E4%B8%80%E6%97%A5%E6%B8%B8&type=51",
+  },
+  {
+    id: "nearby-tokyo-chiikawa-harajuku",
+    region: "东京",
+    title: "Chiikawa Land 原宿：限定周边 + 表参道",
+    area: "原宿 · 表参道",
+    distance: "东京市区约 20–30 分钟",
+    note: "适合和明治神宫、表参道、涩谷放在同一天；Chiikawa 门店可能有整理券和限购，出发前再看当天规则与库存。",
+    sourceTitle: "小红书检索：Chiikawa 东京限定玩偶购买攻略",
+    sourceAuthor: "小红书搜索结果（公开检索页）",
+    sourceNoteId: "search:Chiikawa东京限定购物",
+    sourceUrl: "https://www.xiaohongshu.com/search_result/?keyword=Chiikawa%20%E4%B8%9C%E4%BA%AC%20%E9%99%90%E5%AE%9A%20%E7%8E%A9%E5%81%B6%20%E8%B4%AD%E7%89%A9&type=51",
+  },
+  {
+    id: "nearby-tokyo-chiikawa-ikebukuro",
+    region: "东京",
+    title: "Chiikawa Land 池袋：PARCO + Sunshine City",
+    area: "池袋",
+    distance: "东京市区约 25–35 分钟",
+    note: "可以和池袋商场、Sunshine City 一起逛，适合作为雨天购物线；不要把池袋和秋叶原、银座拆成来回折返。",
+    sourceTitle: "小红书检索：Chiikawa 池袋门店 / 东京购物攻略",
+    sourceAuthor: "小红书搜索结果（公开检索页）",
+    sourceNoteId: "search:Chiikawa池袋门店",
+    sourceUrl: "https://www.xiaohongshu.com/search_result/?keyword=Chiikawa%20%E6%B1%A0%E8%A2%8B%20%E9%97%A8%E5%BA%97%20%E4%B8%9C%E4%BA%AC%E8%B4%AD%E7%89%A9&type=51",
+  },
+  {
+    id: "nearby-tokyo-chiikawa-shinjuku",
+    region: "东京",
+    title: "Chiikawa 新宿购物线：门店 + 歌舞伎町夜景",
+    area: "新宿",
+    distance: "东京市区约 20–30 分钟",
+    note: "适合把 Chiikawa 采购、百货和夜景压在同一片区域；如果当天已经安排涩谷，二选一即可。",
+    sourceTitle: "小红书检索：Chiikawa 新宿限定 / 东京购物",
+    sourceAuthor: "小红书搜索结果（公开检索页）",
+    sourceNoteId: "search:Chiikawa新宿限定",
+    sourceUrl: "https://www.xiaohongshu.com/search_result/?keyword=Chiikawa%20%E6%96%B0%E5%AE%BF%20%E9%99%90%E5%AE%9A%20%E4%B8%9C%E4%BA%AC%E8%B4%AD%E7%89%A9&type=51",
+  },
+  {
+    id: "nearby-tokyo-character-street-chiikawa",
+    region: "东京",
+    title: "东京站一番街：Character Street + Chiikawa",
+    area: "东京站",
+    distance: "东京站内，适合换乘或银座前后",
+    note: "把角色周边集中采购放在东京站最省路；与现有东京站 Chiikawa 点位可以合并，不必单独占半天。",
+    sourceTitle: "小红书检索：东京站 Chiikawa / Character Street 购买攻略",
+    sourceAuthor: "小红书搜索结果（公开检索页）",
+    sourceNoteId: "search:东京站ChiikawaCharacterStreet",
+    sourceUrl: "https://www.xiaohongshu.com/search_result/?keyword=%E4%B8%9C%E4%BA%AC%E7%AB%99%20Chiikawa%20Character%20Street%20%E8%B4%AD%E7%89%A9&type=51",
+  },
+  {
+    id: "nearby-osaka-himeji",
+    region: "大阪",
+    title: "姬路：姬路城 + 好古园",
+    area: "兵库 · 姬路",
+    distance: "大阪单程约 1 小时",
+    note: "日本城郭和庭园的完成度很高；如果你们更想看文化古迹，可以用它替换神户，但不建议和奈良同日。",
+    sourceTitle: "小红书检索：大阪周边 · 姬路城一日游",
+    sourceAuthor: "小红书搜索结果（公开检索页）",
+    sourceNoteId: "search:大阪周边姬路城一日游",
+    sourceUrl: "https://www.xiaohongshu.com/search_result/?keyword=%E5%A4%A7%E9%98%AA%20%E5%91%A8%E8%BE%B9%20%E5%A7%AC%E8%B7%AF%E5%9F%8E%20%E4%B8%80%E6%97%A5%E6%B8%B8&type=51",
+  },
+  {
+    id: "nearby-osaka-minoo",
+    region: "大阪",
+    title: "箕面：瀑布 + 山林散步",
+    area: "大阪北部 · 箕面",
+    distance: "大阪市区约 30–45 分钟",
+    note: "自然强度适中，适合想从难波和梅田抽半天换空气；雨后步道湿滑，穿防滑鞋更稳。",
+    sourceTitle: "小红书检索：大阪周边 · 箕面瀑布攻略",
+    sourceAuthor: "小红书搜索结果（公开检索页）",
+    sourceNoteId: "search:大阪周边箕面瀑布",
+    sourceUrl: "https://www.xiaohongshu.com/search_result/?keyword=%E5%A4%A7%E9%98%AA%20%E5%91%A8%E8%BE%B9%20%E7%AE%95%E9%9D%A2%E7%80%91%E5%B8%83%E6%94%BB%E7%95%A5&type=51",
+  },
+  {
+    id: "nearby-osaka-sakai",
+    region: "大阪",
+    title: "堺：茶道文化 + 古坟与老街",
+    area: "大阪南部 · 堺",
+    distance: "难波约 30–45 分钟",
+    note: "适合想看大阪府内更安静的一面；如果大阪只安排一整天，优先大阪城 / 黑门 / 难波，不要贪多。",
+    sourceTitle: "小红书检索：大阪周边 · 堺市一日游",
+    sourceAuthor: "小红书搜索结果（公开检索页）",
+    sourceNoteId: "search:大阪周边堺市一日游",
+    sourceUrl: "https://www.xiaohongshu.com/search_result/?keyword=%E5%A4%A7%E9%98%AA%20%E5%91%A8%E8%BE%B9%20%E5%A0%BA%E5%B8%82%20%E4%B8%80%E6%97%A5%E6%B8%B8&type=51",
+  },
+  {
+    id: "nearby-osaka-chiikawa-umeda",
+    region: "大阪",
+    title: "Chiikawa Land 大阪梅田：HEP FIVE 购物线",
+    area: "梅田",
+    distance: "大阪市区约 10–20 分钟",
+    note: "大阪最适合优先确认的 Chiikawa 采购点；可以和梅田百货、空中庭园放在同一晚，注意整理券、限购和库存变化。",
+    sourceTitle: "小红书检索：Chiikawa 大阪梅田限定 / 购物攻略",
+    sourceAuthor: "小红书搜索结果（公开检索页）",
+    sourceNoteId: "search:Chiikawa大阪梅田限定",
+    sourceUrl: "https://www.xiaohongshu.com/search_result/?keyword=Chiikawa%20%E5%A4%A7%E9%98%AA%20%E6%A2%85%E7%94%B0%20%E9%99%90%E5%AE%9A%20%E8%B4%AD%E7%89%A9&type=51",
+  },
+  {
+    id: "nearby-osaka-chiikawa-shinsaibashi",
+    region: "大阪",
+    title: "Chiikawa Land 心斋桥：PARCO + 道顿堀",
+    area: "心斋桥 · 难波",
+    distance: "大阪市区步行可串联",
+    note: "与你们现有难波住宿和道顿堀最顺路，适合在离开大阪前采购；比单独跑梅田更适合最后一晚或返程前。",
+    sourceTitle: "小红书检索：Chiikawa 心斋桥 PARCO / 大阪限定",
+    sourceAuthor: "小红书搜索结果（公开检索页）",
+    sourceNoteId: "search:Chiikawa心斋桥PARCO",
+    sourceUrl: "https://www.xiaohongshu.com/search_result/?keyword=Chiikawa%20%E5%BF%83%E6%96%8B%E6%A1%A5%20PARCO%20%E5%A4%A7%E9%98%AA%E9%99%90%E5%AE%9A&type=51",
+  },
+  {
+    id: "nearby-osaka-chiikawa-popup",
+    region: "大阪",
+    title: "Chiikawa 大阪期间限定活动：看到就加入",
+    area: "大阪各商场 / 快闪场地",
+    distance: "以当期活动地点为准",
+    note: "快闪和联名店变化很快，只作为“看到就买”的机会清单；不要为了不确定的快闪调整主路线，出发前重新核对日期与入场规则。",
+    sourceTitle: "小红书检索：Chiikawa 大阪 快闪 / 限定周边",
+    sourceAuthor: "小红书搜索结果（公开检索页）",
+    sourceNoteId: "search:Chiikawa大阪快闪限定",
+    sourceUrl: "https://www.xiaohongshu.com/search_result/?keyword=Chiikawa%20%E5%A4%A7%E9%98%AA%20%E5%BF%AB%E9%97%AA%20%E9%99%90%E5%AE%9A%E5%91%A8%E8%BE%B9&type=51",
+  },
+  {
+    id: "nearby-kyoto-arashiyama",
+    region: "京都",
+    title: "岚山：竹林 + 渡月桥 + 天龙寺",
+    area: "京都西部 · 岚山",
+    distance: "京都市区约 30–45 分钟",
+    note: "第一次去京都很值得保留的半日线；早上先去竹林和天龙寺，下午可接嵯峨野小火车或回市区，不要再绕去伏见稻荷。",
+    sourceTitle: "小红书检索：京都岚山半日 / 一日游攻略",
+    sourceAuthor: "小红书搜索结果（公开检索页）",
+    sourceNoteId: "search:京都岚山半日一日游",
+    sourceUrl: "https://www.xiaohongshu.com/search_result/?keyword=%E4%BA%AC%E9%83%BD%20%E5%B2%9A%E5%B1%B1%20%E5%8D%8A%E6%97%A5%20%E4%B8%80%E6%97%A5%E6%B8%B8%E6%94%BB%E7%95%A5&type=51",
+  },
+  {
+    id: "nearby-kyoto-ohara",
+    region: "京都",
+    title: "大原：三千院 + 山村庭院",
+    area: "京都北部 · 大原",
+    distance: "京都市区约 50–70 分钟",
+    note: "比东山更安静，适合想看自然和寺院的人；交通时间较长，建议和贵船 / 琉璃光院只选一条北山线。",
+    sourceTitle: "小红书检索：京都大原三千院一日游",
+    sourceAuthor: "小红书搜索结果（公开检索页）",
+    sourceNoteId: "search:京都大原三千院",
+    sourceUrl: "https://www.xiaohongshu.com/search_result/?keyword=%E4%BA%AC%E9%83%BD%20%E5%A4%A7%E5%8E%9F%20%E4%B8%89%E5%8D%83%E9%99%A2%20%E4%B8%80%E6%97%A5%E6%B8%B8&type=51",
+  },
+  {
+    id: "nearby-kyoto-toei",
+    region: "京都",
+    title: "东映太秦映画村：时代剧 + 室内体验",
+    area: "京都 · 太秦",
+    distance: "京都站约 25–35 分钟",
+    note: "雨天和不想一直逛寺院时很实用；适合情侣轻松体验，但不建议与岚山、金阁寺全塞同一天。",
+    sourceTitle: "小红书检索：京都东映太秦映画村攻略",
+    sourceAuthor: "小红书搜索结果（公开检索页）",
+    sourceNoteId: "search:京都东映太秦映画村",
+    sourceUrl: "https://www.xiaohongshu.com/search_result/?keyword=%E4%BA%AC%E9%83%BD%20%E4%B8%9C%E6%98%A0%E5%A4%AA%E7%A7%A6%E6%98%A0%E7%94%BB%E6%9D%91%E6%94%BB%E7%95%A5&type=51",
+  },
+  {
+    id: "nearby-kyoto-chiikawa-kawaramachi",
+    region: "京都",
+    title: "Chiikawa Land 京都四条河原町",
+    area: "四条河原町",
+    distance: "京都市区步行 / 电车可达",
+    note: "可与锦市场、祇园、鸭川合并，适合在京都买限定周边而不额外跑远；库存与整理券以门店当天公告为准。",
+    sourceTitle: "小红书检索：Chiikawa 京都四条河原町限定",
+    sourceAuthor: "小红书搜索结果（公开检索页）",
+    sourceNoteId: "search:Chiikawa京都四条河原町",
+    sourceUrl: "https://www.xiaohongshu.com/search_result/?keyword=Chiikawa%20%E4%BA%AC%E9%83%BD%20%E5%9B%9B%E6%9D%A1%E6%B2%B3%E5%8E%9F%E7%94%BA%20%E9%99%90%E5%AE%9A&type=51",
+  },
+  {
+    id: "nearby-kyoto-chiikawa-station",
+    region: "京都",
+    title: "京都站周边：角色周边 + 返程补买",
+    area: "京都站",
+    distance: "京都站内 / 周边",
+    note: "适合退房后寄存行李、去奈良或大阪之前快速补买；不建议为了不确定的限定商品专程折返，先安排主线再看时间。",
+    sourceTitle: "小红书检索：Chiikawa 京都站 / 京都限定周边",
+    sourceAuthor: "小红书搜索结果（公开检索页）",
+    sourceNoteId: "search:Chiikawa京都站限定周边",
+    sourceUrl: "https://www.xiaohongshu.com/search_result/?keyword=Chiikawa%20%E4%BA%AC%E9%83%BD%E7%AB%99%20%E9%99%90%E5%AE%9A%E5%91%A8%E8%BE%B9&type=51",
+  },
+  {
+    id: "nearby-fuji-oshino",
+    region: "富士山",
+    title: "忍野八海：清水池 + 乡村富士山视角",
+    area: "山梨 · 忍野",
+    distance: "河口湖约 30–40 分钟",
+    note: "适合和河口湖二选一或顺路加入；池子之间步行不算难，但巴士班次要先查，别为了一站错过回东京班次。",
+    sourceTitle: "小红书检索：富士山周边 · 忍野八海一日游",
+    sourceAuthor: "小红书搜索结果（公开检索页）",
+    sourceNoteId: "search:富士山周边忍野八海",
+    sourceUrl: "https://www.xiaohongshu.com/search_result/?keyword=%E5%AF%8C%E5%A3%AB%E5%B1%B1%20%E5%91%A8%E8%BE%B9%20%E5%BF%8D%E9%87%8E%E5%85%AB%E6%B5%B7%20%E4%B8%80%E6%97%A5%E6%B8%B8&type=51",
+  },
+  {
+    id: "nearby-fuji-fujiq",
+    region: "富士山",
+    title: "富士急乐园：过山车 + 富士山视角",
+    area: "富士吉田",
+    distance: "河口湖约 10–20 分钟",
+    note: "喜欢刺激项目才值得选；如果你们更想拍富士山和泡温泉，别同时塞富士急，二选一会舒服很多。",
+    sourceTitle: "小红书检索：富士山周边 · 富士急乐园攻略",
+    sourceAuthor: "小红书搜索结果（公开检索页）",
+    sourceNoteId: "search:富士山周边富士急乐园",
+    sourceUrl: "https://www.xiaohongshu.com/search_result/?keyword=%E5%AF%8C%E5%A3%AB%E5%B1%B1%20%E5%91%A8%E8%BE%B9%20%E5%AF%8C%E5%A3%AB%E6%80%A5%E4%B9%90%E5%9B%AD%E6%94%BB%E7%95%A5&type=51",
+  },
+  {
+    id: "nearby-fuji-ice-caves",
+    region: "富士山",
+    title: "鸣泽冰穴 + 富岳风穴：溶岩洞穴线",
+    area: "青木原树海",
+    distance: "河口湖约 30–45 分钟",
+    note: "自然体验有特色，夏季凉爽；洞内湿滑、台阶多，穿运动鞋，且要预留巴士间隔时间。",
+    sourceTitle: "小红书检索：富士山周边 · 冰穴风穴攻略",
+    sourceAuthor: "小红书搜索结果（公开检索页）",
+    sourceNoteId: "search:富士山冰穴风穴",
+    sourceUrl: "https://www.xiaohongshu.com/search_result/?keyword=%E5%AF%8C%E5%A3%AB%E5%B1%B1%20%E5%86%B0%E7%A9%B4%20%E9%A3%8E%E7%A9%B4%20%E5%91%A8%E8%BE%B9%E6%B8%B8&type=51",
+  },
+  {
+    id: "nearby-fuji-gotemba",
+    region: "富士山",
+    title: "御殿场 Premium Outlets：购物 + 富士山远景",
+    area: "静冈 · 御殿场",
+    distance: "东京约 1.5–2 小时，河口湖约 1 小时",
+    note: "购物优先时的替代方案；和河口湖、富士急不要同日全塞，适合把东京购物日换成郊区奥莱。",
+    sourceTitle: "小红书检索：富士山周边 · 御殿场奥特莱斯",
+    sourceAuthor: "小红书搜索结果（公开检索页）",
+    sourceNoteId: "search:富士山御殿场奥莱",
+    sourceUrl: "https://www.xiaohongshu.com/search_result/?keyword=%E5%AF%8C%E5%A3%AB%E5%B1%B1%20%E5%BE%A1%E6%AE%BF%E5%9C%BA%20%E5%A5%A5%E7%89%B9%E8%8E%B1%E6%96%AF&type=51",
+  },
+  {
+    id: "nearby-fuji-saiko-iyashi",
+    region: "富士山",
+    title: "西湖疗愈之里根场：茅草屋 + 湖区慢游",
+    area: "西湖",
+    distance: "河口湖约 30–45 分钟",
+    note: "比河口湖主街安静，适合拍传统村落和慢慢看山；班次少，确定去就把往返巴士先锁好。",
+    sourceTitle: "小红书检索：富士山西湖疗愈之里根场",
+    sourceAuthor: "小红书搜索结果（公开检索页）",
+    sourceNoteId: "search:富士山西湖疗愈之里根场",
+    sourceUrl: "https://www.xiaohongshu.com/search_result/?keyword=%E5%AF%8C%E5%A3%AB%E5%B1%B1%20%E8%A5%BF%E6%B9%96%20%E7%96%97%E6%84%88%E4%B9%8B%E9%87%8C%E6%A0%B9%E5%9C%BA&type=51",
+  },
+];
+
+const NEARBY_CANDIDATE_CATALOG_VERSION = 2;
+
+function migrateNearbyCandidates(saved: NearbyCandidate[], catalogVersion?: number) {
+  if (catalogVersion === NEARBY_CANDIDATE_CATALOG_VERSION) return saved;
+  const existingIds = new Set(saved.map((candidate) => candidate.id));
+  return [...saved, ...NEARBY_CANDIDATES.filter((candidate) => !existingIds.has(candidate.id))];
+}
+
 const DEFAULT_XHS_SHARES: XiaohongshuShare[] = [
   ...RESEARCH_TIPS.map((tip) => ({
     id: `researched-${tip.noteId}`,
@@ -2883,8 +3399,18 @@ function makeSnapshot(
   stays: StayPlan[],
   xiaohongshuLinks: XiaohongshuShare[],
   preDepartureChecklist: Record<string, boolean> = {},
+  nearbyCandidates: NearbyCandidate[] = NEARBY_CANDIDATES,
 ): TripState {
-  return { version: TRIP_DATA_VERSION, days, places, stays, xiaohongshuLinks, preDepartureChecklist };
+  return {
+    version: TRIP_DATA_VERSION,
+    days,
+    places,
+    stays,
+    xiaohongshuLinks,
+    preDepartureChecklist,
+    nearbyCandidates,
+    nearbyCandidateCatalogVersion: NEARBY_CANDIDATE_CATALOG_VERSION,
+  };
 }
 
 const XHS_HOSTS = new Set([
@@ -2981,6 +3507,8 @@ export default function Home() {
   const [stayPlans, setStayPlans] = useState<StayPlan[]>(STAY_PLANS);
   const [xiaohongshuLinks, setXiaohongshuLinks] = useState<XiaohongshuShare[]>(DEFAULT_XHS_SHARES);
   const [preDepartureChecklist, setPreDepartureChecklist] = useState<Record<string, boolean>>({});
+  const [nearbyCandidates, setNearbyCandidates] = useState<NearbyCandidate[]>(NEARBY_CANDIDATES);
+  const [nearbyRegion, setNearbyRegion] = useState<NearbyRegion | "all">("all");
   const [selectedDay, setSelectedDay] = useState<number | "all">("all");
   const [categoryFilter, setCategoryFilter] = useState<PlaceCategory | "all">("all");
   const [search, setSearch] = useState("");
@@ -3023,6 +3551,7 @@ export default function Home() {
         setStayPlans(Array.isArray(next.stays) ? next.stays : STAY_PLANS);
         setXiaohongshuLinks(Array.isArray(next.xiaohongshuLinks) ? mergeDefaultXhsShares(next.xiaohongshuLinks) : DEFAULT_XHS_SHARES);
         setPreDepartureChecklist(next.preDepartureChecklist ?? {});
+        setNearbyCandidates(Array.isArray(next.nearbyCandidates) ? migrateNearbyCandidates(next.nearbyCandidates, next.nearbyCandidateCatalogVersion) : NEARBY_CANDIDATES);
         if (shared) setToast("已载入分享行程");
       }
       setHydrated(true);
@@ -3032,8 +3561,8 @@ export default function Home() {
 
   useEffect(() => {
     if (!hydrated) return;
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(makeSnapshot(days, places, stayPlans, xiaohongshuLinks, preDepartureChecklist)));
-  }, [days, hydrated, places, preDepartureChecklist, stayPlans, xiaohongshuLinks]);
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(makeSnapshot(days, places, stayPlans, xiaohongshuLinks, preDepartureChecklist, nearbyCandidates)));
+  }, [days, hydrated, nearbyCandidates, places, preDepartureChecklist, stayPlans, xiaohongshuLinks]);
 
   useEffect(() => {
     if (!toast) return;
@@ -3071,6 +3600,12 @@ export default function Home() {
 
   const checkedFoodCount = foodPlaces.filter((place) => place.checked).length;
 
+  const visibleNearbyCandidates = useMemo(
+    () => nearbyCandidates.filter((candidate) => nearbyRegion === "all" || candidate.region === nearbyRegion),
+    [nearbyCandidates, nearbyRegion],
+  );
+  const checkedNearbyCount = nearbyCandidates.filter((candidate) => candidate.checked).length;
+
   const checklistItems = useMemo(
     () => PRE_DEPARTURE_GROUPS.flatMap((group) => group.items),
     [],
@@ -3090,6 +3625,25 @@ export default function Home() {
     setPlaces((current) => current.map((place) => (
       place.id === id ? { ...place, checked: !place.checked } : place
     )));
+  };
+
+  const toggleNearbyCandidate = (id: string) => {
+    setNearbyCandidates((current) => current.map((candidate) => (
+      candidate.id === id ? { ...candidate, checked: !candidate.checked } : candidate
+    )));
+  };
+
+  const deleteNearbyCandidate = (candidate: NearbyCandidate) => {
+    if (!window.confirm(`确定从周边候选中删除“${candidate.title}”吗？`)) return;
+    setNearbyCandidates((current) => current.filter((item) => item.id !== candidate.id));
+    setToast("已从周边候选中删除");
+  };
+
+  const restoreNearbyCandidates = () => {
+    if (!window.confirm("恢复默认周边候选会保留当前主线，但会覆盖你对候选的勾选和删除，确定继续吗？")) return;
+    setNearbyCandidates(NEARBY_CANDIDATES);
+    setNearbyRegion("all");
+    setToast("已恢复小红书周边候选");
   };
 
   const openCreate = (day: DayId = selectedDay === "all" ? 1 : (selectedDay as DayId), category: PlaceCategory = "play") => {
@@ -3248,7 +3802,7 @@ export default function Home() {
   };
 
   const shareTrip = async () => {
-    const url = `${window.location.origin}${window.location.pathname}#share=${encodeShare(makeSnapshot(days, places, stayPlans, xiaohongshuLinks, preDepartureChecklist))}`;
+    const url = `${window.location.origin}${window.location.pathname}#share=${encodeShare(makeSnapshot(days, places, stayPlans, xiaohongshuLinks, preDepartureChecklist, nearbyCandidates))}`;
     window.history.replaceState(null, "", url);
     try {
       await navigator.clipboard.writeText(url);
@@ -3259,7 +3813,7 @@ export default function Home() {
   };
 
   const exportTrip = () => {
-    const file = new Blob([JSON.stringify(makeSnapshot(days, places, stayPlans, xiaohongshuLinks, preDepartureChecklist), null, 2)], { type: "application/json" });
+    const file = new Blob([JSON.stringify(makeSnapshot(days, places, stayPlans, xiaohongshuLinks, preDepartureChecklist, nearbyCandidates), null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(file);
     const anchor = document.createElement("a");
     anchor.href = url;
@@ -3281,6 +3835,7 @@ export default function Home() {
       setStayPlans(Array.isArray(parsed.stays) ? parsed.stays : STAY_PLANS);
       setXiaohongshuLinks(Array.isArray(parsed.xiaohongshuLinks) ? mergeDefaultXhsShares(parsed.xiaohongshuLinks) : DEFAULT_XHS_SHARES);
       setPreDepartureChecklist(parsed.preDepartureChecklist ?? {});
+      setNearbyCandidates(Array.isArray(parsed.nearbyCandidates) ? migrateNearbyCandidates(parsed.nearbyCandidates, parsed.nearbyCandidateCatalogVersion) : NEARBY_CANDIDATES);
       setToast("行程已导入");
     } catch {
       setToast("导入失败，请选择这个网页导出的 JSON 文件");
@@ -3296,6 +3851,8 @@ export default function Home() {
     setStayPlans(STAY_PLANS);
     setXiaohongshuLinks(DEFAULT_XHS_SHARES);
     setPreDepartureChecklist({});
+    setNearbyCandidates(NEARBY_CANDIDATES);
+    setNearbyRegion("all");
     setSelectedDay("all");
     setCategoryFilter("all");
     setSearch("");
@@ -3435,6 +3992,50 @@ export default function Home() {
             </details>
             <button className="reset-button" onClick={resetTrip}>恢复示例路线</button>
           </aside>
+        </div>
+      </section>
+
+      <section className="nearby-card" id="nearby">
+        <div className="nearby-heading">
+          <div>
+            <p className="section-label">NEARBY PICKS / 周边候选</p>
+            <h2>先把想去的地方勾出来，再做取舍。</h2>
+            <p className="expansion-intro">我按小红书站内搜索整理了东京、大阪、京都、富士山周边的候选点，并补了一组 Chiikawa 门店、角色街和快闪检索。勾选只是“想去 / 保留”，不会自动改动你们现在的小时行程；删除只会移出候选池，最后确定后再加入地图和具体日期。Chiikawa 的库存、整理券、营业时间和快闪日期，出发前请再点来源页核对。</p>
+          </div>
+          <div className="nearby-heading-actions">
+            <span className="muted">{checkedNearbyCount} / {nearbyCandidates.length} 个已勾选</span>
+            <button type="button" className="button button-ghost" onClick={restoreNearbyCandidates}>恢复默认候选</button>
+          </div>
+        </div>
+        <div className="nearby-toolbar">
+          <div className="nearby-region-tabs" role="tablist" aria-label="周边候选地区">
+            <button type="button" className={nearbyRegion === "all" ? "is-active" : ""} onClick={() => setNearbyRegion("all")} role="tab" aria-selected={nearbyRegion === "all"}>全部</button>
+            {(["东京", "大阪", "京都", "富士山"] as NearbyRegion[]).map((region) => (
+              <button type="button" key={region} className={nearbyRegion === region ? "is-active" : ""} onClick={() => setNearbyRegion(region)} role="tab" aria-selected={nearbyRegion === region}>{region}</button>
+            ))}
+          </div>
+          <span className="nearby-toolbar-note">来源：小红书站内搜索结果 · Chiikawa 条目优先看当天规则 · 先看距离，再决定替换哪一段主线</span>
+        </div>
+        <div className="nearby-grid">
+          {visibleNearbyCandidates.map((candidate) => (
+            <article className={`nearby-item ${candidate.checked ? "is-picked" : ""}`} key={candidate.id}>
+              <div className="nearby-item-top"><span className="nearby-region-badge">{candidate.region}</span><button type="button" className="nearby-delete" aria-label={`删除${candidate.title}`} onClick={() => deleteNearbyCandidate(candidate)}>删除</button></div>
+              <label className="nearby-pick-label">
+                <input type="checkbox" checked={Boolean(candidate.checked)} onChange={() => toggleNearbyCandidate(candidate.id)} />
+                <span className="nearby-check-box" aria-hidden="true">{candidate.checked ? "✓" : ""}</span>
+                <span>{candidate.checked ? "已选：想去" : "想去吗？"}</span>
+              </label>
+              <h3>{candidate.title}</h3>
+              <div className="nearby-meta"><span>{candidate.area}</span><span>{candidate.distance}</span></div>
+              <p>{candidate.note}</p>
+              <div className="nearby-source">
+                <span>小红书检索参考</span>
+                <a href={candidate.sourceUrl} target="_blank" rel="noreferrer">{candidate.sourceTitle} ↗</a>
+                <small>{candidate.sourceAuthor} · ID {candidate.sourceNoteId}</small>
+              </div>
+            </article>
+          ))}
+          {!visibleNearbyCandidates.length && <div className="nearby-empty">这一组候选都被删除了。点击右上角“恢复默认候选”，可以重新加载搜索结果。</div>}
         </div>
       </section>
 

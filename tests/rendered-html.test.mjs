@@ -25,6 +25,18 @@ test("server-renders the trip planner shell", async () => {
   assert.match(html, /东京站/);
   assert.match(html, /新增地点/);
   assert.match(html, /地图/);
+  assert.match(html, /周边候选/);
+  assert.match(html, /小红书检索参考/);
+  assert.match(html, /想去吗/);
+  assert.match(html, /删除/);
+  assert.match(html, /镰仓 \+ 江之岛/);
+  assert.match(html, /琵琶湖/);
+  assert.match(html, /河口湖：天上山 \+ 大石公园/);
+  assert.match(html, /Chiikawa Land 原宿/);
+  assert.match(html, /Chiikawa 大阪梅田/);
+  assert.match(html, /Chiikawa 京都四条河原町/);
+  assert.match(html, /富士急乐园/);
+  assert.ok((html.match(/小红书检索参考/g) ?? []).length >= 40);
   assert.match(html, /住宿节奏/);
   assert.match(html, /住宿按你的真实订单来写/);
   assert.match(html, /添加住宿/);

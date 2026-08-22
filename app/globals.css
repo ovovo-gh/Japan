@@ -417,6 +417,38 @@ h1 em { color: var(--red); font-style: normal; }
 .xhs-share-card p { margin: 0; color: rgba(38,59,67,.76); font-size: 10px; line-height: 1.6; }
 .xhs-share-card a { margin-top: auto; color: var(--ink); font-size: 10px; font-weight: 800; text-decoration: underline; }
 .xhs-empty { grid-column: 1 / -1; padding: 18px; border: 1px dashed rgba(38,59,67,.35); color: var(--ink-soft); font-size: 11px; }
+.nearby-card { margin-top: 18px; padding: 26px; border: 1px solid var(--ink); background: #e7f0eb; box-shadow: 0 15px 40px rgba(38,59,67,.045); }
+.nearby-heading { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; }
+.nearby-heading h2 { margin: 8px 0 10px; font-family: Georgia, "Songti SC", serif; font-size: 30px; font-weight: 400; letter-spacing: -.05em; }
+.nearby-heading-actions { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
+.nearby-heading-actions .button { min-height: 32px; padding: 0 10px; font-size: 10px; }
+.nearby-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 18px; margin-top: 22px; padding: 10px 0; border-top: 1px solid rgba(38,59,67,.18); border-bottom: 1px solid rgba(38,59,67,.18); }
+.nearby-region-tabs { display: flex; flex-wrap: wrap; gap: 5px; }
+.nearby-region-tabs button { padding: 7px 10px; border: 1px solid transparent; border-radius: 3px; background: rgba(255,253,248,.45); color: var(--ink-soft); font-size: 10px; font-weight: 800; }
+.nearby-region-tabs button:hover, .nearby-region-tabs button.is-active { border-color: var(--ink); background: var(--white); color: var(--ink); }
+.nearby-toolbar-note { color: var(--ink-soft); font-size: 9px; line-height: 1.5; text-align: right; }
+.nearby-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 16px; }
+.nearby-item { display: grid; align-content: start; gap: 8px; min-width: 0; padding: 16px; border: 1px solid rgba(38,59,67,.2); background: rgba(255,253,248,.78); transition: .2s ease; }
+.nearby-item:hover, .nearby-item.is-picked { border-color: var(--ink); box-shadow: 4px 4px 0 rgba(38,59,67,.1); }
+.nearby-item.is-picked { background: #fffaf0; }
+.nearby-item-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.nearby-region-badge { display: inline-flex; padding: 4px 6px; border: 1px solid rgba(38,59,67,.25); border-radius: 3px; background: rgba(255,253,248,.62); color: var(--red); font-size: 9px; font-weight: 800; letter-spacing: .08em; }
+.nearby-delete { padding: 3px 0; border: 0; background: transparent; color: var(--ink-soft); font-size: 9px; text-decoration: underline; }
+.nearby-delete:hover { color: var(--red); }
+.nearby-pick-label { display: inline-flex; align-items: center; gap: 7px; justify-self: start; color: var(--ink-soft); font-size: 10px; font-weight: 800; cursor: pointer; }
+.nearby-pick-label input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.nearby-check-box { display: grid; place-items: center; width: 21px; height: 21px; border: 1px solid var(--ink-soft); border-radius: 3px; background: var(--white); color: var(--ink); font-size: 13px; line-height: 1; }
+.nearby-pick-label input:focus-visible + .nearby-check-box { outline: 2px solid var(--red); outline-offset: 2px; }
+.nearby-pick-label input:checked + .nearby-check-box { border-color: var(--ink); background: var(--yellow); }
+.nearby-item h3 { margin: 2px 0 0; font-family: Georgia, "Songti SC", serif; font-size: 21px; font-weight: 400; line-height: 1.22; letter-spacing: -.04em; }
+.nearby-meta { display: flex; flex-wrap: wrap; gap: 8px; color: var(--ink-soft); font-size: 9px; }
+.nearby-meta span + span { padding-left: 8px; border-left: 1px solid var(--line); }
+.nearby-item > p { margin: 0; color: rgba(38,59,67,.78); font-size: 10px; line-height: 1.65; }
+.nearby-source { display: grid; gap: 4px; margin-top: 3px; padding: 9px; border-left: 2px solid var(--red); background: rgba(255,255,255,.46); }
+.nearby-source > span { color: var(--red); font-size: 8px; font-weight: 800; letter-spacing: .1em; }
+.nearby-source a { color: var(--ink); font-size: 10px; font-weight: 800; line-height: 1.4; text-decoration: underline; }
+.nearby-source small { color: var(--ink-soft); font-size: 8px; line-height: 1.4; }
+.nearby-empty { grid-column: 1 / -1; padding: 22px; border: 1px dashed rgba(38,59,67,.35); color: var(--ink-soft); font-size: 11px; }
 .footer-strip { display: flex; justify-content: space-between; gap: 18px; margin-top: 62px; padding-top: 15px; border-top: 1px solid var(--line); color: var(--ink-soft); font-size: 10px; }
 .back-to-top { position: fixed; right: 22px; bottom: 22px; z-index: 1000; display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid var(--ink); border-radius: 50%; background: var(--yellow); color: var(--ink); font-family: Georgia, "Songti SC", serif; font-size: 20px; line-height: 1; text-decoration: none; box-shadow: 4px 4px 0 rgba(38,59,67,.15); transition: .2s ease; }
 .back-to-top:hover, .back-to-top:focus-visible { transform: translateY(-2px); background: var(--red); color: var(--white); outline: 0; }
@@ -447,6 +479,7 @@ h1 em { color: var(--red); font-style: normal; }
   .checklist-official > div { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .language-overview-grid { grid-template-columns: 1fr; }
   .language-phrase-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .nearby-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .research-strip { grid-template-columns: 1fr; }
   .research-grid { grid-template-columns: repeat(2, 1fr); }
   .kansai-tradeoff-grid { grid-template-columns: 1fr; }
@@ -488,6 +521,11 @@ h1 em { color: var(--red); font-style: normal; }
   .checklist-source-grid { grid-template-columns: 1fr; }
   .checklist-official > div { grid-template-columns: 1fr; }
   .language-card { padding: 18px 15px; }
+  .nearby-card { padding: 18px 15px; }
+  .nearby-heading, .nearby-toolbar { align-items: start; flex-direction: column; gap: 9px; }
+  .nearby-heading-actions { width: 100%; justify-content: space-between; }
+  .nearby-toolbar-note { text-align: left; }
+  .nearby-grid { grid-template-columns: 1fr; }
   .language-phrases-head { align-items: start; flex-direction: column; gap: 5px; }
   .language-phrase-grid { grid-template-columns: 1fr; }
   .hourly-card { padding: 18px 15px; }
