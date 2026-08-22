@@ -449,6 +449,56 @@ h1 em { color: var(--red); font-style: normal; }
 .nearby-source a { color: var(--ink); font-size: 10px; font-weight: 800; line-height: 1.4; text-decoration: underline; }
 .nearby-source small { color: var(--ink-soft); font-size: 8px; line-height: 1.4; }
 .nearby-empty { grid-column: 1 / -1; padding: 22px; border: 1px dashed rgba(38,59,67,.35); color: var(--ink-soft); font-size: 11px; }
+.personal-plan-card { margin-top: 18px; padding: 26px; border: 1px solid var(--ink); background: #f2eadf; box-shadow: 0 15px 40px rgba(38,59,67,.045); }
+.personal-plan-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
+.personal-plan-heading h2 { margin: 8px 0 10px; font-family: Georgia, "Songti SC", serif; font-size: 30px; font-weight: 400; letter-spacing: -.05em; }
+.personal-plan-heading .expansion-intro { max-width: 840px; }
+.personal-plan-badge { flex: 0 0 auto; padding: 8px 10px; border: 1px solid rgba(38,59,67,.35); background: rgba(255,253,248,.58); color: var(--ink); font-size: 10px; font-weight: 800; white-space: nowrap; }
+.personal-plan-summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; margin-top: 20px; }
+.personal-plan-stat { display: grid; gap: 4px; min-height: 92px; padding: 14px; border: 1px solid rgba(38,59,67,.2); background: rgba(255,253,248,.72); }
+.personal-plan-stat > span { color: var(--ink-soft); font-size: 9px; font-weight: 800; letter-spacing: .08em; }
+.personal-plan-stat strong { color: var(--ink); font-family: Georgia, "Songti SC", serif; font-size: 25px; font-weight: 400; letter-spacing: -.03em; }
+.personal-plan-stat strong small { font-family: inherit; font-size: 14px; }
+.personal-plan-stat small { color: var(--ink-soft); font-size: 9px; line-height: 1.4; }
+.personal-plan-columns { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(0, .88fr); gap: 14px; margin-top: 14px; }
+.personal-plan-panel, .personal-route-panel { min-width: 0; padding: 18px; border: 1px solid rgba(38,59,67,.2); background: rgba(255,253,248,.7); }
+.personal-panel-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 15px; }
+.personal-panel-head h3 { margin: 6px 0 0; font-family: Georgia, "Songti SC", serif; font-size: 22px; font-weight: 400; letter-spacing: -.04em; }
+.personal-expense-group + .personal-expense-group, .personal-task-group + .personal-task-group { margin-top: 15px; padding-top: 13px; border-top: 1px solid var(--line); }
+.personal-group-label { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 5px; color: var(--ink-soft); font-size: 9px; font-weight: 800; letter-spacing: .04em; }
+.personal-group-label strong { color: var(--red); font-size: 10px; }
+.personal-check-row { display: grid; grid-template-columns: 21px minmax(0, 1fr) auto; gap: 8px; align-items: start; padding: 9px 7px; border-top: 1px solid rgba(38,59,67,.1); cursor: pointer; transition: .2s ease; }
+.personal-check-row:hover, .personal-check-row.is-done { background: rgba(243,207,103,.15); }
+.personal-check-row input, .personal-route-item input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.personal-check-box { display: grid; place-items: center; width: 20px; height: 20px; border: 1px solid var(--ink-soft); border-radius: 3px; background: var(--white); color: var(--ink); font-size: 12px; line-height: 1; }
+.personal-check-row input:focus-visible + .personal-check-box, .personal-route-item input:focus-visible + .personal-check-box { outline: 2px solid var(--red); outline-offset: 2px; }
+.personal-check-row input:checked + .personal-check-box, .personal-route-item input:checked + .personal-check-box { border-color: var(--ink); background: var(--yellow); }
+.personal-check-copy { display: grid; gap: 3px; min-width: 0; }
+.personal-check-copy strong { color: var(--ink); font-size: 11px; line-height: 1.35; }
+.personal-check-copy small { color: var(--ink-soft); font-size: 9px; line-height: 1.45; }
+.personal-check-row > b { color: var(--ink); font-size: 11px; font-weight: 800; white-space: nowrap; }
+.personal-check-row > b.is-planned { color: var(--red); }
+.personal-task-panel .personal-check-row { grid-template-columns: 21px minmax(0, 1fr); }
+.personal-route-panel { margin-top: 14px; }
+.personal-route-head { margin-bottom: 12px; }
+.personal-day-tabs { display: flex; gap: 5px; overflow-x: auto; padding: 9px 0; border-top: 1px solid rgba(38,59,67,.16); border-bottom: 1px solid rgba(38,59,67,.16); }
+.personal-day-tabs button { flex: 0 0 auto; padding: 7px 10px; border: 1px solid transparent; border-radius: 3px; background: rgba(255,253,248,.45); color: var(--ink-soft); font-size: 10px; font-weight: 800; white-space: nowrap; }
+.personal-day-tabs button:hover, .personal-day-tabs button.is-active { border-color: var(--ink); background: var(--white); color: var(--ink); }
+.personal-day-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
+.personal-day-card { min-width: 0; padding: 15px; border: 1px solid rgba(38,59,67,.18); background: rgba(255,253,248,.64); }
+.personal-day-card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.personal-day-card-head > div > span { color: var(--red); font-size: 9px; font-weight: 800; letter-spacing: .08em; }
+.personal-day-card-head h4 { margin: 5px 0 0; font-family: Georgia, "Songti SC", serif; font-size: 19px; font-weight: 400; line-height: 1.22; letter-spacing: -.03em; }
+.personal-day-card-head > strong { color: var(--ink-soft); font-size: 10px; white-space: nowrap; }
+.personal-day-note { margin: 10px 0 0; color: var(--ink-soft); font-size: 10px; line-height: 1.6; }
+.personal-route-list { margin-top: 10px; }
+.personal-route-item { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 8px; align-items: start; padding: 9px 0; border-top: 1px solid rgba(38,59,67,.1); cursor: pointer; }
+.personal-route-copy { display: grid; gap: 4px; min-width: 0; }
+.personal-route-top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; }
+.personal-route-top time { color: var(--red); font-size: 9px; font-variant-numeric: tabular-nums; font-weight: 800; white-space: nowrap; }
+.personal-route-top strong { color: var(--ink); font-size: 11px; line-height: 1.35; }
+.personal-route-top em { padding: 2px 4px; border: 1px solid rgba(38,59,67,.2); color: var(--ink-soft); font-size: 8px; font-style: normal; line-height: 1.2; }
+.personal-route-copy small { color: var(--ink-soft); font-size: 9px; line-height: 1.55; }
 .footer-strip { display: flex; justify-content: space-between; gap: 18px; margin-top: 62px; padding-top: 15px; border-top: 1px solid var(--line); color: var(--ink-soft); font-size: 10px; }
 .back-to-top { position: fixed; right: 22px; bottom: 22px; z-index: 1000; display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid var(--ink); border-radius: 50%; background: var(--yellow); color: var(--ink); font-family: Georgia, "Songti SC", serif; font-size: 20px; line-height: 1; text-decoration: none; box-shadow: 4px 4px 0 rgba(38,59,67,.15); transition: .2s ease; }
 .back-to-top:hover, .back-to-top:focus-visible { transform: translateY(-2px); background: var(--red); color: var(--white); outline: 0; }
@@ -480,6 +530,8 @@ h1 em { color: var(--red); font-style: normal; }
   .language-overview-grid { grid-template-columns: 1fr; }
   .language-phrase-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .nearby-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .personal-plan-columns, .personal-day-grid { grid-template-columns: 1fr; }
+  .personal-plan-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .research-strip { grid-template-columns: 1fr; }
   .research-grid { grid-template-columns: repeat(2, 1fr); }
   .kansai-tradeoff-grid { grid-template-columns: 1fr; }
@@ -526,6 +578,14 @@ h1 em { color: var(--red); font-style: normal; }
   .nearby-heading-actions { width: 100%; justify-content: space-between; }
   .nearby-toolbar-note { text-align: left; }
   .nearby-grid { grid-template-columns: 1fr; }
+  .personal-plan-card { padding: 18px 15px; }
+  .personal-plan-heading, .personal-panel-head { align-items: start; flex-direction: column; gap: 8px; }
+  .personal-plan-heading h2 { font-size: 25px; }
+  .personal-plan-badge { white-space: normal; }
+  .personal-plan-summary { grid-template-columns: 1fr 1fr; }
+  .personal-plan-panel, .personal-route-panel { padding: 15px; }
+  .personal-plan-stat { min-height: 82px; padding: 11px; }
+  .personal-plan-stat strong { font-size: 21px; }
   .language-phrases-head { align-items: start; flex-direction: column; gap: 5px; }
   .language-phrase-grid { grid-template-columns: 1fr; }
   .hourly-card { padding: 18px 15px; }

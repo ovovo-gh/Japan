@@ -36,6 +36,15 @@ test("server-renders the trip planner shell", async () => {
   assert.match(html, /Chiikawa 大阪梅田/);
   assert.match(html, /Chiikawa 京都四条河原町/);
   assert.match(html, /富士急乐园/);
+  assert.match(html, /我的行程清单/);
+  assert.match(html, /已记录金额/);
+  assert.match(html, /12,428/);
+  assert.match(html, /海洋馆/);
+  assert.match(html, /天斧 77 Pro/);
+  assert.match(html, /大阪25/);
+  assert.match(html, /阿倍野 16F/);
+  assert.match(html, /Chiikawa 京都伏见店/);
+  assert.match(html, /岚山小火车/);
   assert.ok((html.match(/小红书检索参考/g) ?? []).length >= 40);
   assert.match(html, /住宿节奏/);
   assert.match(html, /住宿按你的真实订单来写/);

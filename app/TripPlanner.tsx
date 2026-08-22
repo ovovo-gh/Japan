@@ -10,7 +10,7 @@ import {
   useRef,
   useState,
 } from "react";
-import type { DayId, DayPlan, NearbyCandidate, NearbyRegion, Place, PlaceCategory, StayPlan, TripState, XiaohongshuShare } from "./types";
+import type { DayId, DayPlan, NearbyCandidate, NearbyRegion, PersonalDayMemo, PersonalExpense, PersonalTask, Place, PlaceCategory, StayPlan, TripState, XiaohongshuShare } from "./types";
 
 const MapView = dynamic(() => import("./LeafletMap"), {
   loading: () => <div className="map-frame map-placeholder">地图正在准备…</div>,
@@ -29,6 +29,7 @@ const DAYS: DayPlan[] = [
 const PAGE_MODULES = [
   { href: "#map", label: "路线地图" },
   { href: "#nearby", label: "周边候选" },
+  { href: "#personal-plan", label: "我的行程清单" },
   { href: "#stays", label: "住宿" },
   { href: "#food", label: "美食" },
   { href: "#checklist", label: "出发清单" },
@@ -3323,6 +3324,188 @@ function migrateNearbyCandidates(saved: NearbyCandidate[], catalogVersion?: numb
   return [...saved, ...NEARBY_CANDIDATES.filter((candidate) => !existingIds.has(candidate.id))];
 }
 
+const PERSONAL_EXPENSES: PersonalExpense[] = [
+  { id: "personal-flight-out", group: "机票 / 住宿 / 基础交通", label: "机票去", amount: 1288, note: "用户原稿金额；币种未标，先按原数字保存。", checked: true },
+  { id: "personal-flight-back", group: "机票 / 住宿 / 基础交通", label: "机票回", amount: 754, checked: true },
+  { id: "personal-osaka-stay", group: "机票 / 住宿 / 基础交通", label: "大阪住", amount: 1462, checked: true },
+  { id: "personal-kyoto-stay", group: "机票 / 住宿 / 基础交通", label: "京都住", amount: 747, checked: true },
+  { id: "personal-sim", group: "机票 / 住宿 / 基础交通", label: "电话卡", amount: 92, checked: true },
+  { id: "personal-pass", group: "活动 / 交通", label: "周游卡", amount: 620, checked: true },
+  { id: "personal-photo", group: "活动 / 交通", label: "约拍照", amount: 350, checked: true },
+  { id: "personal-ic-card", group: "活动 / 交通", label: "IC卡", amount: 450, checked: true },
+  { id: "personal-arashiyama-train", group: "活动 / 交通", label: "岚山小火车", amount: 42, note: "原稿写作“42岚山小火车”。", checked: true },
+  { id: "personal-wristband-1", group: "活动 / 交通", label: "租手环 1", amount: 38, checked: true },
+  { id: "personal-wristband-2", group: "活动 / 交通", label: "租手环 2", amount: 45, checked: true },
+  { id: "personal-murin-an", group: "活动 / 交通", label: "无邻庵", amount: 30, checked: true },
+  { id: "personal-kulikuli", group: "活动 / 交通", label: "kulikuli", amount: 36, checked: true },
+  { id: "personal-day-1-shopping", group: "每日已记录", label: "买东西", amount: 226, dayLabel: "第一天", checked: true },
+  { id: "personal-day-2-food", group: "每日已记录", label: "吃东西", amount: 30, dayLabel: "第二天", checked: true },
+  { id: "personal-day-3-muji", group: "每日已记录", label: "无印良品", amount: 887, dayLabel: "第三天", checked: true },
+  { id: "personal-day-4-matcha", group: "每日已记录", label: "抹茶", amount: 164, dayLabel: "第四天", checked: true },
+  { id: "personal-day-5-meal-1", group: "每日已记录", label: "吃饭 1", amount: 176, dayLabel: "第五天", checked: true },
+  { id: "personal-day-5-kimono", group: "每日已记录", label: "👘 和服", amount: 369, dayLabel: "第五天", checked: true },
+  { id: "personal-day-5-ticket", group: "每日已记录", label: "门票", amount: 50, dayLabel: "第五天", checked: true },
+  { id: "personal-day-5-meal-2", group: "每日已记录", label: "吃饭 2", amount: 80, dayLabel: "第五天", checked: true },
+  { id: "personal-day-5-muji", group: "每日已记录", label: "无印良品", amount: 601, dayLabel: "第五天", checked: true },
+  { id: "personal-day-5-drugstore", group: "每日已记录", label: "药妆", amount: 612, dayLabel: "第五天", checked: true },
+  { id: "personal-day-6-food", group: "每日已记录", label: "吃饭", amount: 177, dayLabel: "第六天", checked: true },
+  { id: "personal-day-7-drugstore", group: "每日已记录", label: "药妆", amount: 539, dayLabel: "第七天", checked: true },
+  { id: "personal-day-7-ice", group: "每日已记录", label: "吃冰", amount: 62, dayLabel: "第七天", checked: true },
+  { id: "personal-day-7-souvenir", group: "每日已记录", label: "纪念品", amount: 270, dayLabel: "第七天", checked: true },
+  { id: "personal-day-7-meal", group: "每日已记录", label: "吃饭", amount: 100, dayLabel: "第七天", checked: true },
+  { id: "personal-day-7-shopping", group: "每日已记录", label: "买东西", amount: 807, dayLabel: "第七天", checked: true },
+  { id: "personal-day-8-cosmetics", group: "每日已记录", label: "化妆品", amount: 900, dayLabel: "第八天", checked: true },
+  { id: "personal-day-8-muji", group: "每日已记录", label: "无印良品", amount: 424, dayLabel: "第八天", checked: true },
+  { id: "personal-planned-aquarium", group: "待安排预算", label: "海洋馆", amount: 3100, note: "原稿列为周游券 / 活动预算，暂不计入已记录合计。", planned: true },
+  { id: "personal-planned-mio", group: "待安排预算", label: "天王寺MIO券", amount: 1500, note: "原稿列为券或购物预算，暂不计入已记录合计。", planned: true },
+];
+
+const PERSONAL_TASKS: PersonalTask[] = [
+  { id: "buy-ast-77pro", group: "要买的", title: "天斧 77 Pro", detail: "确认拍柄规格、颜色、价格与退税条件。" },
+  { id: "buy-nanoflare", group: "要买的", title: "Nanoflare 700 Pro / 800 Pro（4U）", detail: "到店试挥并确认 4U、穿线和保修。" },
+  { id: "buy-jersey", group: "要买的", title: "球衣" },
+  { id: "buy-pillow", group: "要买的", title: "枕头" },
+  { id: "buy-film-camera", group: "要买的", title: "一次胶片机" },
+  { id: "buy-highlight-stick", group: "要买的", title: "高光棒" },
+  { id: "buy-rubbing-strip", group: "要买的", title: "搓条" },
+  { id: "shop-takashimaya", group: "购物地点", title: "高岛屋" },
+  { id: "shop-daimaru", group: "购物地点", title: "大丸" },
+  { id: "shop-mitsuhashi", group: "购物地点", title: "Sports Mitsuhashi Kyoto Flagship" },
+  { id: "shop-aeon", group: "购物地点", title: "永旺" },
+  { id: "shop-railway-museum", group: "购物地点", title: "京都铁道博物馆" },
+  { id: "shop-ninenzaka", group: "购物地点", title: "二年坂 / 三年坂" },
+  { id: "pass-weekly", group: "交通 / 门票", title: "周游券", detail: "先核对包含的景点、有效期和兑换方式。" },
+  { id: "pass-aquarium", group: "交通 / 门票", title: "海洋馆", detail: "原稿预算 3100；确认是两人票还是套票。" },
+  { id: "pass-ferris-wheel", group: "交通 / 门票", title: "摩天轮" },
+  { id: "pass-keihan", group: "交通 / 门票", title: "京阪电车" },
+  { id: "pass-soraniwa", group: "交通 / 门票", title: "空庭温泉", detail: "原稿安排 19:00–21:00；确认预约和入场规则。" },
+  { id: "pass-takoyaki", group: "交通 / 门票", title: "章鱼小丸子" },
+  { id: "pass-umeda-sky", group: "交通 / 门票", title: "梅田空中庭院" },
+  { id: "pass-tennoji-mio", group: "交通 / 门票", title: "天王寺MIO 1500券", detail: "确认券面额、适用店铺和使用期限。" },
+  { id: "pass-jr-3day", group: "交通 / 门票", title: "JR 3日券", detail: "原稿写作“JR3日：京坂”；购买前按实际跨城段核算。" },
+  { id: "pass-hankyu", group: "交通 / 门票", title: "阪急电车" },
+  { id: "pass-kyoto-subway", group: "交通 / 门票", title: "京都地下铁" },
+  { id: "food-izakaya", group: "要吃的", title: "居酒屋" },
+  { id: "food-okonomiyaki", group: "要吃的", title: "大阪烧" },
+  { id: "food-sukiyaki", group: "要吃的", title: "寿喜烧" },
+  { id: "food-wagyu", group: "要吃的", title: "和牛" },
+  { id: "food-ramen", group: "要吃的", title: "拉面" },
+  { id: "food-omurice", group: "要吃的", title: "蛋包饭" },
+  { id: "food-sushi", group: "要吃的", title: "寿司", detail: "你不吃生三文鱼；点餐时分开餐具，并确认熟食和鱼介出汁。" },
+  { id: "food-chazuke", group: "要吃的", title: "茶泡饭" },
+  { id: "food-unagi", group: "要吃的", title: "鳗鱼饭" },
+];
+
+const PERSONAL_DAYS: PersonalDayMemo[] = [
+  {
+    id: "personal-osaka-25",
+    label: "大阪25",
+    title: "关西机场 → 入住 → 难波 / 心斋桥夜逛",
+    note: "先完成机场换券、入住和补给，再在同一片区内逛；游船最晚一班原稿记为 21:30，出发前核对当天班次。",
+    items: [
+      { id: "osaka25-airport-pass", time: "18:00", title: "关西机场换券", detail: "在机场换 JRPASS / 关西机场线相关票券；先确认柜台位置、开放时间和需要的订单凭证。", tag: "交通" },
+      { id: "osaka25-checkin", time: "19:00", title: "入住大阪住宿", detail: "放行李、确认第二天 USJ / 空庭温泉安排；顺便问退房、寄存和垃圾分类。", tag: "住宿" },
+      { id: "osaka25-supplies", time: "19:30", title: "先买生活补给", detail: "面膜、板凳、拖鞋、早饭、胶片机、药妆、休足时间；可按心斋桥 → 难波顺路购买。", tag: "补给" },
+      { id: "osaka25-cruise", time: "20:30", title: "道顿堀游船 Dotonbori Riverside Wonder Pub", detail: "游船约 20 分钟，原稿备注最晚一班 21:30；预约成功后再安排晚饭。", tag: "已勾选", checked: true },
+      { id: "osaka25-shopping", time: "20:50", title: "心斋桥 / 难波夜逛", detail: "PARCO 7F 无印良品、大丸、Namba CITY 7F GU、优衣库、堂吉诃德、DAISO 凳子拖鞋、OS Drug。", tag: "购物" },
+    ],
+  },
+  {
+    id: "personal-osaka-26",
+    label: "大阪26",
+    title: "USJ → 空庭温泉 → 难波晚饭",
+    note: "这是高强度日；手环、面膜和水放随身包，USJ 结束后不要再塞多个远距离景点。",
+    items: [
+      { id: "osaka26-usj", time: "07:00–08:00", title: "环球影城 USJ", detail: "带手环、面膜和水；提前确认入园、整理券 / 抽选券和小丸子相关活动。", tag: "已勾选", checked: true },
+      { id: "osaka26-usj-exit", time: "18:00", title: "离开 USJ", detail: "原稿计划 18:00 离场；如果当天排队过久，优先保留预约的温泉，减少晚间购物。", tag: "取舍" },
+      { id: "osaka26-soraniwa", time: "19:00–21:00", title: "空庭温泉", detail: "原稿备注距环球约 24 分钟、23:00 关门；确认交通和预约时间，不要压缩更衣 / 泡汤时间。", tag: "已勾选", checked: true },
+      { id: "osaka26-dinner", time: "21:20", title: "难波晚饭：从酒场 / 烧鸟 / 烧肉中选一家", detail: "候选：炭火焼とりえんや難波3号店、海鲜屋台おくまん、希味、多平烧肉、Sumiyaki-shoten Yo Namba、Sushi Sakaba Sashisu、一半 sushi、肉食堂・肉酒場1129、TOTTOTTO。你优先熟食，刺身给女友单独点。", tag: "晚饭" },
+    ],
+  },
+  {
+    id: "personal-kobe-27",
+    label: "神户27",
+    title: "三宫 / 生田神社 → 南京町 → 港区海边",
+    note: "神户候选很多，建议按体力在“港区 + 须磨海边”二选一；不要把所有海边站点都串起来。",
+    items: [
+      { id: "kobe27-start", time: "08:00", title: "起床，前往三宫站", detail: "先到三宫集中活动；若从大阪出发，优先选直达或少换乘线路。", tag: "交通" },
+      { id: "kobe27-hair", time: "09:00", title: "编发（待定）", detail: "kotonoocho 5-6-8 / hair set salon beiller；先确认预约、付款方式和迟到规则。", tag: "待定" },
+      { id: "kobe27-ikuta", time: "10:00", title: "生田神社 / 算卦", detail: "三宫步行可达；把神社、占卜和街拍控制在同一片区。", tag: "文化" },
+      { id: "kobe27-lunch", time: "11:30", title: "午饭：Mando shuhari 或加虎烧肉 / 贺正轩", detail: "候选包含烧肉和豚骨拉面；鱼介过敏方优先选择能明确说明汤底的熟食。", tag: "午饭" },
+      { id: "kobe27-chinatown", time: "13:00", title: "南京町、三宫商业街", detail: "边逛边补充小吃和购物；不要为了赶景点在街区来回折返。", tag: "已勾选" },
+      { id: "kobe27-harbor", time: "14:00", title: "MOSAIC 摩天轮 → 面包超人博物馆 → 美利坚广场 / umie", detail: "港区集中路线，摩天轮和商场可按排队情况取舍。", tag: "港区" },
+      { id: "kobe27-coast", time: "16:00", title: "须磨海边 / 舞子公园二选一", detail: "候选：须磨站—须磨海边公园、舞子海上站—舞子公园、须磨海洋公园。四点后只保留一个海边点，避免跨站往返。", tag: "二选一" },
+      { id: "kobe27-cruise", time: "晚上", title: "预约当晚游船", detail: "没有当晚名额就预约明晚；如果已经游过，改为天王寺无印良品、买球拍、阿倍野 16F / 59F。", tag: "备选" },
+    ],
+  },
+  {
+    id: "personal-nara-uji-28",
+    label: "奈良—宇治28",
+    title: "宇治抹茶 → 奈良古迹与鹿",
+    note: "宇治和奈良都值得去，但同一天非常满；建议把宇治作为上午主线、奈良只留东大寺—春日大社—奈良公园，或直接二选一。",
+    items: [
+      { id: "nara28-start", time: "08:00", title: "起床 / 询问宅急便", detail: "先确认行李是否要寄送、寄送到哪家住宿，以及柜台收件截止时间。", tag: "行李" },
+      { id: "nara28-station", time: "09:00", title: "前往 JR 站", detail: "按当天选择宇治或奈良主线；京阪本线适合宇治，JR 适合和奈良段衔接。", tag: "交通" },
+      { id: "nara28-uji-food", time: "10:00", title: "宇治抹茶店巡礼", detail: "辻利兵卫本店、中村藤吉（零食 / 玄米茶 / 抹茶曲奇）、Food Park 和牛定食、楠楠咖啡抹茶拿铁；中村藤吉平等院店可选芭菲。", tag: "美食" },
+      { id: "nara28-uji-walk", time: "11:30", title: "宇治公园 → 宇治神社 → 宇治桥", detail: "加伊藤久右卫门宇治本店（吃 / 周边）；排队过长就只买伴手礼，不要重复排两家抹茶店。", tag: "已勾选" },
+      { id: "nara28-nara", time: "14:00", title: "奈良：春日大社 → 东大寺 → 若草山 / 奈良公园", detail: "般若寺、九品寺彼岸花属于加长版备选；若宇治停留较久，删掉远端花景点。", tag: "取舍" },
+      { id: "nara28-tennoji", time: "晚上", title: "天王寺购物 / 无印良品", detail: "体力不足时直接回住宿；需要补买再安排天王寺 MIO，别再额外跨城。", tag: "备选" },
+    ],
+  },
+  {
+    id: "personal-osaka-kyoto-29",
+    label: "大阪—京都29",
+    title: "梅田集中购物，再决定是否换到京都",
+    note: "原稿只有“9:00 出门去梅田”；建议把高岛屋 / 大丸 / 体育用品 / 生活用品按百货营业时间排成一条，不要跨城往返。",
+    items: [
+      { id: "osaka-kyoto29-umeda", time: "09:00", title: "出门去梅田", detail: "优先完成梅田空中庭院、百货和购物任务；把行李寄存 / 送到京都住宿的方案提前确认。", tag: "已勾选" },
+      { id: "osaka-kyoto29-shopping", time: "10:00–15:00", title: "梅田 / 大丸 / 高岛屋购物", detail: "按清单找球拍、球衣、枕头、胶片机和药妆；大件先问退税、寄送和能否现场取货。", tag: "购物" },
+      { id: "osaka-kyoto29-transfer", time: "15:00后", title: "大阪 → 京都（如当天换住宿）", detail: "优先选择与住宿区域最顺的京阪 / 阪急 / JR；先处理入住或寄存，再去晚餐。", tag: "换城" },
+    ],
+  },
+  {
+    id: "personal-kyoto-30",
+    label: "京都30",
+    title: "南禅寺—哲学之道—伏见稻荷，晚上鸭川",
+    note: "原稿景点密度很高；无邻庵、南禅寺、哲学之道和银阁寺在同一东山轴线上，伏见稻荷放在傍晚前后更顺。",
+    items: [
+      { id: "kyoto30-start", time: "08:00", title: "起床 / 租车或自行车 / 编头发", detail: "停车场日文可搜“駐輪場”；先确认租车地点、还车时间和雨天方案。", tag: "准备" },
+      { id: "kyoto30-murin-an", time: "09:00–10:00", title: "无邻庵", detail: "原稿写 9:00 起床、预约 10:00；入场时间以预约单为准。", tag: "已勾选", checked: true },
+      { id: "kyoto30-nanzenji", time: "10:30–12:30", title: "金地院 → 蓝瓶咖啡 → 南禅寺 → 天授庵", detail: "原稿备注金地院 6、天授庵 4.5，像是门票 / 评分记录；现场按开放时间取舍，不要把评分当票价。", tag: "文化" },
+      { id: "kyoto30-philosophy", time: "13:00–15:00", title: "永观堂 → 哲学之道 → 慈照寺 / 银阁寺", detail: "慈照寺原稿备注“一般”；体力不足时可删银阁寺，保留南禅寺和哲学之道。", tag: "取舍" },
+      { id: "kyoto30-fushimi", time: "16:00", title: "伏见稻荷大社", detail: "原稿备注 Chiikawa 京都伏见店 17:00 关门；如果要买限定品，先去店再爬鸟居，营业时间与库存出发前复核。", tag: "Chiikawa" },
+      { id: "kyoto30-evening", time: "晚上", title: "鸭川大阪烧 / 京风料理 + Standard Products", detail: "可安排骑车路线：鸭川公园 → 贺茂川 → 相国寺 → 同志社大学 → 京都御所；只在天气和体力允许时执行。", tag: "晚饭" },
+      { id: "kyoto30-sukiyaki", time: "备选", title: "寿喜烧三岛亭", detail: "作为正式晚餐备选；需要预约时提前确认。", tag: "美食" },
+    ],
+  },
+  {
+    id: "personal-kyoto-1",
+    label: "京都1 / 岚山",
+    title: "岚山小火车 → 奥嵯峨 → 渡月桥",
+    note: "小火车班次和座位必须先锁；穴太寺属于额外支线，和 9:30 小火车不能默认同天全部完成。",
+    items: [
+      { id: "kyoto1-start", time: "08:00", title: "出门前往龟冈", detail: "若要去穴太寺看彼岸花，先核对公交和回程；否则直接去小火车起点。", tag: "交通" },
+      { id: "kyoto1-train", time: "09:30", title: "岚山小火车：龟冈 → 嵯峨岚山", detail: "原稿金额记录 42；票券、站点和发车时间出发前再次确认。", tag: "已记录", checked: true },
+      { id: "kyoto1-okusan", time: "10:30–12:50", title: "爱宕念佛寺 → 证安院朱印 → 祇王寺 → 二尊院 → 常寂光寺 → 御发神社", detail: "原稿细分为 10:30–11:00、11:20、12:00–12:40、12:50；这是奥嵯峨连续步行段，注意坡度和鞋子。", tag: "寺院" },
+      { id: "kyoto1-lunch", time: "13:00", title: "午饭：wagyu donburi-ya nikuni 或喜重郎", detail: "生和牛拌饭需要确认是否可做熟；你过敏时不要因为“和牛”三个字忽略酱汁和配菜的鱼介成分。", tag: "午饭" },
+      { id: "kyoto1-garden", time: "13:45–15:30", title: "大河内山庄 → 天龙寺 → 佑斋亭", detail: "原稿把常寂光寺重复写了一次；建议只走一次。佑斋亭预约码 W5F1L9 仅按你原稿记录，现场以官方订单为准。", tag: "预约" },
+      { id: "kyoto1-museum", time: "15:30–17:00", title: "福田美术馆 → 渡月桥", detail: "按体力决定是否入馆；最后坐岚山电车回，不要为了一兰再横穿京都。", tag: "收尾" },
+      { id: "kyoto1-dinner", time: "晚上", title: "晚饭：肉どうし或一兰拉面", detail: "二选一即可；如果排队太长，优先找附近熟食。", tag: "美食" },
+    ],
+  },
+  {
+    id: "personal-return",
+    label: "回程",
+    title: "前往机场",
+    note: "原稿写 16:00 起飞；这是另一套返程时间，请最终以机票订单为准，并反推机场到达时间。",
+    items: [
+      { id: "return-luggage", time: "上午", title: "退房、取寄存行李", detail: "确认住宿退房时间和寄存凭证；液体、药妆、化妆品分开整理。", tag: "行李" },
+      { id: "return-airport", time: "起飞前 3 小时左右", title: "前往机场", detail: "根据机场、航站楼和退税 / 托运情况倒推；不要把最后购物安排到机场出发前。", tag: "交通" },
+      { id: "return-flight", time: "16:00", title: "返程航班", detail: "按原稿记录；与当前网页主线的 9/5 19:30 关西飞浦东不同，订票后请以确认单覆盖。", tag: "待确认" },
+    ],
+  },
+];
+
 const DEFAULT_XHS_SHARES: XiaohongshuShare[] = [
   ...RESEARCH_TIPS.map((tip) => ({
     id: `researched-${tip.noteId}`,
@@ -3400,6 +3583,9 @@ function makeSnapshot(
   xiaohongshuLinks: XiaohongshuShare[],
   preDepartureChecklist: Record<string, boolean> = {},
   nearbyCandidates: NearbyCandidate[] = NEARBY_CANDIDATES,
+  personalExpenses: PersonalExpense[] = PERSONAL_EXPENSES,
+  personalTasks: PersonalTask[] = PERSONAL_TASKS,
+  personalDays: PersonalDayMemo[] = PERSONAL_DAYS,
 ): TripState {
   return {
     version: TRIP_DATA_VERSION,
@@ -3410,6 +3596,9 @@ function makeSnapshot(
     preDepartureChecklist,
     nearbyCandidates,
     nearbyCandidateCatalogVersion: NEARBY_CANDIDATE_CATALOG_VERSION,
+    personalExpenses,
+    personalTasks,
+    personalDays,
   };
 }
 
@@ -3509,6 +3698,10 @@ export default function Home() {
   const [preDepartureChecklist, setPreDepartureChecklist] = useState<Record<string, boolean>>({});
   const [nearbyCandidates, setNearbyCandidates] = useState<NearbyCandidate[]>(NEARBY_CANDIDATES);
   const [nearbyRegion, setNearbyRegion] = useState<NearbyRegion | "all">("all");
+  const [personalExpenses, setPersonalExpenses] = useState<PersonalExpense[]>(PERSONAL_EXPENSES);
+  const [personalTasks, setPersonalTasks] = useState<PersonalTask[]>(PERSONAL_TASKS);
+  const [personalDays, setPersonalDays] = useState<PersonalDayMemo[]>(PERSONAL_DAYS);
+  const [personalDayFilter, setPersonalDayFilter] = useState("all");
   const [selectedDay, setSelectedDay] = useState<number | "all">("all");
   const [categoryFilter, setCategoryFilter] = useState<PlaceCategory | "all">("all");
   const [search, setSearch] = useState("");
@@ -3552,6 +3745,9 @@ export default function Home() {
         setXiaohongshuLinks(Array.isArray(next.xiaohongshuLinks) ? mergeDefaultXhsShares(next.xiaohongshuLinks) : DEFAULT_XHS_SHARES);
         setPreDepartureChecklist(next.preDepartureChecklist ?? {});
         setNearbyCandidates(Array.isArray(next.nearbyCandidates) ? migrateNearbyCandidates(next.nearbyCandidates, next.nearbyCandidateCatalogVersion) : NEARBY_CANDIDATES);
+        setPersonalExpenses(Array.isArray(next.personalExpenses) ? next.personalExpenses : PERSONAL_EXPENSES);
+        setPersonalTasks(Array.isArray(next.personalTasks) ? next.personalTasks : PERSONAL_TASKS);
+        setPersonalDays(Array.isArray(next.personalDays) ? next.personalDays : PERSONAL_DAYS);
         if (shared) setToast("已载入分享行程");
       }
       setHydrated(true);
@@ -3561,8 +3757,8 @@ export default function Home() {
 
   useEffect(() => {
     if (!hydrated) return;
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(makeSnapshot(days, places, stayPlans, xiaohongshuLinks, preDepartureChecklist, nearbyCandidates)));
-  }, [days, hydrated, nearbyCandidates, places, preDepartureChecklist, stayPlans, xiaohongshuLinks]);
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(makeSnapshot(days, places, stayPlans, xiaohongshuLinks, preDepartureChecklist, nearbyCandidates, personalExpenses, personalTasks, personalDays)));
+  }, [days, hydrated, nearbyCandidates, personalDays, personalExpenses, personalTasks, places, preDepartureChecklist, stayPlans, xiaohongshuLinks]);
 
   useEffect(() => {
     if (!toast) return;
@@ -3606,6 +3802,16 @@ export default function Home() {
   );
   const checkedNearbyCount = nearbyCandidates.filter((candidate) => candidate.checked).length;
 
+  const recordedPersonalTotal = personalExpenses.filter((expense) => !expense.planned).reduce((total, expense) => total + expense.amount, 0);
+  const plannedPersonalTotal = personalExpenses.filter((expense) => expense.planned).reduce((total, expense) => total + expense.amount, 0);
+  const checkedPersonalExpenseCount = personalExpenses.filter((expense) => expense.checked).length;
+  const checkedPersonalTaskCount = personalTasks.filter((task) => task.checked).length;
+  const personalRouteTotal = personalDays.reduce((total, day) => total + day.items.length, 0);
+  const checkedPersonalRouteCount = personalDays.reduce((total, day) => total + day.items.filter((item) => item.checked).length, 0);
+  const visiblePersonalDays = personalDayFilter === "all"
+    ? personalDays
+    : personalDays.filter((day) => day.id === personalDayFilter);
+
   const checklistItems = useMemo(
     () => PRE_DEPARTURE_GROUPS.flatMap((group) => group.items),
     [],
@@ -3630,6 +3836,26 @@ export default function Home() {
   const toggleNearbyCandidate = (id: string) => {
     setNearbyCandidates((current) => current.map((candidate) => (
       candidate.id === id ? { ...candidate, checked: !candidate.checked } : candidate
+    )));
+  };
+
+  const togglePersonalExpense = (id: string) => {
+    setPersonalExpenses((current) => current.map((expense) => (
+      expense.id === id ? { ...expense, checked: !expense.checked } : expense
+    )));
+  };
+
+  const togglePersonalTask = (id: string) => {
+    setPersonalTasks((current) => current.map((task) => (
+      task.id === id ? { ...task, checked: !task.checked } : task
+    )));
+  };
+
+  const togglePersonalRouteItem = (dayId: string, itemId: string) => {
+    setPersonalDays((current) => current.map((day) => (
+      day.id === dayId
+        ? { ...day, items: day.items.map((item) => item.id === itemId ? { ...item, checked: !item.checked } : item) }
+        : day
     )));
   };
 
@@ -3802,7 +4028,7 @@ export default function Home() {
   };
 
   const shareTrip = async () => {
-    const url = `${window.location.origin}${window.location.pathname}#share=${encodeShare(makeSnapshot(days, places, stayPlans, xiaohongshuLinks, preDepartureChecklist, nearbyCandidates))}`;
+    const url = `${window.location.origin}${window.location.pathname}#share=${encodeShare(makeSnapshot(days, places, stayPlans, xiaohongshuLinks, preDepartureChecklist, nearbyCandidates, personalExpenses, personalTasks, personalDays))}`;
     window.history.replaceState(null, "", url);
     try {
       await navigator.clipboard.writeText(url);
@@ -3813,7 +4039,7 @@ export default function Home() {
   };
 
   const exportTrip = () => {
-    const file = new Blob([JSON.stringify(makeSnapshot(days, places, stayPlans, xiaohongshuLinks, preDepartureChecklist, nearbyCandidates), null, 2)], { type: "application/json" });
+    const file = new Blob([JSON.stringify(makeSnapshot(days, places, stayPlans, xiaohongshuLinks, preDepartureChecklist, nearbyCandidates, personalExpenses, personalTasks, personalDays), null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(file);
     const anchor = document.createElement("a");
     anchor.href = url;
@@ -3836,6 +4062,9 @@ export default function Home() {
       setXiaohongshuLinks(Array.isArray(parsed.xiaohongshuLinks) ? mergeDefaultXhsShares(parsed.xiaohongshuLinks) : DEFAULT_XHS_SHARES);
       setPreDepartureChecklist(parsed.preDepartureChecklist ?? {});
       setNearbyCandidates(Array.isArray(parsed.nearbyCandidates) ? migrateNearbyCandidates(parsed.nearbyCandidates, parsed.nearbyCandidateCatalogVersion) : NEARBY_CANDIDATES);
+      setPersonalExpenses(Array.isArray(parsed.personalExpenses) ? parsed.personalExpenses : PERSONAL_EXPENSES);
+      setPersonalTasks(Array.isArray(parsed.personalTasks) ? parsed.personalTasks : PERSONAL_TASKS);
+      setPersonalDays(Array.isArray(parsed.personalDays) ? parsed.personalDays : PERSONAL_DAYS);
       setToast("行程已导入");
     } catch {
       setToast("导入失败，请选择这个网页导出的 JSON 文件");
@@ -3853,6 +4082,10 @@ export default function Home() {
     setPreDepartureChecklist({});
     setNearbyCandidates(NEARBY_CANDIDATES);
     setNearbyRegion("all");
+    setPersonalExpenses(PERSONAL_EXPENSES);
+    setPersonalTasks(PERSONAL_TASKS);
+    setPersonalDays(PERSONAL_DAYS);
+    setPersonalDayFilter("all");
     setSelectedDay("all");
     setCategoryFilter("all");
     setSearch("");
@@ -4036,6 +4269,87 @@ export default function Home() {
             </article>
           ))}
           {!visibleNearbyCandidates.length && <div className="nearby-empty">这一组候选都被删除了。点击右上角“恢复默认候选”，可以重新加载搜索结果。</div>}
+        </div>
+      </section>
+
+      <section className="personal-plan-card" id="personal-plan">
+        <div className="personal-plan-heading">
+          <div>
+            <p className="section-label">YOUR LEDGER / 我的行程清单</p>
+            <h2>把你们的真实清单，按预算和每天路线放在一起。</h2>
+            <p className="expansion-intro">以下内容按你提供的“大阪25 → 京都1”原稿录入。它和当前网页的 8/30–9/5 航班主线日期不一致，所以先作为并行备忘，不会自动覆盖主线小时攻略；等你确认日期后，再把需要的项目放回主线。金额保留你输入的原数字，未擅自判断币种或做汇率换算。</p>
+          </div>
+          <span className="personal-plan-badge">可勾选 · 自动保存 · 可导出分享</span>
+        </div>
+        <div className="personal-plan-summary">
+          <div className="personal-plan-stat"><span>已记录金额</span><strong>{recordedPersonalTotal.toLocaleString("zh-CN")}</strong><small>不含待安排预算</small></div>
+          <div className="personal-plan-stat"><span>待安排金额</span><strong>{plannedPersonalTotal.toLocaleString("zh-CN")}</strong><small>海洋馆 + 天王寺MIO券</small></div>
+          <div className="personal-plan-stat"><span>费用已核对</span><strong>{checkedPersonalExpenseCount}<small> / {personalExpenses.length}</small></strong><small>点每行可取消勾选</small></div>
+          <div className="personal-plan-stat"><span>路线已勾选</span><strong>{checkedPersonalRouteCount}<small> / {personalRouteTotal}</small></strong><small>含原稿中已打勾项目</small></div>
+        </div>
+
+        <div className="personal-plan-columns">
+          <div className="personal-plan-panel personal-expense-panel">
+            <div className="personal-panel-head"><div><span className="option-kicker">EXPENSES / 费用</span><h3>预算与已发生花费</h3></div><span className="muted">原金额记录</span></div>
+            {Array.from(new Set(personalExpenses.map((expense) => expense.group))).map((group) => (
+              <div className="personal-expense-group" key={group}>
+                <div className="personal-group-label"><span>{group}</span><strong>{personalExpenses.filter((expense) => expense.group === group).reduce((total, expense) => total + expense.amount, 0).toLocaleString("zh-CN")}</strong></div>
+                <div className="personal-expense-list">
+                  {personalExpenses.filter((expense) => expense.group === group).map((expense) => (
+                    <label className={`personal-check-row ${expense.checked ? "is-done" : ""}`} key={expense.id}>
+                      <input type="checkbox" checked={Boolean(expense.checked)} onChange={() => togglePersonalExpense(expense.id)} />
+                      <span className="personal-check-box" aria-hidden="true">{expense.checked ? "✓" : ""}</span>
+                      <span className="personal-check-copy"><strong>{expense.label}</strong><small>{expense.dayLabel ?? expense.note ?? (expense.planned ? "待安排" : "已记录")}</small></span>
+                      <b className={expense.planned ? "is-planned" : ""}>{expense.amount.toLocaleString("zh-CN")}</b>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="personal-plan-panel personal-task-panel">
+            <div className="personal-panel-head"><div><span className="option-kicker">CHECKLIST / 待办</span><h3>购物、交通、门票和想吃的</h3></div><span className="muted">{checkedPersonalTaskCount} / {personalTasks.length} 已完成</span></div>
+            {Array.from(new Set(personalTasks.map((task) => task.group))).map((group) => (
+              <div className="personal-task-group" key={group}>
+                <div className="personal-group-label"><span>{group}</span><strong>{personalTasks.filter((task) => task.group === group && task.checked).length}/{personalTasks.filter((task) => task.group === group).length}</strong></div>
+                <div className="personal-task-list">
+                  {personalTasks.filter((task) => task.group === group).map((task) => (
+                    <label className={`personal-check-row ${task.checked ? "is-done" : ""}`} key={task.id}>
+                      <input type="checkbox" checked={Boolean(task.checked)} onChange={() => togglePersonalTask(task.id)} />
+                      <span className="personal-check-box" aria-hidden="true">{task.checked ? "✓" : ""}</span>
+                      <span className="personal-check-copy"><strong>{task.title}</strong>{task.detail && <small>{task.detail}</small>}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="personal-route-panel">
+          <div className="personal-panel-head personal-route-head"><div><span className="option-kicker">DAY NOTES / 每日原稿</span><h3>按天查看详细路线，逐项勾选</h3></div><span className="muted">原稿中的 [x] 已预先标记</span></div>
+          <div className="personal-day-tabs" role="tablist" aria-label="我的行程清单日期">
+            <button type="button" className={personalDayFilter === "all" ? "is-active" : ""} onClick={() => setPersonalDayFilter("all")}>全部</button>
+            {personalDays.map((day) => <button type="button" className={personalDayFilter === day.id ? "is-active" : ""} key={day.id} onClick={() => setPersonalDayFilter(day.id)}>{day.label}</button>)}
+          </div>
+          <div className="personal-day-grid">
+            {visiblePersonalDays.map((day) => (
+              <article className="personal-day-card" key={day.id}>
+                <div className="personal-day-card-head"><div><span>{day.label}</span><h4>{day.title}</h4></div><strong>{day.items.filter((item) => item.checked).length}/{day.items.length}</strong></div>
+                {day.note && <p className="personal-day-note">{day.note}</p>}
+                <div className="personal-route-list">
+                  {day.items.map((item) => (
+                    <label className={`personal-route-item ${item.checked ? "is-done" : ""}`} key={item.id}>
+                      <input type="checkbox" checked={Boolean(item.checked)} onChange={() => togglePersonalRouteItem(day.id, item.id)} />
+                      <span className="personal-check-box" aria-hidden="true">{item.checked ? "✓" : ""}</span>
+                      <span className="personal-route-copy"><span className="personal-route-top"><time>{item.time ?? ""}</time><strong>{item.title}</strong>{item.tag && <em>{item.tag}</em>}</span>{item.detail && <small>{item.detail}</small>}</span>
+                    </label>
+                  ))}
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
