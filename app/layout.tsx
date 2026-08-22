@@ -9,7 +9,7 @@ const publicBasePath =
 
 export const metadata: Metadata = {
   title: "东京进大阪出｜东京·富士·京都·奈良·大阪 7 天旅行地图",
-  description: "2026 年 8 月 30 日至 9 月 5 日上海浦东进、关西出，包含东京、富士山、京都、奈良与大阪的小时级行程、住宿入住退房提示、美食清单和地点管理。",
+  description: "2026 年 8 月 30 日至 9 月 5 日上海浦东进、关西出，包含东京、富士山、京都、奈良与大阪的小时级行程、住宿入住退房提示、出发清单和地点管理。",
   icons: {
     icon: `${publicBasePath}/favicon.svg`,
     shortcut: `${publicBasePath}/favicon.svg`,

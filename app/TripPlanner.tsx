@@ -30,9 +30,7 @@ const PAGE_MODULES = [
   { href: "#map", label: "路线地图" },
   { href: "#nearby", label: "周边候选" },
   { href: "#stays", label: "住宿" },
-  { href: "#food", label: "美食" },
   { href: "#checklist", label: "出发清单" },
-  { href: "#language", label: "现金与日语" },
   { href: "#sources", label: "来源" },
   { href: "#hourly", label: "小时攻略" },
   { href: "#xhs-board", label: "小红书分享" },
@@ -2790,24 +2788,6 @@ const RESEARCH_TIPS = [
   },
 ];
 
-const LANGUAGE_PHRASES = [
-  { scene: "开场", zh: "不好意思 / 打扰一下", jp: "すみません", read: "sumimasen", ear: "苏米马森", use: "问路、叫店员、需要帮助时先说。" },
-  { scene: "礼貌", zh: "谢谢", jp: "ありがとうございます", read: "arigatou gozaimasu", ear: "阿里嘎多 勾ざ以马斯", use: "比只说‘阿里嘎多’更完整、礼貌。" },
-  { scene: "购物", zh: "这个多少钱？", jp: "これはいくらですか？", read: "kore wa ikura desu ka", ear: "口勒哇 一哭拉 得斯卡", use: "问商品、限定玩偶或伴手礼价格。" },
-  { scene: "付款", zh: "可以刷信用卡吗？", jp: "クレジットカードは使えますか？", read: "kurejitto kaado wa tsukaemasu ka", ear: "库雷吉托 卡多 哇 次卡诶马斯卡", use: "酒店、餐厅或商场结账前先问。" },
-  { scene: "付款", zh: "只能现金吗？", jp: "現金のみですか？", read: "genkin nomi desu ka", ear: "根金 诺米 得斯卡", use: "现金不够时先确认支付方式。" },
-  { scene: "付款", zh: "可以用微信支付吗？", jp: "WeChat Payは使えますか？", read: "WeChat Pay wa tsukaemasu ka", ear: "微信佩 哇 次卡诶马斯卡", use: "只对有对应二维码 / 标识的商户询问。" },
-  { scene: "餐厅", zh: "有英文 / 中文菜单吗？", jp: "英語／中国語のメニューはありますか？", read: "eigo / chuugokugo no menyuu wa arimasu ka", ear: "诶伊勾 / 秋国勾 诺 梅纽 哇 阿里马斯卡", use: "看不懂菜单时直接把文字给店员看。" },
-  { scene: "餐厅", zh: "请给我这个。", jp: "これをください。", read: "kore o kudasai", ear: "口勒哦 库达赛", use: "配合手指或菜单照片点单。" },
-  { scene: "餐厅", zh: "这是生鱼吗？", jp: "これは生魚ですか？", read: "kore wa nama-zakana desu ka", ear: "口勒哇 纳马杂卡纳 得斯卡", use: "需要避开生鱼或不明成分料理时先确认。" },
-  { scene: "过敏", zh: "有食物过敏时，请确认成分。", jp: "食物アレルギーがある場合、原材料を確認してください。", read: "shokumotsu arerugii ga aru baai, genzairyou o kakunin shite kudasai", ear: "肖库莫次 阿雷鲁吉 嘎阿鲁 巴爱；根在料 哦 卡库宁 西特 库达赛", use: "把具体过敏食材填进日文卡片，同时出示文字；不要只依赖空耳或药物。" },
-  { scene: "入住", zh: "我想寄存行李。", jp: "ホテルに荷物を預けたいです。", read: "hoteru ni nimotsu o azuketai desu", ear: "厚特鲁 尼 尼莫次 哦 阿组凯太 得斯", use: "凌晨落地或退房后与酒店前台沟通。" },
-  { scene: "问路", zh: "车站在哪里？", jp: "駅はどこですか？", read: "eki wa doko desu ka", ear: "诶ki 哇 多口 得斯卡", use: "也可以把目的地日文名称直接给对方看。" },
-  { scene: "沟通", zh: "请再说一遍。", jp: "もう一度お願いします。", read: "mou ichido onegaishimasu", ear: "莫 伊奇多 哦内嘎伊西马斯", use: "没听清时比点头猜测更安全。" },
-  { scene: "沟通", zh: "我不明白。", jp: "わかりません。", read: "wakarimasen", ear: "哇卡里马森", use: "接着打开翻译器或展示截图。" },
-  { scene: "求助", zh: "请帮帮我。", jp: "助けてください。", read: "tasukete kudasai", ear: "他苏凯特 库达赛", use: "迷路、身体不适或需要工作人员帮助时用。" },
-] as const;
-
 const NEARBY_CANDIDATES: NearbyCandidate[] = [
   {
     id: "nearby-tokyo-kamakura-enoshima",
@@ -3589,17 +3569,6 @@ export default function Home() {
     [places, selectedDay],
   );
 
-  const foodPlaces = useMemo(
-    () =>
-      places
-        .filter((place) => place.category === "food" || place.category === "drink")
-        .filter((place) => selectedDay === "all" || place.day === selectedDay)
-        .sort((a, b) => a.day - b.day),
-    [places, selectedDay],
-  );
-
-  const checkedFoodCount = foodPlaces.filter((place) => place.checked).length;
-
   const visibleNearbyCandidates = useMemo(
     () => nearbyCandidates.filter((candidate) => nearbyRegion === "all" || candidate.region === nearbyRegion),
     [nearbyCandidates, nearbyRegion],
@@ -3619,12 +3588,6 @@ export default function Home() {
   const markChecklist = (checked: boolean) => {
     setPreDepartureChecklist(Object.fromEntries(checklistItems.map((item) => [item.id, checked])));
     setToast(checked ? "出发前清单已全部标记" : "已清空出发前清单勾选");
-  };
-
-  const toggleFoodChecked = (id: string) => {
-    setPlaces((current) => current.map((place) => (
-      place.id === id ? { ...place, checked: !place.checked } : place
-    )));
   };
 
   const toggleNearbyCandidate = (id: string) => {
@@ -4096,52 +4059,6 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="food-card" id="food">
-          <div className="expansion-heading">
-            <div>
-              <p className="section-label">EAT / 美食清单</p>
-              <h2>先收藏，再决定这一餐吃什么。</h2>
-            </div>
-            <div className="food-heading-actions">
-              <span className="muted">{selectedDay === "all" ? "全程清单" : `Day ${selectedDay} · 当前日`}</span>
-              <button type="button" className="button button-accent" onClick={() => openCreate(selectedDay === "all" ? 1 : (selectedDay as DayId), "food")}>＋ 添加美食</button>
-            </div>
-          </div>
-          <p className="expansion-intro">清单里的每一项都和地图相连：点击名称定位，点击圆点打卡。价格按人均粗估，临近出发再看营业日、预约和菜单。</p>
-          <div className="food-layout">
-            <div className="food-list">
-              {foodPlaces.map((place) => (
-                <div className={`food-item ${place.checked ? "is-done" : ""}`} key={place.id}>
-                  <button
-                    type="button"
-                    className="food-check"
-                    aria-label={`${place.checked ? "取消" : "标记"}${place.title}`}
-                    aria-pressed={Boolean(place.checked)}
-                    onClick={() => toggleFoodChecked(place.id)}
-                  >
-                    {place.checked ? "✓" : "○"}
-                  </button>
-                  <button type="button" className="food-copy" onClick={() => selectPlace(place.id)}>
-                    <span className="food-item-head"><strong>{place.title}</strong><em>{place.meal ?? "随时"}</em></span>
-                    <span className="food-location">D{place.day} · {place.area}</span>
-                    <p>{place.foodNote ?? place.note}</p>
-                  </button>
-                  <span className="food-price">{place.price ?? "价格待补"}</span>
-                  <button type="button" className="food-delete" aria-label={`删除${place.title}`} onClick={() => deletePlace(place)}>删除</button>
-                </div>
-              ))}
-              {!foodPlaces.length && <div className="food-empty">这一天还没有美食清单，切回“全部”查看全程候选。</div>}
-            </div>
-            <aside className="food-side-note">
-              <div className="food-progress"><strong>{checkedFoodCount}<small>/{foodPlaces.length}</small></strong><span>已收藏 / 打卡</span></div>
-              <div className="progress-track"><i style={{ width: `${foodPlaces.length ? (checkedFoodCount / foodPlaces.length) * 100 : 0}%` }} /></div>
-              <p>你们可以先把想吃的勾出来，再用上面的 Day 标签收窄地图和清单，避免每天临时搜索。</p>
-              <div className="food-rule"><b>你</b><span>熟食优先；鱼汤、酱汁、鲑鱼和交叉污染都要问。</span></div>
-              <div className="food-rule"><b>她</b><span>寿司 / 刺身可以单独安排，但不要共用餐具或不明汤底。</span></div>
-              <a className="food-source" href="https://www.tsukiji.or.jp/english/shopping/" target="_blank" rel="noreferrer">筑地官方提示：多数店 9:00–14:00，部分周日 / 周三休息 ↗</a>
-            </aside>
-          </div>
-        </section>
       </section>
 
       <section className="departure-checklist-card" id="checklist">
@@ -4201,72 +4118,6 @@ export default function Home() {
             <span>官方核对入口</span>
             <div>{CHECKLIST_OFFICIAL_SOURCES.map((source) => <a href={source.href} target="_blank" rel="noreferrer" key={source.href}><b>{source.label}</b>{source.title} ↗</a>)}</div>
           </div>
-        </div>
-      </section>
-
-      <section className="language-card" id="language">
-        <div className="expansion-heading">
-          <div>
-            <p className="section-label">MONEY & LANGUAGE / 现金与语言</p>
-            <h2>现金别带过量，日语先准备能用的。</h2>
-          </div>
-          <span className="muted">两个人 · 7 天 6 晚 · 东京进大阪出</span>
-        </div>
-        <p className="expansion-intro">现金金额是结合你们路线和支付习惯的旅行估算；口语是现场备用工具，不要求临时学会完整日语。遇到付款、过敏或紧急情况，优先展示日文文字和官方信息。</p>
-        <div className="language-overview-grid">
-          <article className="cash-plan">
-            <div className="cash-plan-head"><span className="option-kicker">CASH PLAN / 现金估算</span><span>两人合计</span></div>
-            <div className="cash-amount">¥40,000–50,000</div>
-            <p>建议先换 / 取这一区间，分给两个人保管；每天随身约 ¥10,000–15,000 / 人，其余作为备用。若会逛市场、神社、现金小店或频繁充值 IC 卡，再补到 ¥60,000–70,000。</p>
-            <div className="cash-rules">
-              <div><b>刷卡</b><span>酒店、百货、Chiikawa 大额购物和多数城市餐厅优先用 Visa / Mastercard / JCB。</span></div>
-              <div><b>IC 卡</b><span>东京与关西交通、便利店和自动售货机常用；充值仍要留意部分机器只收现金。</span></div>
-              <div><b>现金</b><span>市场、小店、神社、部分机器和偏远地点的备用通道；硬币袋一定要带。</span></div>
-              <div><b>取现</b><span>带两张不同渠道的卡；7-Eleven / Seven Bank 和 Japan Post ATM 可作为补给点，手续费看发卡行和 ATM。</span></div>
-            </div>
-            <p className="cash-warning">微信支付：现在日本“部分”商户可以用，但绝不是所有店都能用。PayPay 已把 WeChat Pay 接入部分使用 HIVEX 的商户二维码，付款前先看标识、问店员；不要把微信支付当唯一方案。</p>
-            <div className="language-source-links">
-              <a href="https://about.paypay.ne.jp/pr/20250904/01/" target="_blank" rel="noreferrer">PayPay 官方：WeChat Pay 接入说明 ↗</a>
-              <a href="https://www.japan.travel/en/plan/cashless-payments-in-japan/" target="_blank" rel="noreferrer">JNTO：日本无现金支付与 IC 卡 ↗</a>
-              <a href="https://www.sevenbank.co.jp/intlcard/card.html" target="_blank" rel="noreferrer">Seven Bank：海外发行卡取现说明 ↗</a>
-            </div>
-          </article>
-          <article className="language-guidance">
-            <div className="language-guidance-head"><span className="option-kicker">WHEN WORDS FAIL / 沟通备份</span><strong>真到了日本，按这几步处理</strong></div>
-            <ol>
-              <li><b>先出示文字：</b>酒店日文地址、车站名、订单截图、过敏卡都提前保存；不会读也没关系，工作人员看得懂文字和地图。</li>
-              <li><b>翻译工具双保险：</b>两台手机都装翻译 App，下载日语离线包并测试相机翻译；一台开口说，一台展示译文。</li>
-              <li><b>交通只问一个动作：</b>说清“我要去哪里”，再把地图定位给站员看；优先找机场、车站和游客中心的工作人员，不要只靠路人比划。</li>
-              <li><b>过敏不能靠猜：</b>如果同行者有食物过敏，点餐前先展示下面的日文过敏句；鱼介、柴鱼粉、鱼介出汁和共用锅不确定就不吃，药物也不能替代避让和确认。</li>
-              <li><b>真的卡住时：</b>JNTO Japan Visitor Hotline <strong>050-3816-2787</strong>（24 小时、中英韩）；警察 <strong>110</strong>，火灾 / 救护车 <strong>119</strong>。</li>
-            </ol>
-            <div className="language-official-links">
-              <a href="https://www.japan.travel/en/plan/hotline/" target="_blank" rel="noreferrer">JNTO Japan Visitor Hotline ↗</a>
-              <a href="https://www.jnto.go.jp/news/press/20260313.html" target="_blank" rel="noreferrer">JNTO 2026 多语言观光咨询 ↗</a>
-            </div>
-          </article>
-        </div>
-        <div className="language-phrases-head">
-          <div><p className="section-label">USEFUL JAPANESE / 常用日语口语</p><h3>先看日文，再用读法和空耳开口。</h3></div>
-          <span>空耳只作记忆提示，关键事项请展示日文原句</span>
-        </div>
-        <div className="language-phrase-grid">
-          {LANGUAGE_PHRASES.map((phrase, index) => (
-            <article className="language-phrase" key={`${phrase.jp}-${index}`}>
-              <div className="language-phrase-top"><span>{phrase.scene}</span><strong>{phrase.zh}</strong></div>
-              <p className="language-japanese">{phrase.jp}</p>
-              <div className="language-reading"><span>读法</span><code>{phrase.read}</code></div>
-              <div className="language-reading language-ear"><span>空耳</span><b>{phrase.ear}</b></div>
-              <p className="language-use">{phrase.use}</p>
-            </article>
-          ))}
-        </div>
-        <div className="language-xhs-sources">
-          <span>本模块的小红书检索参考</span>
-          <a href="https://www.xiaohongshu.com/explore/6a4128b9000000001102e456" target="_blank" rel="noreferrer">日本旅游场景200句 · 一小时听日文 ↗</a>
-          <a href="https://www.xiaohongshu.com/explore/6a7891d7000000002500d1a4" target="_blank" rel="noreferrer">不会日语也能玩转日本 · 虾兵 ↗</a>
-          <a href="https://www.xiaohongshu.com/explore/69e1f5b4000000002102c867" target="_blank" rel="noreferrer">不会日语勇闯日本 · 游山玩水小吗喽 ↗</a>
-          <a href="https://www.xiaohongshu.com/explore/6a60630f000000001f01d332" target="_blank" rel="noreferrer">在日本可以用微信支付了？ · 小夏老师 ↗</a>
         </div>
       </section>
 
